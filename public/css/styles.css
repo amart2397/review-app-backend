@@ -1,0 +1,9 @@
+body{
+    background-color: #003153;
+    color: aliceblue;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
