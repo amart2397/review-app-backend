@@ -2,6 +2,7 @@ import express from "express";
 import router from "./routes/root.js";
 import path from "path";
 import logger from "./middleware/logger.js";
+import errorHandler from "./middleware/errorHandler.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -25,5 +26,7 @@ app.all(/.*/, (req, res) => {
     res.type("txt").send("404 Not Found");
   }
 });
+
+app.use(errorHandler);
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
