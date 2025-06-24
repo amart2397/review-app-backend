@@ -3,6 +3,9 @@ import router from "./routes/root.js";
 import path from "path";
 import logger from "./middleware/logger.js";
 import errorHandler from "./middleware/errorHandler.js";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import corsOptions from "./config/corsOptions.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -10,12 +13,17 @@ const __dirname = import.meta.dirname;
 
 app.use(logger);
 
+app.use(cors(corsOptions));
+
 app.use(express.json());
+
+app.use(cookieParser());
 
 app.use("/", express.static(path.join(__dirname, "public")));
 
 app.use("/", router);
 
+//All unhandled routes default to 404 page below
 app.all(/.*/, (req, res) => {
   res.status(404);
   if (req.accepts("html")) {
