@@ -1,5 +1,6 @@
 import express from "express";
-import router from "./routes/root.js";
+import rootRouter from "./routes/root.js";
+import userRouter from "./routes/userRoutes.js";
 import path from "path";
 import logger from "./middleware/logger.js";
 import errorHandler from "./middleware/errorHandler.js";
@@ -22,7 +23,8 @@ app.use(cookieParser());
 
 app.use("/", express.static(path.join(__dirname, "public")));
 
-app.use("/", router);
+app.use("/", rootRouter);
+app.use("/users", userRouter);
 
 //All unhandled routes default to 404 page below (404 page handled in errorHandler)
 app.all(/.*/, (req, res, next) => {
