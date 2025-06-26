@@ -1,63 +1,60 @@
 import * as z from "zod/v4";
-import UsersDao from "../dao/usersDao";
-import AppError from "../utils/AppError";
+import UsersDao from "../dao/usersDao.js";
+import AppError from "../utils/AppError.js";
+import compareSchema from "./compareSchema.js";
 
-const userInput = z.object({
+//Data schemas
+const newUserSchema = z.object({
   email: z.email(),
   firstName: z.string().trim(),
   lastName: z.string().trim(),
   password: z.string().min(8),
 });
 
-const userModel = userInput.extend({
+const existingUserSchema = z.object({
   id: z.int(),
+  ...newUserSchema,
+  password: z.string().min(8).optional(),
   role: z.enum(["user", "poster", "admin"]),
 });
 
 class UsersValidator {
   //schema validation (using zod)
-  validateNewUserSchema(inputData) {
-    const result = userInput.safeParse(inputData);
-    if (!result.success) {
-      throw AppError.badRequest(
-        err.issues
-          .map((e) => {
-            e.path[0] + " " + e.message;
-          })
-          .join(", ")
-      );
-    } else {
-      return result.data;
-    }
+  validateNewUserSchema(inputUserData) {
+    return compareSchema(newUserSchema, inputUserData);
   }
 
-  validateExistingUserSchema(inputData) {
-    const result = userModel.safeParse(inputData);
-    if (!result.success) {
-      throw AppError.badRequest(
-        err.issues
-          .map((e) => {
-            e.path[0] + " " + e.message;
-          })
-          .join(", ")
-      );
-    } else {
-      return result.data;
-    }
+  validateExistingUserSchema(inputUserData) {
+    return compareSchema(existingUserSchema, inputUserData);
   }
 
   //app logic validation
-  async validateNewUser(inputData) {
-    /*TODO:
-        -Check if user email is unique
-     */
-    const existingUser = await UsersDao.findByEmail(inputData.email);
+  async validateNewUser(inputUserData) {
+    const existingUser = await UsersDao.findUserByEmail(inputUserData.email);
 
-    if (existingUser.length !== 0) {
-      throw AppError.badRequest("Email already registered"); //throw error up all the way to controller layer
+    if (existingUser) {
+      throw AppError.conflict("Email already registered");
     }
 
-    return inputData;
+    return inputUserData;
+  }
+
+  async validateExistingUser(inputUserData) {
+    const existingUserByEmail = await UsersDao.findUserByEmail(
+      inputUserData.email
+    );
+
+    if (existingUserByEmail && existingUserByEmail?.id !== inputUserData.id) {
+      throw AppError.conflict("Email already registered");
+    }
+
+    const existingUserById = await UsersDao.findUserById(inputUserData.id);
+
+    if (!existingUserById) {
+      throw AppError.badRequest("User not found");
+    }
+
+    return inputUserData;
   }
 }
 
