@@ -1,5 +1,5 @@
 import * as z from "zod/v4";
-import UsersDao from "../dao/usersDao.js";
+import UsersDao from "../dao/UsersDao.js";
 import AppError from "../utils/AppError.js";
 import compareSchema from "./compareSchema.js";
 
@@ -11,11 +11,15 @@ const newUserSchema = z.object({
   password: z.string().min(8),
 });
 
-const existingUserSchema = z.object({
+const updateUserSchema = z.object({
   id: z.int(),
   ...newUserSchema,
   password: z.string().min(8).optional(),
   role: z.enum(["user", "poster", "admin"]),
+});
+
+const deleteUserSchema = z.object({
+  id: z.int(),
 });
 
 class UsersValidator {
@@ -24,38 +28,44 @@ class UsersValidator {
     return compareSchema(newUserSchema, inputUserData);
   }
 
-  validateExistingUserSchema(inputUserData) {
-    return compareSchema(existingUserSchema, inputUserData);
+  validateUpdateUserSchema(inputUserData) {
+    return compareSchema(updateUserSchema, inputUserData);
+  }
+
+  validateDeleteUserSchema(inputUserData) {
+    return compareSchema(deleteUserSchema, inputUserData);
   }
 
   //app logic validation
   async validateNewUser(inputUserData) {
     const existingUser = await UsersDao.findUserByEmail(inputUserData.email);
-
     if (existingUser) {
       throw AppError.conflict("Email already registered");
     }
-
     return inputUserData;
   }
 
-  async validateExistingUser(inputUserData) {
+  async validateUpdateUser(inputUserData) {
     const existingUserByEmail = await UsersDao.findUserByEmail(
       inputUserData.email
     );
-
     if (existingUserByEmail && existingUserByEmail?.id !== inputUserData.id) {
       throw AppError.conflict("Email already registered");
     }
-
     const existingUserById = await UsersDao.findUserById(inputUserData.id);
-
     if (!existingUserById) {
       throw AppError.badRequest("User not found");
     }
+    return inputUserData;
+  }
 
+  async validateDeleteUser(inputUserData) {
+    const existingUserById = await UsersDao.findUserById(inputUserData.id);
+    if (!existingUserById) {
+      throw AppError.badRequest("User not found");
+    }
     return inputUserData;
   }
 }
 
-export default UsersValidator();
+export default new UsersValidator();
