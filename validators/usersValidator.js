@@ -13,12 +13,14 @@ const newUserSchema = z.object({
 
 const updateUserSchema = z.object({
   id: z.int(),
-  ...newUserSchema,
+  email: z.email(),
+  firstName: z.string().trim(),
+  lastName: z.string().trim(),
   password: z.string().min(8).optional(),
-  role: z.enum(["user", "poster", "admin"]),
+  role: z.enum(["user", "poster", "admin"]).optional(),
 });
 
-const deleteUserSchema = z.object({
+const userIdSchema = z.object({
   id: z.int(),
 });
 
@@ -28,17 +30,19 @@ class UsersValidator {
     return compareSchema(newUserSchema, inputUserData);
   }
 
+  validateUserIdSchema(inputUserData) {
+    return compareSchema(userIdSchema, inputUserData);
+  }
+
   validateUpdateUserSchema(inputUserData) {
     return compareSchema(updateUserSchema, inputUserData);
   }
 
-  validateDeleteUserSchema(inputUserData) {
-    return compareSchema(deleteUserSchema, inputUserData);
-  }
-
   //app logic validation
   async validateNewUser(inputUserData) {
-    const existingUser = await UsersDao.findUserByEmail(inputUserData.email);
+    const existingUser = await UsersDao.findFullUserByEmail(
+      inputUserData.email
+    );
     if (existingUser) {
       throw AppError.conflict("Email already registered");
     }
@@ -46,13 +50,13 @@ class UsersValidator {
   }
 
   async validateUpdateUser(inputUserData) {
-    const existingUserByEmail = await UsersDao.findUserByEmail(
+    const existingUserByEmail = await UsersDao.findFullUserByEmail(
       inputUserData.email
     );
     if (existingUserByEmail && existingUserByEmail?.id !== inputUserData.id) {
       throw AppError.conflict("Email already registered");
     }
-    const existingUserById = await UsersDao.findUserById(inputUserData.id);
+    const existingUserById = await UsersDao.findFullUserById(inputUserData.id);
     if (!existingUserById) {
       throw AppError.badRequest("User not found");
     }
@@ -60,7 +64,7 @@ class UsersValidator {
   }
 
   async validateDeleteUser(inputUserData) {
-    const existingUserById = await UsersDao.findUserById(inputUserData.id);
+    const existingUserById = await UsersDao.findFullUserById(inputUserData.id);
     if (!existingUserById) {
       throw AppError.badRequest("User not found");
     }

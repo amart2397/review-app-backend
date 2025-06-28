@@ -9,7 +9,7 @@ class UsersController {
   // @access Private
   getAllUsers = expressAsyncHandler(async (req, res) => {
     const users = await UsersService.getAllUsers();
-    if (!users) {
+    if (users.length === 0) {
       throw AppError.badRequest("No users found");
     }
     res.json(users);
@@ -33,15 +33,75 @@ class UsersController {
     });
   });
 
-  // @desc Update a user
-  // @route PATCH /users
+  // @desc Get specific user
+  // @route GET /users/:id
   // @access Private
-  updateUser = expressAsyncHandler(async (req, res) => {});
+  getUser = expressAsyncHandler(async (req, res) => {
+    const id = parseInt(req.params.id);
+    const inputData = { id };
+    const validatedId = UsersValidator.validateFindUserSchema(inputData);
+    const users = await UsersService.getUserById(validatedId);
+    if (users.length === 0) {
+      throw AppError.badRequest("No users found");
+    }
+    res.json(users);
+  });
+
+  // @desc Update a user
+  // @route PATCH /users/:id
+  // @access Private
+  updateUser = expressAsyncHandler(async (req, res) => {
+    const {
+      id: id_body,
+      email,
+      firstName,
+      lastName,
+      password,
+      role,
+    } = req.body;
+    const id = parseInt(req.params.id);
+    if (id_body && id !== id_body) {
+      throw AppError.badRequest("ID in request body does not match ID in URL");
+    }
+    const inputUserData = {
+      id,
+      email,
+      firstName,
+      lastName,
+    };
+    if (password) {
+      inputUserData.password = password;
+    }
+    if (role) {
+      inputUserData.role = role;
+    }
+    const validatedData =
+      UsersValidator.validateUpdateUserSchema(inputUserData);
+    await UsersService.updateUser(validatedData);
+    res.json({
+      message: `User ${firstName} ${lastName} updated`,
+    });
+  });
 
   // @desc Delete a user
-  // @route DELETE /users
+  // @route DELETE /users/:id
   // @access Private
-  deleteUser = expressAsyncHandler(async (req, res) => {});
+  deleteUser = expressAsyncHandler(async (req, res) => {
+    const id = parseInt(req.params.id);
+    const { id: id_body } = req.body;
+    if (id_body && id_body !== id) {
+      throw AppError.badRequest("ID in request body does not match ID in URL");
+    }
+    const inputUserData = {
+      id,
+    };
+    const validatedData = UsersValidator.validateFindUserSchema(inputUserData);
+    const delUser = await UsersService.deleteUser(validatedData);
+    const { email } = delUser;
+    res.json({
+      message: `User ${email} with id ${id} was deleted`,
+    });
+  });
 }
 
 export default new UsersController();

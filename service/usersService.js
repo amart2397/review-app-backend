@@ -2,11 +2,12 @@ import UsersDao from "../dao/UsersDao.js";
 import UsersValidator from "../validators/UsersValidator.js";
 import handleError from "../utils/handleError.js";
 import bcrypt from "bcrypt";
+import AppError from "../utils/AppError.js";
 
 class UsersService {
   async getAllUsers() {
     try {
-      users = await UsersDao.getAllUsers();
+      const users = await UsersDao.getAllUsers();
       return users;
     } catch (err) {
       if (err instanceof AppError) throw err;
@@ -27,6 +28,16 @@ class UsersService {
     }
   }
 
+  async getUserById(inputUserData) {
+    try {
+      const user = UsersDao.getUserByID(inputUserData);
+      return user;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
+
   async updateUser(inputUserData) {
     try {
       const validatedData = await UsersValidator.validateUpdateUser(
@@ -36,9 +47,7 @@ class UsersService {
         const hashedPwd = await bcrypt.hash(validatedData.password, 10);
         validatedData.password = hashedPwd;
       }
-      const oldUser = await UsersDao.findUserById(validatedData.id);
-      const mergedUser = { ...oldUser, ...validatedData };
-      await UsersDao.updateUser(mergedUser);
+      await UsersDao.updateUser(validatedData);
     } catch (err) {
       if (err instanceof AppError) throw err;
       handleError(err);
@@ -50,7 +59,7 @@ class UsersService {
       const validatedData = await UsersValidator.validateDeleteUser(
         inputUserData
       );
-      const delUser = await UsersDao.deleteUser(validatedData.id);
+      const delUser = await UsersDao.deleteUser(validatedData);
       return delUser;
     } catch (err) {
       if (err instanceof AppError) throw err;

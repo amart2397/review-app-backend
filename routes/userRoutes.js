@@ -5,7 +5,11 @@ const router = express.Router();
 router
   .route("/")
   .get(UsersController.getAllUsers)
-  .post(UsersController.createUser)
+  .post(UsersController.createUser);
+
+router
+  .route("/:id")
+  .get(UsersController.getUser)
   .patch(UsersController.updateUser)
   .delete(UsersController.deleteUser);
 
