@@ -3,6 +3,9 @@ import UsersValidator from "../validators/UsersValidator.js";
 import UsersService from "../service/UsersService.js";
 import AppError from "../utils/AppError.js";
 
+//NOTES:
+//This class is structured differently than the other service, dao, and validator classes.
+//Arrow functions might be useful in other classes (since I am exporting single instances of the classes), but it makes it harder to mock for testing
 class UsersController {
   // @desc Get all users
   // @route GET /users

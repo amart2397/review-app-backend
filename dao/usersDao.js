@@ -1,30 +1,23 @@
 import db from "../db/db.js";
 import { transformUserData } from "./transformData.js";
-
-//In most cases, I don't want to return the password field from the database,
-//so I am dynamically exluding it with the lines below
-const userTblColumns = await db("users").columnInfo();
-const columnsToReturn = Object.keys(userTblColumns).filter(
-  (col) => col !== "password"
-);
+import { usersColumnsToReturn } from "./returnColumnsConfig.js";
 
 class UsersDao {
   //Safe methods for returning data to client
   async getAllUsers() {
-    const users = await db("users").select(columnsToReturn);
+    const users = await db("users").select(usersColumnsToReturn);
     return users;
   }
 
   async createUser(inputUserData) {
     const transformedData = transformUserData(inputUserData);
     const [{ id }] = await db("users").insert(transformedData).returning("id");
-    console.log(id);
     return id;
   }
 
   async getUserByID(inputUserData) {
     const { id } = inputUserData;
-    const user = db("users").first(columnsToReturn).where("id", id);
+    const user = db("users").first(usersColumnsToReturn).where("id", id);
     return user;
   }
 

@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node server",
-    "dev": "nodemon server"
+    "dev": "nodemon server",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,8 @@
     "zod": "^3.25.67"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
+    "jest": "^30.0.3",
     "nodemon": "^3.1.10"
   }
 }
