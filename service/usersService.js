@@ -30,7 +30,7 @@ class UsersService {
 
   async getUserById(inputUserData) {
     try {
-      const user = UsersDao.getUserByID(inputUserData);
+      const user = await UsersDao.getUserById(inputUserData);
       return user;
     } catch (err) {
       if (err instanceof AppError) throw err;

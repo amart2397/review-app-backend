@@ -15,7 +15,7 @@ class UsersDao {
     return id;
   }
 
-  async getUserByID(inputUserData) {
+  async getUserById(inputUserData) {
     const { id } = inputUserData;
     const user = db("users").first(usersColumnsToReturn).where("id", id);
     return user;
