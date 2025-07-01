@@ -8,7 +8,7 @@ jest.unstable_mockModule("../dao/transformData.js", () => ({
   transformUserData: jest.fn(),
 }));
 const db = await import("../db/db.js");
-const { transformUserData } = await import("../dao/transformData.js");
+const { transformUserData } = await import("../dao/helpers/transformData.js");
 const UsersDaoModule = await import("../dao/UsersDao.js");
 const UsersDao = UsersDaoModule.default;
 const dbMock = db.default;
