@@ -63,6 +63,17 @@ class PostsDao {
     const posts = postsRaw.map((entry) => transformReturnPostData(entry));
     return posts;
   }
+
+  async getPostByAuthorAndMedia(userId, mediaId) {
+    const postRaw = await db("post")
+      .join("users", "posts.user_id", "users.id")
+      .join("media", "posts.media_id", "media.id")
+      .first(postsColumnsToReturn)
+      .where("users.id", userId)
+      .andWhere("media.id", mediaId);
+    const post = transformReturnPostData(postRaw);
+    return post;
+  }
 }
 
-export default PostsDao();
+export default new PostsDao();

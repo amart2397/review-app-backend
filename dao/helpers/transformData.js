@@ -50,24 +50,29 @@ export const transformPostData = (data) => {
 
 //transform post data to return to client
 export const transformReturnPostData = (data) => {
-  const cleanData = {
-    id: data.postId,
-    title: data.post_title,
-    text: data.post_text,
-    rating: post.post_rating,
-    author: {
-      id: data.userId,
-      firstName: data.first_name,
-      lastName: data.last_name,
-    },
-    media: {
-      id: data.mediaId,
-      type: data.media_type,
-      title: data.media_title,
-      description: data.media_description,
-      artUrl: data.media_art,
-    },
-  };
+  let cleanData;
+  if (data) {
+    cleanData = {
+      id: data.postId,
+      title: data.post_title,
+      text: data.post_text,
+      rating: post.post_rating,
+      author: {
+        id: data.userId,
+        firstName: data.first_name,
+        lastName: data.last_name,
+      },
+      media: {
+        id: data.mediaId,
+        type: data.media_type,
+        title: data.media_title,
+        description: data.media_description,
+        artUrl: data.media_art,
+      },
+    };
+  } else {
+    cleanData = null;
+  }
 
   return cleanData;
 };

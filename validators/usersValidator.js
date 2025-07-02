@@ -1,7 +1,7 @@
 import * as z from "zod/v4";
 import UsersDao from "../dao/UsersDao.js";
 import AppError from "../utils/AppError.js";
-import compareSchema from "./compareSchema.js";
+import compareSchema from "./helpers/compareSchema.js";
 
 //Data schemas
 const newUserSchema = z.object({
