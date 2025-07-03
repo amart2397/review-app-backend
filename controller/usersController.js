@@ -42,10 +42,10 @@ class UsersController {
   getUser = expressAsyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
     const inputData = { id };
-    const validatedId = UsersValidator.validateFindUserSchema(inputData);
+    const validatedId = UsersValidator.validateUserIdSchema(inputData);
     const users = await UsersService.getUserById(validatedId);
     if (users.length === 0) {
-      throw AppError.badRequest("No users found");
+      throw AppError.badRequest("User not found");
     }
     res.json(users);
   });
@@ -95,12 +95,9 @@ class UsersController {
     if (id_body && id_body !== id) {
       throw AppError.badRequest("ID in request body does not match ID in URL");
     }
-    const inputUserData = {
-      id,
-    };
-    const validatedData = UsersValidator.validateFindUserSchema(inputUserData);
-    const delUser = await UsersService.deleteUser(validatedData);
-    const { email } = delUser;
+    const inputUserData = { id };
+    const validatedData = UsersValidator.validateUserIdSchema(inputUserData);
+    const { email } = await UsersService.deleteUser(validatedData);
     res.json({
       message: `User ${email} with id ${id} was deleted`,
     });

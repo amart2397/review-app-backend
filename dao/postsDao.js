@@ -21,17 +21,6 @@ class PostsDao {
     return id;
   }
 
-  async getPostById(inputPostData) {
-    const { id } = inputPostData;
-    const postRaw = await db("post")
-      .join("users", "posts.user_id", "users.id")
-      .join("media", "posts.media_id", "media.id")
-      .first(postsColumnsToReturn)
-      .where("posts.id", id);
-    const post = transformReturnPostData(postRaw);
-    return post;
-  }
-
   async updatePost(inputPostData) {
     const transformedData = transformPostData(inputPostData);
     await db("posts").where("id", transformedData.id).update(transformedData);
@@ -43,12 +32,22 @@ class PostsDao {
     return delPostId;
   }
 
-  //More specific post queries
+  //helper queries
+  async getPostById(id) {
+    const postRaw = await db("post")
+      .join("users", "posts.user_id", "users.id")
+      .join("media", "posts.media_id", "media.id")
+      .first(postsColumnsToReturn)
+      .where("posts.id", id);
+    const post = transformReturnPostData(postRaw);
+    return post;
+  }
+
   async getPostsByAuthorId(userId) {
     const postsRaw = await db("post")
       .join("users", "posts.user_id", "users.id")
       .join("media", "posts.media_id", "media.id")
-      .first(postsColumnsToReturn)
+      .select(postsColumnsToReturn)
       .where("posts.user_id", userId);
     const posts = postsRaw.map((entry) => transformReturnPostData(entry));
     return posts;
@@ -58,7 +57,7 @@ class PostsDao {
     const postsRaw = await db("post")
       .join("users", "posts.user_id", "users.id")
       .join("media", "posts.media_id", "media.id")
-      .first(postsColumnsToReturn)
+      .select(postsColumnsToReturn)
       .where("posts.media_id", mediaId);
     const posts = postsRaw.map((entry) => transformReturnPostData(entry));
     return posts;

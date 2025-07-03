@@ -26,6 +26,28 @@ export const transformUserData = (data) => {
   return renamed;
 };
 
+export const transformMediaData = (data) => {
+  const newKeys = {
+    id: "id",
+    mediaType: "media_type",
+    mediaKey: "media_key",
+    mediaTitle: "media_title",
+    mediaDescription: "media_description",
+    mediaArt: "media_art",
+  };
+
+  const renamed = {};
+
+  for (const key in data) {
+    if (data.hasOwnProperty(key)) {
+      const newKey = newKeys[key] || key;
+      renamed[newKey] = data[key];
+    }
+  }
+
+  return renamed;
+};
+
 export const transformPostData = (data) => {
   const newKeys = {
     id: "id",

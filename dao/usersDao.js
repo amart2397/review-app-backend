@@ -15,12 +15,6 @@ class UsersDao {
     return id;
   }
 
-  async getUserById(inputUserData) {
-    const { id } = inputUserData;
-    const user = db("users").first(usersColumnsToReturn).where("id", id);
-    return user;
-  }
-
   async updateUser(inputUserData) {
     const transformedData = transformUserData(inputUserData);
     await db("users").where("id", transformedData.id).update(transformedData);
@@ -35,14 +29,19 @@ class UsersDao {
     return delUser;
   }
 
-  //IMPORTANT: These methods return all columns including the user password.
-  // They are intended only for internal server logic, not for returning data to client!
-  // When returning data to the client, the getUserById method above should be used.
-  async findFullUserByEmail(email) {
-    const user = db("users").first().where("email", email);
+  //helper queries
+  async getUserById(id) {
+    const user = db("users").first(usersColumnsToReturn).where("id", id);
     return user;
   }
 
+  async getUserByEmail(email) {
+    const user = db("users").first(usersColumnsToReturn).where("email", email);
+    return user;
+  }
+
+  //IMPORTANT: This method returns all columns including the user password
+  //should not use to send data back to client.
   async findFullUserById(id) {
     const user = db("users").first().where("id", id);
     return user;

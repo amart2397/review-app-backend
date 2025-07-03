@@ -1,4 +1,4 @@
-import AppError from "../utils/AppError.js";
+import AppError from "../../utils/AppError.js";
 /**
  * Parses data through a defined schema and returns an error if schema is not followed.
  * @param {Object} schema Schema object defined using zod.

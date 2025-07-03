@@ -42,13 +42,11 @@ class PostsValidator {
 
   //app logic validation
   async validateNewPost(inputPostData) {
-    //Check that a review doesn't already exist
     const { userId, mediaId } = inputPostData;
     const existingPost = PostsDao.getPostByAuthorAndMedia(userId, mediaId);
     if (existingPost) {
       throw AppError.conflict("User already created post");
     }
-    //Check that user gave valid media and user ids
     const author = UsersDao.getUserById(userId);
     if (!author) {
       throw AppError.badRequest("Post author not found");

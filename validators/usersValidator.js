@@ -40,9 +40,8 @@ class UsersValidator {
 
   //app logic validation
   async validateNewUser(inputUserData) {
-    const existingUser = await UsersDao.findFullUserByEmail(
-      inputUserData.email
-    );
+    const { email } = inputUserData;
+    const existingUser = await UsersDao.getUserByEmail(email);
     if (existingUser) {
       throw AppError.conflict("Email already registered");
     }
@@ -50,13 +49,12 @@ class UsersValidator {
   }
 
   async validateUpdateUser(inputUserData) {
-    const existingUserByEmail = await UsersDao.findFullUserByEmail(
-      inputUserData.email
-    );
-    if (existingUserByEmail && existingUserByEmail?.id !== inputUserData.id) {
+    const { id, email } = inputUserData;
+    const existingUserByEmail = await UsersDao.getUserByEmail(email);
+    if (existingUserByEmail && existingUserByEmail?.id !== id) {
       throw AppError.conflict("Email already registered");
     }
-    const existingUserById = await UsersDao.findFullUserById(inputUserData.id);
+    const existingUserById = await UsersDao.getUserById(id);
     if (!existingUserById) {
       throw AppError.badRequest("User not found");
     }
@@ -64,7 +62,8 @@ class UsersValidator {
   }
 
   async validateDeleteUser(inputUserData) {
-    const existingUserById = await UsersDao.findFullUserById(inputUserData.id);
+    const { id } = inputUserData;
+    const existingUserById = await UsersDao.getUserById(id);
     if (!existingUserById) {
       throw AppError.badRequest("User not found");
     }

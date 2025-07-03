@@ -7,6 +7,16 @@ export const usersColumnsToReturn = [
   "role",
 ];
 
+//Media Columns
+export const mediaColumnsToReturn = [
+  "id",
+  "media_type",
+  "media_key",
+  "media_title",
+  "media_description",
+  "media_art",
+];
+
 //Post Columns
 export const postsColumnsToReturn = [
   "posts.id as postId",
