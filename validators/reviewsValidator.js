@@ -44,32 +44,61 @@ class ReviewsValidator {
   //app logic validation
   async validateNewReview(inputReviewData) {
     const { userId, mediaId } = inputReviewData;
-    const existingReview = ReviewsDao.getReviewByAuthorAndMedia(
+    const existingReview = await ReviewsDao.getReviewByAuthorAndMedia(
       userId,
       mediaId
     );
     if (existingReview) {
       throw AppError.conflict("User already created review");
     }
-    const author = UsersDao.getUserById(userId);
+    const author = await UsersDao.getUserById(userId);
     if (!author) {
       throw AppError.badRequest("Review author not found");
+    }
+    const media = await MediaDao.getMediaById(mediaId);
+    if (!media) {
+      throw AppError.badRequest("Review media not found");
     }
     return inputReviewData;
   }
 
   async validateUpdateReview(inputReviewData) {
     const { id, userId, mediaId } = inputReviewData;
-    const existingReviewById = ReviewsDao.getReviewById(id);
-    const existingReviewByAuthor = ReviewsDao.getReviewByAuthorAndMedia(
+    const existingReviewById = await ReviewsDao.getReviewById(id);
+    const existingReviewByAuthor = await ReviewsDao.getReviewByAuthorAndMedia(
       userId,
       mediaId
     );
+    //Review post checks
     if (existingReviewById && existingReviewById?.Author.id !== userId) {
+      throw AppError.badRequest("Review author cannot be changed");
     }
+    if (existingReviewByAuthor && existingReviewByAuthor?.id !== id) {
+      throw AppError.conflict("User already created review");
+    }
+    if (!existingReviewById) {
+      throw AppError.badRequest("Review not found");
+    }
+    //Author & media checks
+    const author = await UsersDao.getUserById(userId);
+    if (!author) {
+      throw AppError.badRequest("Review author not found");
+    }
+    const media = await MediaDao.getMediaById(mediaId);
+    if (!media) {
+      throw AppError.badRequest("Review media not found");
+    }
+    return inputReviewData;
   }
 
-  async validateDeleteReview(inputReviewData) {}
+  async validateDeleteReview(inputReviewData) {
+    const { id } = inputReviewData;
+    const existingReview = await ReviewsDao.getReviewById(id);
+    if (!existingReview) {
+      throw AppError.badRequest("Review not found");
+    }
+    return inputReviewData;
+  }
 }
 
 export default ReviewsValidator();
