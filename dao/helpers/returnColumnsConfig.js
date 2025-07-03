@@ -18,11 +18,11 @@ export const mediaColumnsToReturn = [
 ];
 
 //Post Columns
-export const postsColumnsToReturn = [
-  "posts.id as postId",
-  "posts.post_title",
-  "posts.post_text",
-  "posts.post_rating",
+export const reviewsColumnsToReturn = [
+  "reviews.id as reviewId",
+  "reviews.review_title",
+  "reviews.review_text",
+  "reviews.review_rating",
   "users.id as userId",
   "users.first_name",
   "users.last_name",

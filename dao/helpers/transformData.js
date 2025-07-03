@@ -48,14 +48,14 @@ export const transformMediaData = (data) => {
   return renamed;
 };
 
-export const transformPostData = (data) => {
+export const transformReviewData = (data) => {
   const newKeys = {
     id: "id",
     userId: "user_id",
     mediaId: "media_id",
-    postTitle: "post_title",
-    postText: "post_text",
-    postRating: "post_rating",
+    reviewTitle: "review_title",
+    reviewText: "review_text",
+    reviewRating: "review_rating",
   };
 
   const renamed = {};
@@ -70,15 +70,15 @@ export const transformPostData = (data) => {
   return renamed;
 };
 
-//transform post data to return to client
-export const transformReturnPostData = (data) => {
+//transform review data to return to client
+export const transformReturnReviewData = (data) => {
   let cleanData;
   if (data) {
     cleanData = {
-      id: data.postId,
-      title: data.post_title,
-      text: data.post_text,
-      rating: post.post_rating,
+      id: data.reviewId,
+      title: data.review_title,
+      text: data.review_text,
+      rating: data.review_rating,
       author: {
         id: data.userId,
         firstName: data.first_name,
