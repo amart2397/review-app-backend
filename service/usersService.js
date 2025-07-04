@@ -28,17 +28,6 @@ class UsersService {
     }
   }
 
-  async getUserById(inputUserData) {
-    try {
-      const { id } = inputUserData;
-      const user = await UsersDao.getUserById(id);
-      return user;
-    } catch (err) {
-      if (err instanceof AppError) throw err;
-      handleError(err);
-    }
-  }
-
   async updateUser(inputUserData) {
     try {
       const validatedData = await UsersValidator.validateUpdateUser(
@@ -62,6 +51,17 @@ class UsersService {
       );
       const delUser = await UsersDao.deleteUser(validatedData);
       return delUser;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
+
+  async getUserById(inputUserData) {
+    try {
+      const { id } = inputUserData;
+      const user = await UsersDao.getUserById(id);
+      return user;
     } catch (err) {
       if (err instanceof AppError) throw err;
       handleError(err);

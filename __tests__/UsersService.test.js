@@ -134,9 +134,9 @@ describe("UsersService", () => {
     it("finds a specifc user by user id", async () => {
       UsersDao.getUserById.mockResolvedValue(outputExisting);
 
-      const user = await UsersService.getUserById(inputExisting);
+      const user = await UsersService.getUserById(inputExisting.id);
 
-      expect(UsersDao.getUserById).toHaveBeenCalledWith(inputExisting);
+      expect(UsersDao.getUserById).toHaveBeenCalledWith(inputExisting.id);
       expect(user).toEqual(outputExisting);
     });
   });

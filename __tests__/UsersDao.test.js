@@ -4,7 +4,7 @@ import { jest } from "@jest/globals";
 jest.unstable_mockModule("../db/db.js", () => ({
   default: jest.fn(),
 }));
-jest.unstable_mockModule("../dao/transformData.js", () => ({
+jest.unstable_mockModule("../dao/helpers/transformData.js", () => ({
   transformUserData: jest.fn(),
 }));
 const db = await import("../db/db.js");

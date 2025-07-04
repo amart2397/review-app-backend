@@ -18,10 +18,7 @@ const handleError = (err) => {
     case "22001":
       throw AppError.badRequest("Input too long for field.");
     default:
-      if (process.env.NODE_ENV !== "production") {
-        console.log("Unhandled error:", err);
-      }
-      throw AppError.internal("Something went wrong.");
+      throw err;
   }
 };
 

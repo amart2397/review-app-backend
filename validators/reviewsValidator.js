@@ -101,4 +101,4 @@ class ReviewsValidator {
   }
 }
 
-export default ReviewsValidator();
+export default new ReviewsValidator();

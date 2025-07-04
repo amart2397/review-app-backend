@@ -1,6 +1,7 @@
 import expressAsyncHandler from "express-async-handler";
 import MediaService from "../service/mediaService.js";
 import MediaValidator from "../validators/mediaValidator.js";
+import AppError from "../utils/AppError.js";
 
 class MediaController {
   // @desc Get all media

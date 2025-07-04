@@ -2,6 +2,7 @@ import express from "express";
 import rootRouter from "./routes/root.js";
 import userRouter from "./routes/userRoutes.js";
 import mediaRouter from "./routes/mediaRoutes.js";
+import reviewRouter from "./routes/reviewRoutes.js";
 import path from "path";
 import logger from "./middleware/logger.js";
 import errorHandler from "./middleware/errorHandler.js";
@@ -27,6 +28,7 @@ app.use("/", express.static(path.join(__dirname, "public")));
 app.use("/", rootRouter);
 app.use("/users", userRouter);
 app.use("/media", mediaRouter);
+app.use("/reviews", reviewRouter);
 
 //All unhandled routes default to 404 page below (404 page handled in errorHandler)
 app.all(/.*/, (req, res, next) => {
