@@ -3,6 +3,7 @@ import rootRouter from "./routes/root.js";
 import userRouter from "./routes/userRoutes.js";
 import mediaRouter from "./routes/mediaRoutes.js";
 import reviewRouter from "./routes/reviewRoutes.js";
+import UsersService from "./service/UsersService.js";
 import path from "path";
 import logger from "./middleware/logger.js";
 import errorHandler from "./middleware/errorHandler.js";
@@ -12,16 +13,21 @@ import corsOptions from "./config/corsOptions.js";
 import sessionConfig from "./config/sessionConfig.js";
 import AppError from "./utils/AppError.js";
 import session from "express-session";
+import passport from "passport";
+import configurePassport from "./config/passport.js";
 import env from "dotenv";
 
 const app = express();
 env.config();
 const PORT = process.env.PORT || 3000;
 const __dirname = import.meta.dirname;
+configurePassport(passport, UsersService);
 
 //Middleware
-app.use(logger);
 app.use(cors(corsOptions));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(logger);
 app.use(express.json());
 //app.use(cookieParser());  -DO I NEED THIS? IF NOT DELETE AND REMOVE DEPENDENCY
 app.use(session(sessionConfig));

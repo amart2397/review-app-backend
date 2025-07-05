@@ -67,6 +67,27 @@ class UsersService {
       handleError(err);
     }
   }
+
+  async getUserByEmail(email) {
+    try {
+      const user = await UsersDao.getUserByEmail(email);
+      return user;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
+
+  async verifyUserPassword(inputUserData, password) {
+    try {
+      const storedPassword = await UsersDao.getUserPassword(inputUserData);
+      const match = await bcrypt.compare(password, storedPassword);
+      return match;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
 }
 
 export default new UsersService();

@@ -29,7 +29,6 @@ class UsersDao {
     return delUser;
   }
 
-  //helper queries
   async getUserById(id) {
     const user = db("users").first(usersColumnsToReturn).where("id", id);
     return user;
@@ -40,11 +39,18 @@ class UsersDao {
     return user;
   }
 
-  //IMPORTANT: This method returns all columns including the user password
-  //should not use to send data back to client.
-  async findFullUserById(id) {
-    const user = db("users").first().where("id", id);
-    return user;
+  //IMPORTANT: This method returns the user password
+  //should NOT be used when sending data back to client!
+  async getUserPassword({ id, email }) {
+    if (id) {
+      const { password } = db("users").first().where("id", id);
+      return password;
+    }
+    if (email) {
+      const { password } = db("users").first().where("email", email);
+      return password;
+    }
+    throw new Error("Must provide either id or email to getUserPassword");
   }
 }
 
