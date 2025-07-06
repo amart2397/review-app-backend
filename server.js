@@ -8,7 +8,7 @@ import UsersService from "./service/usersService.js";
 import path from "path";
 import logger from "./middleware/logger.js";
 import errorHandler from "./middleware/errorHandler.js";
-import cookieParser from "cookie-parser";
+import cookieParser from "cookie-parser"; //REMOVE LATER
 import cors from "cors";
 import corsOptions from "./config/corsOptions.js";
 import sessionConfig from "./config/sessionConfig.js";
@@ -30,7 +30,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(logger);
 app.use(express.json());
-//app.use(cookieParser());  -DO I NEED THIS? IF NOT DELETE AND REMOVE DEPENDENCY
 app.use(session(sessionConfig));
 app.use("/", express.static(path.join(__dirname, "public")));
 

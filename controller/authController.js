@@ -2,6 +2,7 @@ import expressAsyncHandler from "express-async-handler";
 import UsersService from "../service/usersService.js";
 import UsersValidator from "../validators/usersValidator.js";
 import passport from "passport";
+import { generateToken } from "../config/csrfSync.js";
 
 class AuthController {
   // @desc create new user
@@ -61,6 +62,13 @@ class AuthController {
         res.json({ message: "Logged out successfully" });
       });
     });
+  };
+
+  // @desc get csrf token for req session
+  // @route GET /auth/csrf-token
+  // @access Private
+  getCsrfToken = (req, res, next) => {
+    res.json({ token: generateToken(req) });
   };
 }
 
