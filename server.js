@@ -3,7 +3,8 @@ import rootRouter from "./routes/root.js";
 import userRouter from "./routes/userRoutes.js";
 import mediaRouter from "./routes/mediaRoutes.js";
 import reviewRouter from "./routes/reviewRoutes.js";
-import UsersService from "./service/UsersService.js";
+import authRouter from "./routes/authRoutes.js";
+import UsersService from "./service/usersService.js";
 import path from "path";
 import logger from "./middleware/logger.js";
 import errorHandler from "./middleware/errorHandler.js";
@@ -35,6 +36,7 @@ app.use("/", express.static(path.join(__dirname, "public")));
 
 //Routing
 app.use("/", rootRouter);
+app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/media", mediaRouter);
 app.use("/reviews", reviewRouter);

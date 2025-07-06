@@ -1,5 +1,5 @@
-import UsersDao from "../dao/UsersDao.js";
-import UsersValidator from "../validators/UsersValidator.js";
+import UsersDao from "../dao/usersDao.js";
+import UsersValidator from "../validators/usersValidator.js";
 import handleError from "../utils/handleError.js";
 import bcrypt from "bcrypt";
 import AppError from "../utils/AppError.js";

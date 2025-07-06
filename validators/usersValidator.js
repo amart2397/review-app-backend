@@ -1,5 +1,5 @@
 import * as z from "zod/v4";
-import UsersDao from "../dao/UsersDao.js";
+import UsersDao from "../dao/usersDao.js";
 import AppError from "../utils/AppError.js";
 import compareSchema from "./helpers/compareSchema.js";
 

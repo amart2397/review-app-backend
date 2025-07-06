@@ -1,6 +1,6 @@
 import expressAsyncHandler from "express-async-handler";
-import UsersValidator from "../validators/UsersValidator.js";
-import UsersService from "../service/UsersService.js";
+import UsersValidator from "../validators/usersValidator.js";
+import UsersService from "../service/usersService.js";
 import AppError from "../utils/AppError.js";
 
 //NOTES:

@@ -2,7 +2,7 @@ import { describe, expect, jest } from "@jest/globals";
 import AppError from "../utils/AppError.js";
 
 //Mock Modules
-jest.unstable_mockModule("../dao/UsersDao.js", () => ({
+jest.unstable_mockModule("../dao/usersDao.js", () => ({
   default: {
     getAllUsers: jest.fn(),
     createUser: jest.fn(),
@@ -11,7 +11,7 @@ jest.unstable_mockModule("../dao/UsersDao.js", () => ({
     deleteUser: jest.fn(),
   },
 }));
-jest.unstable_mockModule("../validators/UsersValidator.js", () => ({
+jest.unstable_mockModule("../validators/usersValidator.js", () => ({
   default: {
     validateNewUser: jest.fn(),
     validateUpdateUser: jest.fn(),
@@ -26,10 +26,10 @@ jest.unstable_mockModule("bcrypt", () => ({
 jest.unstable_mockModule("../utils/handleError.js", () => ({
   default: jest.fn(),
 }));
-const UsersDaoModule = await import("../dao/UsersDao.js");
-const UsersValidatorModule = await import("../validators/UsersValidator.js");
+const UsersDaoModule = await import("../dao/usersDao.js");
+const UsersValidatorModule = await import("../validators/usersValidator.js");
 const bcryptModule = await import("bcrypt");
-const UsersServiceModule = await import("../service/UsersService.js");
+const UsersServiceModule = await import("../service/usersService.js");
 const handleErrorModule = await import("../utils/handleError.js");
 const UsersDao = UsersDaoModule.default;
 const UsersValidator = UsersValidatorModule.default;

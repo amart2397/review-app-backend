@@ -1,6 +1,6 @@
 import * as z from "zod/v4";
 import ReviewsDao from "../dao/reviewsDao.js";
-import UsersDao from "../dao/UsersDao.js";
+import UsersDao from "../dao/usersDao.js";
 import MediaDao from "../dao/mediaDao.js";
 import AppError from "../utils/AppError.js";
 import compareSchema from "./helpers/compareSchema.js";
