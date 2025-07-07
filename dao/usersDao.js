@@ -30,12 +30,14 @@ class UsersDao {
   }
 
   async getUserById(id) {
-    const user = db("users").first(usersColumnsToReturn).where("id", id);
+    const user = await db("users").first(usersColumnsToReturn).where("id", id);
     return user;
   }
 
   async getUserByEmail(email) {
-    const user = db("users").first(usersColumnsToReturn).where("email", email);
+    const user = await db("users")
+      .first(usersColumnsToReturn)
+      .where("email", email);
     return user;
   }
 
@@ -43,11 +45,11 @@ class UsersDao {
   //should NOT be used when sending data back to client!
   async getUserPassword({ id, email }) {
     if (id) {
-      const { password } = db("users").first().where("id", id);
+      const { password } = await db("users").first().where("id", id);
       return password;
     }
     if (email) {
-      const { password } = db("users").first().where("email", email);
+      const { password } = await db("users").first().where("email", email);
       return password;
     }
     throw new Error("Must provide either id or email to getUserPassword");

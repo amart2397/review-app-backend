@@ -68,8 +68,9 @@ class UsersService {
     }
   }
 
-  async getUserByEmail(email) {
+  async getUserByEmail(inputUserData) {
     try {
+      const { email } = inputUserData;
       const user = await UsersDao.getUserByEmail(email);
       return user;
     } catch (err) {

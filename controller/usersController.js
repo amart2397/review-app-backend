@@ -43,11 +43,11 @@ class UsersController {
     const id = parseInt(req.params.id);
     const inputData = { id };
     const validatedId = UsersValidator.validateUserIdSchema(inputData);
-    const users = await UsersService.getUserById(validatedId);
-    if (users.length === 0) {
+    const user = await UsersService.getUserById(validatedId);
+    if (!user) {
       throw AppError.badRequest("User not found");
     }
-    res.json(users);
+    res.json(user);
   });
 
   // @desc Update a user

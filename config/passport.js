@@ -7,7 +7,7 @@ const configurePassport = (passport, UsersService) => {
       { usernameField: "email", passwordField: "password" },
       async (email, password, done) => {
         try {
-          const user = await UsersService.getUserByEmail(email);
+          const user = await UsersService.getUserByEmail({ email });
           if (!user) return done(null, false, { message: "User not found" });
           const isValid = await UsersService.verifyUserPassword(user, password);
           if (isValid) {
@@ -24,7 +24,7 @@ const configurePassport = (passport, UsersService) => {
   passport.serializeUser((user, done) => done(null, user.id));
   passport.deserializeUser(async (id, done) => {
     try {
-      const user = UsersService.getUserById(id);
+      const user = await UsersService.getUserById({ id });
       done(null, user);
     } catch (err) {
       done(err);

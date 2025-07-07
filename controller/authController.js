@@ -3,12 +3,16 @@ import UsersService from "../service/usersService.js";
 import UsersValidator from "../validators/usersValidator.js";
 import passport from "passport";
 import { generateToken } from "../config/csrfSync.js";
+import AppError from "../utils/AppError.js";
 
 class AuthController {
   // @desc create new user
   // @route POST /auth/register
   // @access Public
   registerUser = expressAsyncHandler(async (req, res) => {
+    if (req.isAuthenticated()) {
+      throw AppError.badRequest("Already logged in");
+    }
     const { email, firstName, lastName, password } = req.body;
     const inputUserData = {
       email,
@@ -33,6 +37,9 @@ class AuthController {
   // @route POST /auth/login
   // @access Public
   loginUser = (req, res, next) => {
+    if (req.isAuthenticated()) {
+      throw AppError.badRequest("Already logged in");
+    }
     passport.authenticate("local", (err, user, info) => {
       if (err) return next(err);
       if (!user)
@@ -54,6 +61,9 @@ class AuthController {
   // @route POST /auth/logout
   // @access Private
   logoutUser = (req, res, next) => {
+    if (!req.isAuthenticated()) {
+      throw AppError.badRequest("Not logged in");
+    }
     req.logout((err) => {
       if (err) return next(err);
       req.session.destroy((err) => {

@@ -26,11 +26,11 @@ configurePassport(passport, UsersService);
 
 //Middleware
 app.use(cors(corsOptions));
+app.use(session(sessionConfig));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(logger);
 app.use(express.json());
-app.use(session(sessionConfig));
 app.use("/", express.static(path.join(__dirname, "public")));
 
 //Routing
