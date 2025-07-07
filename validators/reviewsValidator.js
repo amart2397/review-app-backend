@@ -20,7 +20,7 @@ const updateReviewSchema = z.object({
   reviewTitle: z.string(),
   reviewText: z.string(),
   reviewRating: z.number().nonnegative().multipleOf(0.1).max(10),
-});
+}); //userId not provided because author shouldn't ever be changed
 
 const reviewIdSchema = z.object({
   id: z.int(),

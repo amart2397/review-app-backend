@@ -79,6 +79,7 @@ class ReviewsDao {
     return review;
   }
 
+  //Added for auth checks
   async getReviewAuthor(reviewId) {
     const { user_id } = await db("reviews")
       .first("user_id")

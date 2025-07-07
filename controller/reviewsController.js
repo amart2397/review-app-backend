@@ -9,7 +9,7 @@ class ReviewsController {
   // @access Public
   getAllReviews = expressAsyncHandler(async (req, res) => {
     const reviews = await ReviewsService.getAllReviews();
-    if (reviews.length === 0) {
+    if (reviews?.length === 0) {
       throw AppError.badRequest("No reviews found");
     }
     res.json(reviews);
@@ -44,7 +44,7 @@ class ReviewsController {
     const inputData = { id };
     const validatedData = ReviewsValidator.validateReviewIdSchema(inputData);
     const review = await ReviewsService.getReviewById(validatedData);
-    if (review.length === 0) {
+    if (review?.length === 0) {
       throw AppError.badRequest("Review not found");
     }
     res.json(review);

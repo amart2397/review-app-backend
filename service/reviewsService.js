@@ -30,7 +30,7 @@ class ReviewsService {
   async updateReview(inputReviewData, requestUserId) {
     try {
       const { id } = inputReviewData;
-      const userId = await ReviewsDao.getReviewAuthor(id);
+      const userId = await ReviewsDao.getReviewAuthor(id); //Check review's current author
       if (userId !== requestUserId) {
         throw AppError.forbidden(
           "You are not authorized to modify this review."
