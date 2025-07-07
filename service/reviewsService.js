@@ -26,11 +26,16 @@ class ReviewsService {
     }
   }
 
-  async updateReview(inputReviewData) {
+  async updateReview(inputReviewData, requestUserId) {
     try {
       const validatedData = await ReviewsValidator.validateUpdateReview(
         inputReviewData
       );
+      if (validatedData.userId !== requestUserId) {
+        throw AppError.forbidden(
+          "You are not authorized to modify this review."
+        );
+      }
       await ReviewsDao.updateReview(validatedData);
     } catch (err) {
       if (err instanceof AppError) throw err;
@@ -38,11 +43,16 @@ class ReviewsService {
     }
   }
 
-  async deleteReview(inputReviewData) {
+  async deleteReview(inputReviewData, requestUserId) {
     try {
       const validatedData = await ReviewsValidator.validateDeleteReview(
         inputReviewData
       );
+      if (validatedData.userId !== requestUserId) {
+        throw AppError.forbidden(
+          "You are not authorized to modify this review."
+        );
+      }
       const delReview = await ReviewsDao.deleteReview(validatedData);
       return delReview;
     } catch (err) {

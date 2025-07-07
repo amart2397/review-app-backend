@@ -62,6 +62,7 @@ class ReviewsController {
       reviewRating,
     } = req.body;
     const id = parseInt(req.params.id);
+    const requestUserId = req.user.id;
     if (id_body && id_body !== id) {
       throw AppError.badRequest("ID in request body does not match ID in URL");
     }
@@ -75,7 +76,7 @@ class ReviewsController {
     };
     const validatedData =
       ReviewsValidator.validateUpdateReviewSchema(inputReviewData);
-    await ReviewsService.updateReview(validatedData);
+    await ReviewsService.updateReview(validatedData, requestUserId);
     res.json({
       message: `Review with id ${id} updated`,
     });
@@ -87,6 +88,7 @@ class ReviewsController {
   deleteReview = expressAsyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
     const { id: id_body } = req.body;
+    const requestUserId = req.user.id;
     if (id_body && id_body !== id) {
       throw AppError.badRequest("ID in request body does not match ID in URL");
     }
@@ -94,7 +96,8 @@ class ReviewsController {
     const validatedData =
       ReviewsValidator.validateReviewIdSchema(inputReviewData);
     const { id: review_id, review_title } = await ReviewsService.deleteReview(
-      validatedData
+      validatedData,
+      requestUserId
     );
     res.json({
       message: `Review: ${review_title} with id ${review_id} was deleted`,
