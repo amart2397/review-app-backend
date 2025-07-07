@@ -19,7 +19,8 @@ class ReviewsController {
   // @route POST /reviews
   // @access Private
   createReview = expressAsyncHandler(async (req, res) => {
-    const { userId, mediaId, reviewTitle, reviewText, reviewRating } = req.body;
+    const { mediaId, reviewTitle, reviewText, reviewRating } = req.body;
+    const userId = req.user.id;
     const inputReviewData = {
       userId,
       mediaId,
