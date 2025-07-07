@@ -63,6 +63,7 @@ class UsersController {
       role,
     } = req.body;
     const id = parseInt(req.params.id);
+    const requestUserId = req.user.id;
     if (id_body && id !== id_body) {
       throw AppError.badRequest("ID in request body does not match ID in URL");
     }
@@ -80,7 +81,7 @@ class UsersController {
     }
     const validatedData =
       UsersValidator.validateUpdateUserSchema(inputUserData);
-    await UsersService.updateUser(validatedData);
+    await UsersService.updateUser(validatedData, requestUserId);
     res.json({
       message: `User ${firstName} ${lastName} updated`,
     });
@@ -92,12 +93,16 @@ class UsersController {
   deleteUser = expressAsyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
     const { id: id_body } = req.body;
+    const requestUserId = req.user.id;
     if (id_body && id_body !== id) {
       throw AppError.badRequest("ID in request body does not match ID in URL");
     }
     const inputUserData = { id };
     const validatedData = UsersValidator.validateUserIdSchema(inputUserData);
-    const { email } = await UsersService.deleteUser(validatedData);
+    const { email } = await UsersService.deleteUser(
+      validatedData,
+      requestUserId
+    );
     res.json({
       message: `User ${email} with id ${id} was deleted`,
     });

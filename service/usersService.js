@@ -28,11 +28,14 @@ class UsersService {
     }
   }
 
-  async updateUser(inputUserData) {
+  async updateUser(inputUserData, requestUserId) {
     try {
       const validatedData = await UsersValidator.validateUpdateUser(
         inputUserData
       );
+      if (validatedData.id !== requestUserId) {
+        throw AppError.forbidden("You are not authorized to modify this user.");
+      }
       if (validatedData.password) {
         const hashedPwd = await bcrypt.hash(validatedData.password, 10);
         validatedData.password = hashedPwd;
@@ -44,11 +47,14 @@ class UsersService {
     }
   }
 
-  async deleteUser(inputUserData) {
+  async deleteUser(inputUserData, requestUserId) {
     try {
       const validatedData = await UsersValidator.validateDeleteUser(
         inputUserData
       );
+      if (validatedData.id !== requestUserId) {
+        throw AppError.forbidden("You are not authorized to modify this user.");
+      }
       const delUser = await UsersDao.deleteUser(validatedData);
       return delUser;
     } catch (err) {
