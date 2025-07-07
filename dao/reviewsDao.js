@@ -32,7 +32,7 @@ class ReviewsDao {
     const { id } = inputReviewData;
     const [delReview] = await db("reviews")
       .where("id", id)
-      .returning("id", "review_title")
+      .returning(["id", "review_title"])
       .del();
     return delReview;
   }
@@ -77,6 +77,13 @@ class ReviewsDao {
       .andWhere("media.id", mediaId);
     const review = transformReturnReviewData(reviewRaw);
     return review;
+  }
+
+  async getReviewAuthor(reviewId) {
+    const { user_id } = await db("reviews")
+      .first("user_id")
+      .where("reviews.id", reviewId);
+    return user_id;
   }
 }
 

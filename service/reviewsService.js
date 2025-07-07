@@ -1,4 +1,5 @@
 import ReviewsDao from "../dao/reviewsDao.js";
+import AppError from "../utils/AppError.js";
 import handleError from "../utils/handleError.js";
 import ReviewsValidator from "../validators/reviewsValidator.js";
 
@@ -28,14 +29,17 @@ class ReviewsService {
 
   async updateReview(inputReviewData, requestUserId) {
     try {
-      const validatedData = await ReviewsValidator.validateUpdateReview(
-        inputReviewData
-      );
-      if (validatedData.userId !== requestUserId) {
+      const { id } = inputReviewData;
+      const userId = await ReviewsDao.getReviewAuthor(id);
+      if (userId !== requestUserId) {
         throw AppError.forbidden(
           "You are not authorized to modify this review."
         );
       }
+      const validatedData = await ReviewsValidator.validateUpdateReview({
+        userId,
+        ...inputReviewData,
+      });
       await ReviewsDao.updateReview(validatedData);
     } catch (err) {
       if (err instanceof AppError) throw err;
@@ -48,7 +52,9 @@ class ReviewsService {
       const validatedData = await ReviewsValidator.validateDeleteReview(
         inputReviewData
       );
-      if (validatedData.userId !== requestUserId) {
+      const { id } = validatedData;
+      const userId = await ReviewsDao.getReviewAuthor(id);
+      if (userId !== requestUserId) {
         throw AppError.forbidden(
           "You are not authorized to modify this review."
         );

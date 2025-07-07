@@ -16,7 +16,6 @@ const newReviewSchema = z.object({
 
 const updateReviewSchema = z.object({
   id: z.int(),
-  userId: z.int(),
   mediaId: z.int(),
   reviewTitle: z.string(),
   reviewText: z.string(),
@@ -70,7 +69,7 @@ class ReviewsValidator {
       mediaId
     );
     //Review post checks
-    if (existingReviewById && existingReviewById?.Author.id !== userId) {
+    if (existingReviewById && existingReviewById?.author?.id !== userId) {
       throw AppError.badRequest("Review author cannot be changed");
     }
     if (existingReviewByAuthor && existingReviewByAuthor?.id !== id) {

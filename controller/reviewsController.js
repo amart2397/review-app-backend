@@ -56,7 +56,6 @@ class ReviewsController {
   updateReview = expressAsyncHandler(async (req, res) => {
     const {
       id: id_body,
-      userId,
       mediaId,
       reviewTitle,
       reviewText,
@@ -69,7 +68,6 @@ class ReviewsController {
     }
     const inputReviewData = {
       id,
-      userId,
       mediaId,
       reviewTitle,
       reviewText,
