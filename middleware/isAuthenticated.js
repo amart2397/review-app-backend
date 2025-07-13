@@ -4,7 +4,7 @@ const isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
   } else {
-    return next(AppError.unauthorized("Unauthorized"));
+    return next(AppError.unauthorized("Not logged in"));
   }
 };
 
