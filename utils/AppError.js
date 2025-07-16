@@ -31,6 +31,10 @@ class AppError extends Error {
   static internal(msg) {
     return new AppError(msg, 500, "Internal Error");
   }
+
+  static externalApiError(msg) {
+    return new AppError(msg, 502, "External API Error");
+  }
 }
 
 export default AppError;

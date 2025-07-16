@@ -4,6 +4,7 @@ import userRouter from "./routes/userRoutes.js";
 import mediaRouter from "./routes/mediaRoutes.js";
 import reviewRouter from "./routes/reviewRoutes.js";
 import authRouter from "./routes/authRoutes.js";
+import mediaSearchRouter from "./routes/mediaSearchRoutes.js";
 import UsersService from "./service/usersService.js";
 import path from "path";
 import logger from "./middleware/logger.js";
@@ -39,6 +40,7 @@ app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/media", mediaRouter);
 app.use("/reviews", reviewRouter);
+app.use("/media-search", mediaSearchRouter);
 
 //All unhandled routes (404 page handled in errorHandler)
 app.all(/.*/, (req, res, next) => {
