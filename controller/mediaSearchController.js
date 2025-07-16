@@ -14,6 +14,19 @@ class MediaSearchController {
     });
     res.json(data);
   });
+
+  // @desc get movie query results from TMDB API
+  // @route GET /media-search/movies/?query
+  // @access Private
+  getMovieQuery = expressAsyncHandler(async (req, res) => {
+    const { title, year, page } = req.query;
+    const data = await MediaSearchService.queryMovies({
+      title,
+      year: Number(year) || "",
+      page: Number(page) || 1,
+    });
+    res.json(data);
+  });
 }
 
 export default new MediaSearchController();

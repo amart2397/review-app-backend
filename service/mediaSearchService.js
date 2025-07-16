@@ -6,7 +6,7 @@ env.config();
 class MediaSearchService {
   constructor(
     baseBookUrl = "https://www.googleapis.com/books/v1/volumes",
-    baseMovieUrl = ""
+    baseMovieUrl = "https://api.themoviedb.org/3/search/movie"
   ) {
     this.baseBookUrl = baseBookUrl;
     this.baseMovieUrl = baseMovieUrl;
@@ -54,6 +54,54 @@ class MediaSearchService {
         console.error(err);
       }
       throw AppError.externalApiError("Failed to fetch from Google Books API");
+    }
+  };
+
+  queryMovies = async ({ title, year = 1874, page = 1 }) => {
+    //check params align with rules and ranges
+    if (!title || title.trim().length < 3) {
+      throw AppError.badRequest("Title must be at least 3 characters long");
+    }
+    const maxYear = new Date().getFullYear() + 1;
+    if (year && (year < 1874 || year > maxYear)) {
+      throw AppError.badRequest(
+        `Please enter a date between 1874 and ${maxYear}`
+      );
+    }
+    if (page < 1 || page > 500) {
+      throw AppError.badRequest(
+        `Please enter a page nummber betweeen 1 and 500`
+      );
+    }
+
+    //build url and fetch
+    const accessToken = process.env.TMDB_ACCESS_TOKEN;
+    const query =
+      `?query=${encodeURIComponent(
+        title
+      )}&include_adult=false&language=en-US&page=${page}` +
+      (year && `&year=${year}`);
+    try {
+      const res = await fetch(this.baseMovieUrl + query, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          accept: "application/json",
+        },
+      });
+
+      if (!res.ok) {
+        throw AppError.externalApiError(`TMDB API Error: ${res.status}`);
+      }
+
+      const data = await res.json();
+      return data;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      if (!(process.env.NODE_ENV === "production")) {
+        console.error(err);
+      }
+      throw AppError.externalApiError("Failed to fetch from TMDB API");
     }
   };
 }

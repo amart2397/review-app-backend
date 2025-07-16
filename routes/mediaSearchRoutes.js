@@ -12,6 +12,12 @@ router
     MediaSearchController.getBookQuery
   );
 
-router.route("/movies").get(isAuthenticated, csrfSynchronisedProtection);
+router
+  .route("/movies")
+  .get(
+    isAuthenticated,
+    csrfSynchronisedProtection,
+    MediaSearchController.getMovieQuery
+  );
 
 export default router;
