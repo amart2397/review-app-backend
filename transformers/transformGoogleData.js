@@ -23,9 +23,7 @@ export const transformBooks = (bookData) => {
     mediaKey: book.id,
     title: book.volumeInfo?.title ?? "Unknown Title",
     authors: formatAuthors(book.volumeInfo?.authors),
-    publisher: book.volumeInfo?.publisher ?? "Unknown Publisher",
     releaseDate: book.volumeInfo?.publishedDate ?? null,
-    description: book.volumeInfo?.description ?? "",
     coverSmall:
       book.volumeInfo?.imageLinks?.smallThumbnail ??
       book.volumeInfo?.imageLinks?.thumbnail ??

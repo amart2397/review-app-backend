@@ -6,7 +6,8 @@ class MediaSearchController {
   // @route GET /media-search/books/?query
   // @access Private
   getBookQuery = expressAsyncHandler(async (req, res) => {
-    const { title, author, page, transform } = req.query;
+    const { title, author, page } = req.query;
+    const transform = String(req.query.transform).toLowerCase() !== "false";
     const data = await MediaSearchService.queryBooks({
       title,
       author,
@@ -21,7 +22,7 @@ class MediaSearchController {
   // @access Private
   getBookById = expressAsyncHandler(async (req, res) => {
     const bookId = req.params.id;
-    const { transform } = req.query;
+    const transform = String(req.query.transform).toLowerCase() !== "false";
     const data = await MediaSearchService.getBookById({
       bookId,
       transform,
@@ -33,7 +34,8 @@ class MediaSearchController {
   // @route GET /media-search/movies/?query
   // @access Private
   getMovieQuery = expressAsyncHandler(async (req, res) => {
-    const { title, year, page, transform } = req.query;
+    const { title, year, page } = req.query;
+    const transform = String(req.query.transform).toLowerCase() !== "false";
     const data = await MediaSearchService.queryMovies({
       title,
       year: Number(year) || "",
@@ -48,7 +50,7 @@ class MediaSearchController {
   // @access Private
   getMovieById = expressAsyncHandler(async (req, res) => {
     const movieId = req.params.id;
-    const { transform } = req.query;
+    const transform = String(req.query.transform).toLowerCase() !== "false";
     const data = await MediaSearchService.getMovieById({
       movieId,
       transform,

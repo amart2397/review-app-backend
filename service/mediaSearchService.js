@@ -22,7 +22,7 @@ class MediaSearchService {
     this.baseMovieIdUrl = baseMovieIdUrl;
   }
 
-  queryBooks = async ({ title, author = "", page = 1, transform = "yes" }) => {
+  queryBooks = async ({ title, author = "", page = 1, transform = true }) => {
     //Input must be at least 3 characters before sending to google api
     if (!title || title.trim().length < 3) {
       throw AppError.badRequest("Title must be at least 3 characters long");
@@ -56,7 +56,7 @@ class MediaSearchService {
       if (strictData.length === 0) {
         return { kind: "books#volumes", totalItems: 0, items: [] };
       } else {
-        if (transform === "yes") return transformBooks(rawData);
+        if (transform) return transformBooks(rawData);
         return rawData;
       }
     } catch (err) {
@@ -68,9 +68,8 @@ class MediaSearchService {
     }
   };
 
-  getBookById = async ({ bookId, transform = "yes" }) => {
+  getBookById = async ({ bookId, transform = true }) => {
     const url = this.baseBookUrl + `/${encodeURIComponent(bookId)}`;
-    console.log(url);
     try {
       const res = await fetch(url);
       if (!res.ok) {
@@ -79,7 +78,7 @@ class MediaSearchService {
         );
       }
       const rawData = await res.json();
-      if (transform === "yes") return transformFullBook(rawData);
+      if (transform) return transformFullBook(rawData);
       return rawData;
     } catch (err) {
       if (err instanceof AppError) throw err;
@@ -90,7 +89,7 @@ class MediaSearchService {
     }
   };
 
-  queryMovies = async ({ title, year = 1874, page = 1, transform = "yes" }) => {
+  queryMovies = async ({ title, year = 1874, page = 1, transform = true }) => {
     //check params align with rules and ranges
     if (!title || title.trim().length < 3) {
       throw AppError.badRequest("Title must be at least 3 characters long");
@@ -128,7 +127,7 @@ class MediaSearchService {
       }
 
       const data = await res.json();
-      if (transform === "yes") return transformMovies(data);
+      if (transform) return transformMovies(data);
       return data;
     } catch (err) {
       if (err instanceof AppError) throw err;
@@ -139,7 +138,7 @@ class MediaSearchService {
     }
   };
 
-  getMovieById = async ({ movieId, transform = "yes" }) => {
+  getMovieById = async ({ movieId, transform = true }) => {
     //build url and fetch
     const accessToken = process.env.TMDB_ACCESS_TOKEN;
     const url = this.baseMovieIdUrl + `/${encodeURIComponent(movieId)}`;
@@ -157,7 +156,7 @@ class MediaSearchService {
       }
 
       const data = await res.json();
-      if (transform === "yes") return transformFullMovie(data);
+      if (transform) return transformFullMovie(data);
       return data;
     } catch (err) {
       if (err instanceof AppError) throw err;
