@@ -6,9 +6,9 @@ export const mediaColumnsToReturn = [
   "id",
   "media_type",
   "media_key",
-  "media_title",
-  "media_description",
-  "media_art",
+  "title",
+  "description",
+  "artLarge",
 ];
 
 //Post Columns
@@ -22,7 +22,7 @@ export const reviewsColumnsToReturn = [
   "users.last_name",
   "media.id as mediaId",
   "media.media_type",
-  "media.media_title",
-  "media.media_description",
-  "media.media_art",
+  "media.title as media_title",
+  "media.description as media_description",
+  "media.artLarge",
 ];

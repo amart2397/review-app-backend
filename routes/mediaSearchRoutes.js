@@ -16,6 +16,14 @@ router
     csrfSynchronisedProtection,
     MediaSearchController.getBookQuery
   );
+router
+  .route("/books/:id")
+  .get(
+    googleRateLimiter,
+    isAuthenticated,
+    csrfSynchronisedProtection,
+    MediaSearchController.getBookById
+  );
 
 router
   .route("/movies")
@@ -24,6 +32,14 @@ router
     isAuthenticated,
     csrfSynchronisedProtection,
     MediaSearchController.getMovieQuery
+  );
+router
+  .route("/movies/:id")
+  .get(
+    TMDBRateLimiter,
+    isAuthenticated,
+    csrfSynchronisedProtection,
+    MediaSearchController.getMovieById
   );
 
 export default router;

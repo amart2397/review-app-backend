@@ -31,9 +31,9 @@ export const transformMediaData = (data) => {
     id: "id",
     mediaType: "media_type",
     mediaKey: "media_key",
-    mediaTitle: "media_title",
-    mediaDescription: "media_description",
-    mediaArt: "media_art",
+    mediaTitle: "title",
+    mediaDescription: "description",
+    mediaArt: "artLarge",
   };
 
   const renamed = {};
@@ -89,7 +89,7 @@ export const transformReturnReviewData = (data) => {
         type: data.media_type,
         title: data.media_title,
         description: data.media_description,
-        artUrl: data.media_art,
+        artUrl: data.artLarge,
       },
     };
   } else {

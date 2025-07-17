@@ -1,17 +1,25 @@
 import AppError from "../utils/AppError.js";
 import env from "dotenv";
 import { strictBookFilter } from "../utils/strictBookFilter.js";
-import { transformBooks } from "../transformers/transformGoogleData.js";
-import { transformMovies } from "../transformers/transformTMDBData.js";
+import {
+  transformBooks,
+  transformFullBook,
+} from "../transformers/transformGoogleData.js";
+import {
+  transformFullMovie,
+  transformMovies,
+} from "../transformers/transformTMDBData.js";
 env.config();
 
 class MediaSearchService {
   constructor(
     baseBookUrl = "https://www.googleapis.com/books/v1/volumes",
-    baseMovieUrl = "https://api.themoviedb.org/3/search/movie"
+    baseMovieUrl = "https://api.themoviedb.org/3/search/movie",
+    baseMovieIdUrl = "https://api.themoviedb.org/3/movie"
   ) {
     this.baseBookUrl = baseBookUrl;
     this.baseMovieUrl = baseMovieUrl;
+    this.baseMovieIdUrl = baseMovieIdUrl;
   }
 
   queryBooks = async ({ title, author = "", page = 1, transform = "yes" }) => {
@@ -60,6 +68,28 @@ class MediaSearchService {
     }
   };
 
+  getBookById = async ({ bookId, transform = "yes" }) => {
+    const url = this.baseBookUrl + `/${encodeURIComponent(bookId)}`;
+    console.log(url);
+    try {
+      const res = await fetch(url);
+      if (!res.ok) {
+        throw AppError.externalApiError(
+          `Google Books API Error: ${res.status}`
+        );
+      }
+      const rawData = await res.json();
+      if (transform === "yes") return transformFullBook(rawData);
+      return rawData;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      if (!(process.env.NODE_ENV === "production")) {
+        console.error(err);
+      }
+      throw AppError.externalApiError("Failed to fetch from Google Books API");
+    }
+  };
+
   queryMovies = async ({ title, year = 1874, page = 1, transform = "yes" }) => {
     //check params align with rules and ranges
     if (!title || title.trim().length < 3) {
@@ -99,6 +129,35 @@ class MediaSearchService {
 
       const data = await res.json();
       if (transform === "yes") return transformMovies(data);
+      return data;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      if (!(process.env.NODE_ENV === "production")) {
+        console.error(err);
+      }
+      throw AppError.externalApiError("Failed to fetch from TMDB API");
+    }
+  };
+
+  getMovieById = async ({ movieId, transform = "yes" }) => {
+    //build url and fetch
+    const accessToken = process.env.TMDB_ACCESS_TOKEN;
+    const url = this.baseMovieIdUrl + `/${encodeURIComponent(movieId)}`;
+    try {
+      const res = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          accept: "application/json",
+        },
+      });
+
+      if (!res.ok) {
+        throw AppError.externalApiError(`TMDB API Error: ${res.status}`);
+      }
+
+      const data = await res.json();
+      if (transform === "yes") return transformFullMovie(data);
       return data;
     } catch (err) {
       if (err instanceof AppError) throw err;

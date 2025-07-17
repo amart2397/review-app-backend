@@ -16,6 +16,19 @@ class MediaSearchController {
     res.json(data);
   });
 
+  // @desc get full book data from Google Books API for specific book id
+  // @route GET /media-search/books/:id
+  // @access Private
+  getBookById = expressAsyncHandler(async (req, res) => {
+    const bookId = req.params.id;
+    const { transform } = req.query;
+    const data = await MediaSearchService.getBookById({
+      bookId,
+      transform,
+    });
+    res.json(data);
+  });
+
   // @desc get movie query results from TMDB API
   // @route GET /media-search/movies/?query
   // @access Private
@@ -25,6 +38,19 @@ class MediaSearchController {
       title,
       year: Number(year) || "",
       page: Number(page) || 1,
+      transform,
+    });
+    res.json(data);
+  });
+
+  // @desc get full movie data from TMDB API for specific movie id
+  // @route GET /media-search/movies/:id
+  // @access Private
+  getMovieById = expressAsyncHandler(async (req, res) => {
+    const movieId = req.params.id;
+    const { transform } = req.query;
+    const data = await MediaSearchService.getMovieById({
+      movieId,
       transform,
     });
     res.json(data);
