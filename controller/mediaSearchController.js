@@ -6,11 +6,12 @@ class MediaSearchController {
   // @route GET /media-search/books/?query
   // @access Private
   getBookQuery = expressAsyncHandler(async (req, res) => {
-    const { title, author, page } = req.query;
+    const { title, author, page, transform } = req.query;
     const data = await MediaSearchService.queryBooks({
       title,
       author,
       page: Number(page) || 1,
+      transform,
     });
     res.json(data);
   });
@@ -19,11 +20,12 @@ class MediaSearchController {
   // @route GET /media-search/movies/?query
   // @access Private
   getMovieQuery = expressAsyncHandler(async (req, res) => {
-    const { title, year, page } = req.query;
+    const { title, year, page, transform } = req.query;
     const data = await MediaSearchService.queryMovies({
       title,
       year: Number(year) || "",
       page: Number(page) || 1,
+      transform,
     });
     res.json(data);
   });

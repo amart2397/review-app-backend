@@ -1,6 +1,6 @@
 import db from "../db/db.js";
-import { mediaColumnsToReturn } from "./helpers/returnColumnsConfig.js";
-import { transformMediaData } from "./helpers/transformData.js";
+import { mediaColumnsToReturn } from "../config/returnColumnsConfig.js";
+import { transformMediaData } from "../transformers/transformData.js";
 
 class MediaDao {
   async getAllMedia() {

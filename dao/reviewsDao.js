@@ -2,8 +2,8 @@ import db from "../db/db.js";
 import {
   transformReviewData,
   transformReturnReviewData,
-} from "./helpers/transformData.js";
-import { reviewsColumnsToReturn } from "./helpers/returnColumnsConfig.js";
+} from "../transformers/transformData.js";
+import { reviewsColumnsToReturn } from "../config/returnColumnsConfig.js";
 
 class ReviewsDao {
   async getAllReviews() {

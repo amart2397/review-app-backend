@@ -1,6 +1,6 @@
 import db from "../db/db.js";
-import { transformUserData } from "./helpers/transformData.js";
-import { usersColumnsToReturn } from "./helpers/returnColumnsConfig.js";
+import { transformUserData } from "../transformers/transformData.js";
+import { usersColumnsToReturn } from "../config/returnColumnsConfig.js";
 
 class UsersDao {
   //Safe methods for returning data to client

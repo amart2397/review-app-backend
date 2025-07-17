@@ -1,6 +1,8 @@
 import AppError from "../utils/AppError.js";
 import env from "dotenv";
 import { strictBookFilter } from "../utils/strictBookFilter.js";
+import { transformBooks } from "../transformers/transformGoogleData.js";
+import { transformMovies } from "../transformers/transformTMDBData.js";
 env.config();
 
 class MediaSearchService {
@@ -12,7 +14,7 @@ class MediaSearchService {
     this.baseMovieUrl = baseMovieUrl;
   }
 
-  queryBooks = async ({ title, author = "", page = 1 }) => {
+  queryBooks = async ({ title, author = "", page = 1, transform = "yes" }) => {
     //Input must be at least 3 characters before sending to google api
     if (!title || title.trim().length < 3) {
       throw AppError.badRequest("Title must be at least 3 characters long");
@@ -46,6 +48,7 @@ class MediaSearchService {
       if (strictData.length === 0) {
         return { kind: "books#volumes", totalItems: 0, items: [] };
       } else {
+        if (transform === "yes") return transformBooks(rawData);
         return rawData;
       }
     } catch (err) {
@@ -57,7 +60,7 @@ class MediaSearchService {
     }
   };
 
-  queryMovies = async ({ title, year = 1874, page = 1 }) => {
+  queryMovies = async ({ title, year = 1874, page = 1, transform = "yes" }) => {
     //check params align with rules and ranges
     if (!title || title.trim().length < 3) {
       throw AppError.badRequest("Title must be at least 3 characters long");
@@ -95,6 +98,7 @@ class MediaSearchService {
       }
 
       const data = await res.json();
+      if (transform === "yes") return transformMovies(data);
       return data;
     } catch (err) {
       if (err instanceof AppError) throw err;
