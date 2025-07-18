@@ -35,7 +35,7 @@ class MediaController {
     } = req.body;
     const inputMediaData = {
       mediaType,
-      mediaKey,
+      mediaKey: String(mediaKey),
       title,
       description,
       releaseDate,

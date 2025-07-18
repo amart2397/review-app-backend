@@ -19,14 +19,18 @@ class ReviewsController {
   // @route POST /reviews
   // @access Private
   createReview = expressAsyncHandler(async (req, res) => {
-    const { mediaId, reviewTitle, reviewText, reviewRating } = req.body;
+    const { mediaId, reviewTitle, reviewText, reviewRating, media } = req.body;
     const userId = req.user.id;
+    if (media && media.mediaKey != null) {
+      media.mediaKey = String(media.mediaKey);
+    }
     const inputReviewData = {
       userId,
       mediaId,
       reviewTitle,
       reviewText,
       reviewRating,
+      media,
     };
     const validatedData =
       ReviewsValidator.validateNewReviewSchema(inputReviewData);

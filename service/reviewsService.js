@@ -1,6 +1,8 @@
+import MediaDao from "../dao/mediaDao.js";
 import ReviewsDao from "../dao/reviewsDao.js";
 import AppError from "../utils/AppError.js";
 import handleError from "../utils/handleError.js";
+import MediaValidator from "../validators/mediaValidator.js";
 import ReviewsValidator from "../validators/reviewsValidator.js";
 
 class ReviewsService {
@@ -16,8 +18,23 @@ class ReviewsService {
 
   async createReview(inputReviewData) {
     try {
+      const reviewData = { ...inputReviewData };
+      //check if a media id has already been provided or needs to be generated
+      if (!reviewData.mediaId) {
+        const { media } = reviewData;
+        const checkMedia = await MediaDao.getMediaByKey(media.mediaKey);
+        if (checkMedia) {
+          reviewData.mediaId = checkMedia.id;
+        } else {
+          const validatedMedia = await MediaValidator.validateNewMedia(media);
+          const newMediaId = await MediaDao.createMedia(validatedMedia);
+          reviewData.mediaId = newMediaId;
+        }
+      }
+      if ("media" in reviewData) delete reviewData.media;
+
       const validatedData = await ReviewsValidator.validateNewReview(
-        inputReviewData
+        reviewData
       );
       const newReviewId = await ReviewsDao.createReview(validatedData);
       return newReviewId;
@@ -30,7 +47,7 @@ class ReviewsService {
   async updateReview(inputReviewData, requestUserId) {
     try {
       const { id } = inputReviewData;
-      const userId = await ReviewsDao.getReviewAuthor(id); //Check review's current author
+      const userId = await ReviewsDao.getReviewAuthor(id); //Check review's author to be sure it matches current user
       if (userId !== requestUserId) {
         throw AppError.forbidden(
           "You are not authorized to modify this review."
@@ -53,7 +70,7 @@ class ReviewsService {
         inputReviewData
       );
       const { id } = validatedData;
-      const userId = await ReviewsDao.getReviewAuthor(id);
+      const userId = await ReviewsDao.getReviewAuthor(id); //Check review's author to be sure it matches current user
       if (userId !== requestUserId) {
         throw AppError.forbidden(
           "You are not authorized to modify this review."
