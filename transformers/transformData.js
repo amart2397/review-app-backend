@@ -31,9 +31,16 @@ export const transformMediaData = (data) => {
     id: "id",
     mediaType: "media_type",
     mediaKey: "media_key",
-    mediaTitle: "title",
-    mediaDescription: "description",
-    mediaArt: "artLarge",
+    title: "title",
+    description: "description",
+    releaseDate: "release_date",
+    imgSmall: "art_small",
+    imgLarge: "art_large",
+    genres: "genres",
+    runtime: "runtime",
+    authors: "authors",
+    publisher: "publisher",
+    pageCount: "page_count",
   };
 
   const renamed = {};
@@ -43,6 +50,11 @@ export const transformMediaData = (data) => {
       const newKey = newKeys[key] || key;
       renamed[newKey] = data[key];
     }
+  }
+
+  //stringify genre array before insert into jsonb field.  this accepts both arrays and objects
+  if (Array.isArray(renamed.genres) || typeof renamed.genres === "object") {
+    renamed.genres = JSON.stringify(renamed.genres);
   }
 
   return renamed;
@@ -89,7 +101,7 @@ export const transformReturnReviewData = (data) => {
         type: data.media_type,
         title: data.media_title,
         description: data.media_description,
-        artUrl: data.artLarge,
+        artUrl: data.art_large,
       },
     };
   } else {

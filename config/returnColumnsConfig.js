@@ -8,7 +8,7 @@ export const mediaColumnsToReturn = [
   "media_key",
   "title",
   "description",
-  "artLarge",
+  "art_large",
 ];
 
 //Post Columns
@@ -24,5 +24,5 @@ export const reviewsColumnsToReturn = [
   "media.media_type",
   "media.title as media_title",
   "media.description as media_description",
-  "media.artLarge",
+  "media.art_large",
 ];

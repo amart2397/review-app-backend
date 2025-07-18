@@ -23,7 +23,7 @@ class MediaDao {
     const { id } = inputMediaData;
     const [delMedia] = await db("media")
       .where("id", id)
-      .returning(["id", "media_title"])
+      .returning(["id", "title"])
       .del();
     return delMedia;
   }

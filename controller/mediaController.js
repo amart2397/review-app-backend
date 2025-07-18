@@ -19,19 +19,38 @@ class MediaController {
   // @route POST /media
   // @access Private
   createMedia = expressAsyncHandler(async (req, res) => {
-    const { mediaType, mediaKey, mediaTitle, mediaDescription, mediaArt } =
-      req.body;
+    const {
+      mediaType,
+      mediaKey,
+      title,
+      description,
+      releaseDate,
+      imgSmall,
+      imgLarge,
+      genres,
+      runtime,
+      authors,
+      publisher,
+      pageCount,
+    } = req.body;
     const inputMediaData = {
       mediaType,
       mediaKey,
-      mediaTitle,
-      mediaDescription,
-      mediaArt,
+      title,
+      description,
+      releaseDate,
+      imgSmall,
+      imgLarge,
+      genres,
+      runtime,
+      authors,
+      publisher,
+      pageCount,
     };
-    const validatedData = MediaValidator.validateNewMediachema(inputMediaData);
+    const validatedData = MediaValidator.validateNewMediaSchema(inputMediaData);
     const newMediaId = await MediaService.createMedia(validatedData);
     res.status(201).json({
-      message: `New media ${mediaTitle} with id ${newMediaId} created`,
+      message: `New media ${title} with id ${newMediaId} created`,
     });
   });
 
@@ -57,9 +76,16 @@ class MediaController {
       id: id_body,
       mediaType,
       mediaKey,
-      mediaTitle,
-      mediaDescription,
-      mediaArt,
+      title,
+      description,
+      releaseDate,
+      imgSmall,
+      imgLarge,
+      genres,
+      runtime,
+      authors,
+      publisher,
+      pageCount,
     } = req.body;
     const id = parseInt(req.params.id);
     if (id_body && id_body !== id) {
@@ -69,15 +95,22 @@ class MediaController {
       id,
       mediaType,
       mediaKey,
-      mediaTitle,
-      mediaDescription,
-      mediaArt,
+      title,
+      description,
+      releaseDate,
+      imgSmall,
+      imgLarge,
+      genres,
+      runtime,
+      authors,
+      publisher,
+      pageCount,
     };
     const validatedData =
-      MediaValidator.validateUpdateMediachema(inputMediaData);
+      MediaValidator.validateUpdateMediaSchema(inputMediaData);
     await MediaService.updateMedia(validatedData);
     res.json({
-      message: `Media ${mediaTitle} updated`,
+      message: `Media ${title} updated`,
     });
   });
 
@@ -92,9 +125,9 @@ class MediaController {
     }
     const inputMediaData = { id };
     const validatedData = MediaValidator.validateMediaIdSchema(inputMediaData);
-    const { media_title } = await MediaService.deleteMedia(validatedData);
+    const { title } = await MediaService.deleteMedia(validatedData);
     res.json({
-      message: `Media entry: ${media_title} with id ${id} was deleted`,
+      message: `Media entry: ${title} with id ${id} was deleted`,
     });
   });
 }

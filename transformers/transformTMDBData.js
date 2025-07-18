@@ -4,7 +4,7 @@ export const transformMovies = (movieData) => {
     mediaKey: movie.id,
     title: movie.title || "Unknown Title",
     releaseDate: movie.release_date ?? null,
-    posterSmall: movie.poster_path
+    imgSmall: movie.poster_path
       ? `https://image.tmdb.org/t/p/w92${movie.poster_path}`
       : null,
   }));
@@ -19,10 +19,10 @@ export const transformFullMovie = (movie) => {
     title: movie.title || "Unknown Title",
     releaseDate: movie.release_date ?? null,
     description: movie.overview ?? null,
-    posterSmall: movie.poster_path
+    imgSmall: movie.poster_path
       ? `https://image.tmdb.org/t/p/w92${movie.poster_path}`
       : null,
-    posterLarge: movie.poster_path
+    imgLarge: movie.poster_path
       ? `https://image.tmdb.org/t/p/original${movie.poster_path}`
       : null,
     genres: movie.genres?.map((genreObj) => genreObj?.name) ?? [],

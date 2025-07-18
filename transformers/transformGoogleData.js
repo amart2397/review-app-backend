@@ -24,7 +24,7 @@ export const transformBooks = (bookData) => {
     title: book.volumeInfo?.title ?? "Unknown Title",
     authors: formatAuthors(book.volumeInfo?.authors),
     releaseDate: book.volumeInfo?.publishedDate ?? null,
-    coverSmall:
+    imgSmall:
       book.volumeInfo?.imageLinks?.smallThumbnail ??
       book.volumeInfo?.imageLinks?.thumbnail ??
       null,
@@ -42,11 +42,11 @@ export const transformFullBook = (book) => {
     publisher: book.volumeInfo?.publisher ?? "Unknown Publisher",
     releaseDate: book.volumeInfo?.publishedDate ?? null,
     description: book.volumeInfo?.description ?? "",
-    coverSmall:
+    imgSmall:
       book.volumeInfo?.imageLinks?.smallThumbnail ??
       book.volumeInfo?.imageLinks?.thumbnail ??
       null,
-    coverLarge: book.volumeInfo?.imageLinks?.small ?? null,
+    imgLarge: book.volumeInfo?.imageLinks?.small ?? null,
     genres: parseBookCategories(book.volumeInfo?.categories),
     pageCount: book.volumeInfo?.pageCount,
   };

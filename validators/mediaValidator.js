@@ -4,21 +4,43 @@ import AppError from "../utils/AppError.js";
 import compareSchema from "./helpers/compareSchema.js";
 
 //Data schemas
-const newMediachema = z.object({
+const newMediaSchema = z.object({
   mediaType: z.string(),
   mediaKey: z.string(),
-  mediaTitle: z.string(),
-  mediaDescription: z.string(),
-  mediaArt: z.string(),
+  title: z.string(),
+  description: z.string().optional(),
+  releaseDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional()
+    .or(z.literal("")),
+  imgSmall: z.url().optional(),
+  imgLarge: z.url().optional(),
+  genres: z.array(z.string()).optional(),
+  runtime: z.number().optional(),
+  authors: z.string().optional(),
+  publisher: z.string().optional(),
+  pageCount: z.number().optional(),
 });
 
-const updateMediachema = z.object({
+const updateMediaSchema = z.object({
   id: z.int(),
   mediaType: z.string(),
   mediaKey: z.string(),
-  mediaTitle: z.string(),
-  mediaDescription: z.string(),
-  mediaArt: z.string(),
+  title: z.string(),
+  description: z.string().optional(),
+  releaseDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional()
+    .or(z.literal("")),
+  imgSmall: z.url().optional(),
+  imgLarge: z.url().optional(),
+  genres: z.array(z.string()).optional(),
+  runtime: z.number().optional(),
+  authors: z.string().optional(),
+  publisher: z.string().optional(),
+  pageCount: z.number().optional(),
 });
 
 const mediaIdSchema = z.object({
@@ -27,16 +49,16 @@ const mediaIdSchema = z.object({
 
 class MediaValidator {
   //schema validation (using zod)
-  validateNewMediachema(inputMediaData) {
-    return compareSchema(newMediachema, inputMediaData);
+  validateNewMediaSchema(inputMediaData) {
+    return compareSchema(newMediaSchema, inputMediaData, true);
   }
 
   validateMediaIdSchema(inputMediaData) {
-    return compareSchema(mediaIdSchema, inputMediaData);
+    return compareSchema(mediaIdSchema, inputMediaData, true);
   }
 
-  validateUpdateMediachema(inputMediaData) {
-    return compareSchema(updateMediachema, inputMediaData);
+  validateUpdateMediaSchema(inputMediaData) {
+    return compareSchema(updateMediaSchema, inputMediaData, true);
   }
 
   //app logic validation

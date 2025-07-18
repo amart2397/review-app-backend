@@ -6,6 +6,7 @@ exports.up = function (knex) {
     table.string("authors").nullable();
     table.integer("runtime").nullable();
     table.integer("page_count").nullable();
+    table.string("art_small").nullable();
   });
 };
 
@@ -17,5 +18,6 @@ exports.down = function (knex) {
     table.dropColumn("authors");
     table.dropColumn("runtime");
     table.dropColumn("page_count");
+    table.dropColumn("art_small");
   });
 };
