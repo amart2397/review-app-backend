@@ -36,9 +36,10 @@ class MediaSearchController {
   getMovieQuery = expressAsyncHandler(async (req, res) => {
     const { title, year, page } = req.query;
     const transform = String(req.query.transform).toLowerCase() !== "false";
+    const parsedYear = Number(year);
     const data = await MediaSearchService.queryMovies({
       title,
-      year: Number(year) || "",
+      year: !isNaN(parsedYear) ? parsedYear : undefined,
       page: Number(page) || 1,
       transform,
     });
