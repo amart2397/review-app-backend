@@ -110,9 +110,12 @@ class MediaSearchService {
     }
   };
 
-  queryMovies = async ({ title, year = 1874, page = 1, transform = true }) => {
+  queryMovies = async ({ title, year, page = 1, transform = true }) => {
+    //normalize inputs
+    const normTitle = title ? title.trim().toLowerCase() : "";
+
     //check params align with rules and ranges
-    if (!title || title.trim().length < 3) {
+    if (normTitle.length < 3) {
       throw AppError.badRequest("Title must be at least 3 characters long");
     }
     const maxYear = new Date().getFullYear() + 1;
@@ -127,11 +130,21 @@ class MediaSearchService {
       );
     }
 
+    //check in-memory cache first before API call
+    const cacheKey = normTitle + (year && `-${year}`) + `-${page}`;
+    const cachedData = getFromCache(cacheKey);
+    if (cachedData) {
+      if (process.env.NODE_ENV !== "production") {
+        console.log(`Cache hit: ${cacheKey}`);
+      }
+      return cachedData;
+    }
+
     //build url and fetch
     const accessToken = process.env.TMDB_ACCESS_TOKEN;
     const query =
       `?query=${encodeURIComponent(
-        title
+        normTitle
       )}&include_adult=false&language=en-US&page=${page}` +
       (year && `&year=${year}`);
     try {
@@ -147,8 +160,11 @@ class MediaSearchService {
         throw AppError.externalApiError(`TMDB API Error: ${res.status}`);
       }
 
-      const data = await res.json();
-      if (transform) return transformMovies(data);
+      let data = await res.json();
+      if (transform) data = transformMovies(data);
+
+      //Set Cache
+      setToCache(cacheKey, data);
       return data;
     } catch (err) {
       if (err instanceof AppError) throw err;
