@@ -9,6 +9,7 @@ import {
   transformFullMovie,
   transformMovies,
 } from "../transformers/transformTMDBData.js";
+import { getFromCache, setToCache } from "../utils/AppCache.js";
 env.config();
 
 class MediaSearchService {
@@ -23,26 +24,40 @@ class MediaSearchService {
   }
 
   queryBooks = async ({ title, author = "", page = 1, transform = true }) => {
+    //normalize inputs
+    const normTitle = title ? title.trim().toLowerCase() : "";
+    const normAuthor = author ? author.trim().toLowerCase() : "";
+
     //Input must be at least 3 characters before sending to google api
-    if (!title || title.trim().length < 3) {
+    if (normTitle.length < 3) {
       throw AppError.badRequest("Title must be at least 3 characters long");
     }
 
-    //create pagination setup and api key
+    //create pagination setup, api key, and cache key
     const maxResults = 10;
     const startIndex = (page - 1) * maxResults;
     const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
+    const cacheKey = `${normTitle}-${normAuthor}-${page}`;
 
-    //build query and full url then fetch
+    //check in-memory cache first before API call
+    const cachedData = getFromCache(cacheKey);
+    if (cachedData) {
+      if (process.env.NODE_ENV !== "production") {
+        console.log(`Cache hit: ${cacheKey}`);
+      }
+      return cachedData;
+    }
+
+    //build query and full url
     const query =
-      `?q=intitle:${encodeURIComponent(title)}` +
-      (author ? `+inauthor:${encodeURIComponent(author)}` : "");
-
+      `?q=intitle:${encodeURIComponent(normTitle)}` +
+      (normAuthor ? `+inauthor:${encodeURIComponent(normAuthor)}` : "");
     const url =
       this.baseBookUrl +
       query +
       `&startIndex=${startIndex}&maxResults=${maxResults}&key=${apiKey}`;
 
+    //Fetch from Google Books
     try {
       const res = await fetch(url);
       if (!res.ok) {
@@ -50,18 +65,24 @@ class MediaSearchService {
           `Google Books API Error: ${res.status}`
         );
       }
-      //pull raw data then check that author and title have matches. if not return empty object. This is required since Google Books is fuzzy
+      //pull raw data then check that author and title have matches. if not return empty object. This is required since Google Books query is fuzzy
       const rawData = await res.json();
       const strictData = strictBookFilter(rawData.items || [], title, author);
+      let data;
       if (strictData.length === 0) {
-        return { kind: "books#volumes", totalItems: 0, items: [] };
+        data = { kind: "books#volumes", totalItems: 0, items: [] };
       } else {
-        if (transform) return transformBooks({ ...rawData, items: strictData });
-        return { ...rawData, items: strictData };
+        data = transform
+          ? transformBooks({ ...rawData, items: strictData })
+          : { ...rawData, items: strictData };
       }
+
+      //Set Cache
+      setToCache(cacheKey, data);
+      return data;
     } catch (err) {
       if (err instanceof AppError) throw err;
-      if (!(process.env.NODE_ENV === "production")) {
+      if (process.env.NODE_ENV !== "production") {
         console.error(err);
       }
       throw AppError.externalApiError("Failed to fetch from Google Books API");
