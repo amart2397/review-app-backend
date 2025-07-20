@@ -56,8 +56,8 @@ class MediaSearchService {
       if (strictData.length === 0) {
         return { kind: "books#volumes", totalItems: 0, items: [] };
       } else {
-        if (transform) return transformBooks(rawData);
-        return rawData;
+        if (transform) return transformBooks({ ...rawData, items: strictData });
+        return { ...rawData, items: strictData };
       }
     } catch (err) {
       if (err instanceof AppError) throw err;
