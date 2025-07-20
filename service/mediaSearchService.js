@@ -67,7 +67,11 @@ class MediaSearchService {
       }
       //pull raw data then check that author and title have matches. if not return empty object. This is required since Google Books query is fuzzy
       const rawData = await res.json();
-      const strictData = strictBookFilter(rawData.items || [], title, author);
+      const strictData = strictBookFilter(
+        rawData.items || [],
+        normTitle,
+        normAuthor
+      );
       let data;
       if (strictData.length === 0) {
         data = { kind: "books#volumes", totalItems: 0, items: [] };
