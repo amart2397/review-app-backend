@@ -34,8 +34,8 @@ export const transformMediaData = (data) => {
     title: "title",
     description: "description",
     releaseDate: "release_date",
-    imgSmall: "art_small",
-    imgLarge: "art_large",
+    artSmall: "art_small",
+    artLarge: "art_large",
     genres: "genres",
     runtime: "runtime",
     authors: "authors",
@@ -98,10 +98,14 @@ export const transformReturnReviewData = (data) => {
       },
       media: {
         id: data.mediaId,
-        type: data.media_type,
+        mediaType: data.media_type,
+        mediaKey: data.media_key,
         title: data.media_title,
         description: data.media_description,
-        artUrl: data.art_large,
+        artSmall: data.art_small,
+        artLarge: data.art_large,
+        authors: data.authors,
+        releaseDate: data.release_date,
       },
     };
   } else {

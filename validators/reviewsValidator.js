@@ -22,11 +22,11 @@ const newReviewSchema = z
         description: z.string().optional(),
         releaseDate: z
           .string()
-          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .regex(/^\d{4}(-\d{2}-\d{2})?$/)
           .optional()
           .or(z.literal("")),
-        imgSmall: z.url().optional(),
-        imgLarge: z.url().optional(),
+        artSmall: z.url().optional(),
+        artLarge: z.url().optional(),
         genres: z.array(z.string()).optional(),
         runtime: z.number().optional(),
         authors: z.string().optional(),

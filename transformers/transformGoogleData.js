@@ -16,6 +16,11 @@ const parseBookCategories = (categories = []) => {
   return [...new Set(cleaned)]; // Remove duplicates
 };
 
+const addFifeParam = (url, size = 175) => {
+  if (!url) return null;
+  return url.includes("?") ? `${url}&fife=w${size}` : `${url}?fife=w${size}`;
+};
+
 //transform functions
 export const transformBooks = (bookData) => {
   const cleanedItems = (bookData.items || []).map((book) => ({
@@ -24,7 +29,7 @@ export const transformBooks = (bookData) => {
     title: book.volumeInfo?.title ?? "Unknown Title",
     authors: formatAuthors(book.volumeInfo?.authors),
     releaseDate: book.volumeInfo?.publishedDate ?? null,
-    imgSmall:
+    artSmall:
       book.volumeInfo?.imageLinks?.smallThumbnail ??
       book.volumeInfo?.imageLinks?.thumbnail ??
       null,
@@ -42,11 +47,14 @@ export const transformFullBook = (book) => {
     publisher: book.volumeInfo?.publisher ?? "Unknown Publisher",
     releaseDate: book.volumeInfo?.publishedDate ?? null,
     description: book.volumeInfo?.description ?? "",
-    imgSmall:
+    artSmall:
       book.volumeInfo?.imageLinks?.smallThumbnail ??
       book.volumeInfo?.imageLinks?.thumbnail ??
       null,
-    imgLarge: book.volumeInfo?.imageLinks?.small ?? null,
+    artLarge:
+      addFifeParam(book.volumeInfo?.imageLinks?.smallThumbnail) ??
+      addFifeParam(book.volumeInfo?.imageLinks?.thumbnail) ??
+      null,
     genres: parseBookCategories(book.volumeInfo?.categories),
     pageCount: book.volumeInfo?.pageCount,
   };
