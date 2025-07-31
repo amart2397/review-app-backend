@@ -5,7 +5,7 @@ import compareSchema from "./helpers/compareSchema.js";
 
 //Data schemas
 const newMediaSchema = z.object({
-  mediaType: z.string(),
+  mediaType: z.enum(["book", "movie"]),
   mediaKey: z.string(),
   title: z.string(),
   description: z.string().optional(),
@@ -25,7 +25,7 @@ const newMediaSchema = z.object({
 
 const updateMediaSchema = z.object({
   id: z.int(),
-  mediaType: z.string(),
+  mediaType: z.enum(["book", "movie"]),
   mediaKey: z.string(),
   title: z.string(),
   description: z.string().optional(),
