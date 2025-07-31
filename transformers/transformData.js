@@ -82,7 +82,29 @@ export const transformReviewData = (data) => {
   return renamed;
 };
 
-//transform review data to return to client
+export const transformClubData = (data) => {
+  const newKeys = {
+    id: "id",
+    name: "name",
+    description: "description",
+    creatorId: "creator_id",
+    mediaType: "media_type",
+    isPrivate: "is_private",
+  };
+
+  const renamed = {};
+
+  for (const key in data) {
+    if (data.hasOwnProperty(key)) {
+      const newKey = newKeys[key] || key;
+      renamed[newKey] = data[key];
+    }
+  }
+
+  return renamed;
+};
+
+//transform data to return to client
 export const transformReturnReviewData = (data) => {
   let cleanData;
   if (data) {
@@ -106,6 +128,28 @@ export const transformReturnReviewData = (data) => {
         artLarge: data.art_large,
         authors: data.authors,
         releaseDate: data.release_date,
+      },
+    };
+  } else {
+    cleanData = null;
+  }
+
+  return cleanData;
+};
+
+export const transformReturnClubsData = (data) => {
+  let cleanData;
+  if (data) {
+    cleanData = {
+      id: data.clubId,
+      name: data.clubName,
+      description: data.clubDescription,
+      mediaType: data.media_type,
+      isPrivate: data.is_private,
+      creator: {
+        id: data.creator_id,
+        firstName: data.first_name,
+        lastName: data.last_name,
       },
     };
   } else {

@@ -5,11 +5,11 @@ import mediaRouter from "./routes/mediaRoutes.js";
 import reviewRouter from "./routes/reviewRoutes.js";
 import authRouter from "./routes/authRoutes.js";
 import mediaSearchRouter from "./routes/mediaSearchRoutes.js";
+import clubRouter from "./routes/clubRoutes.js";
 import UsersService from "./service/usersService.js";
 import path from "path";
 import logger from "./middleware/logger.js";
 import errorHandler from "./middleware/errorHandler.js";
-import cookieParser from "cookie-parser"; //REMOVE LATER
 import cors from "cors";
 import corsOptions from "./config/corsOptions.js";
 import sessionConfig from "./config/sessionConfig.js";
@@ -41,6 +41,7 @@ app.use("/users", userRouter);
 app.use("/media", mediaRouter);
 app.use("/reviews", reviewRouter);
 app.use("/media-search", mediaSearchRouter);
+app.use("/clubs", clubRouter);
 
 //All unhandled routes (404 page handled in errorHandler)
 app.all(/.*/, (req, res, next) => {
