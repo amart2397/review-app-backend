@@ -1,5 +1,5 @@
 //Users Columns - I don't want to send the password to the frontend!
-export const usersColumnsToReturn = ["id", "first_name", "last_name", "role"];
+export const usersColumnsToReturn = ["id", "display_name", "role"];
 
 //Media Columns
 export const mediaColumnsToReturn = [
@@ -18,8 +18,7 @@ export const reviewsColumnsToReturn = [
   "reviews.review_text",
   "reviews.review_rating",
   "users.id as userId",
-  "users.first_name",
-  "users.last_name",
+  "users.display_name",
   "media.id as mediaId",
   "media.media_type",
   "media.media_key",
@@ -39,6 +38,5 @@ export const clubsColumnsToReturn = [
   "clubs.media_type",
   "clubs.is_private",
   "clubs.creator_id",
-  "users.first_name",
-  "users.last_name",
+  "users.display_name",
 ];

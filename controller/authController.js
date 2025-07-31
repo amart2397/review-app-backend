@@ -14,10 +14,17 @@ class AuthController {
       throw AppError.badRequest("Already logged in");
     }
     const { email, firstName, lastName, password } = req.body;
+    const displayName =
+      firstName.charAt(0).toUpperCase() +
+      firstName.slice(1).toLowerCase() +
+      " " +
+      lastName.charAt(0).toUpperCase() +
+      ".";
     const inputUserData = {
       email,
       firstName,
       lastName,
+      displayName,
       password,
     };
     const validatedData = UsersValidator.validateNewUserSchema(inputUserData);

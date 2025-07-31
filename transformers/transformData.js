@@ -10,6 +10,7 @@ export const transformUserData = (data) => {
     email: "email",
     firstName: "first_name",
     lastName: "last_name",
+    displayName: "display_name",
     password: "password",
     role: "role",
   };
@@ -115,8 +116,7 @@ export const transformReturnReviewData = (data) => {
       rating: data.review_rating,
       author: {
         id: data.userId,
-        firstName: data.first_name,
-        lastName: data.last_name,
+        displayName: data.display_name,
       },
       media: {
         id: data.mediaId,
@@ -148,8 +148,7 @@ export const transformReturnClubsData = (data) => {
       isPrivate: data.is_private,
       creator: {
         id: data.creator_id,
-        firstName: data.first_name,
-        lastName: data.last_name,
+        displayName: data.display_name,
       },
     };
   } else {
