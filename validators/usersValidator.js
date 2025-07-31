@@ -15,9 +15,9 @@ const newUserSchema = z.object({
 const updateUserSchema = z.object({
   id: z.int(),
   email: z.email(),
-  firstName: z.string().trim(),
-  lastName: z.string().trim(),
-  displayName: z.string(),
+  firstName: z.string().trim().optional(),
+  lastName: z.string().trim().optional(),
+  displayName: z.string().optional(),
   password: z.string().min(8).optional(),
   role: z.enum(["user", "poster", "admin"]).optional(),
 });

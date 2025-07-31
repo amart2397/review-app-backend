@@ -41,16 +41,17 @@ const newReviewSchema = z
   });
 
 const updateReviewSchema = z.object({
-  //userId not provided because author shouldn't ever be changed
   id: z.int(),
+  userId: z.int(),
   mediaId: z.int(),
-  reviewTitle: z.string(),
-  reviewText: z.string(),
-  reviewRating: z.number().nonnegative().multipleOf(0.1).max(10),
+  reviewTitle: z.string().optional(),
+  reviewText: z.string().optional(),
+  reviewRating: z.number().nonnegative().multipleOf(0.1).max(10).optional(),
 });
 
 const reviewIdSchema = z.object({
   id: z.int(),
+  userId: z.int(),
 });
 
 class ReviewsValidator {
@@ -96,10 +97,10 @@ class ReviewsValidator {
       mediaId
     );
     //Review post checks
-    if (existingReviewById && existingReviewById?.author?.id !== userId) {
-      throw AppError.badRequest("Review author cannot be changed");
+    if (existingReviewById && existingReviewById.author?.id !== userId) {
+      throw AppError.forbidden("You are not authorized to modify this review.");
     }
-    if (existingReviewByAuthor && existingReviewByAuthor?.id !== id) {
+    if (existingReviewByAuthor && existingReviewByAuthor.id !== id) {
       throw AppError.conflict("User already created review");
     }
     if (!existingReviewById) {
@@ -118,10 +119,13 @@ class ReviewsValidator {
   }
 
   async validateDeleteReview(inputReviewData) {
-    const { id } = inputReviewData;
+    const { id, userId } = inputReviewData;
     const existingReview = await ReviewsDao.getReviewById(id);
     if (!existingReview) {
       throw AppError.badRequest("Review not found");
+    }
+    if (userId !== existingReview.author?.id) {
+      throw AppError.forbidden("You are not authorized to modify this review.");
     }
     return inputReviewData;
   }

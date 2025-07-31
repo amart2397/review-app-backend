@@ -44,19 +44,11 @@ class ReviewsService {
     }
   }
 
-  async updateReview(inputReviewData, requestUserId) {
+  async updateReview(inputReviewData) {
     try {
-      const { id } = inputReviewData;
-      const userId = await ReviewsDao.getReviewAuthor(id); //Check review's author to be sure it matches current user
-      if (userId !== requestUserId) {
-        throw AppError.forbidden(
-          "You are not authorized to modify this review."
-        );
-      }
-      const validatedData = await ReviewsValidator.validateUpdateReview({
-        userId,
-        ...inputReviewData,
-      });
+      const validatedData = await ReviewsValidator.validateUpdateReview(
+        inputReviewData
+      );
       await ReviewsDao.updateReview(validatedData);
     } catch (err) {
       if (err instanceof AppError) throw err;
@@ -64,18 +56,11 @@ class ReviewsService {
     }
   }
 
-  async deleteReview(inputReviewData, requestUserId) {
+  async deleteReview(inputReviewData) {
     try {
       const validatedData = await ReviewsValidator.validateDeleteReview(
         inputReviewData
       );
-      const { id } = validatedData;
-      const userId = await ReviewsDao.getReviewAuthor(id); //Check review's author to be sure it matches current user
-      if (userId !== requestUserId) {
-        throw AppError.forbidden(
-          "You are not authorized to modify this review."
-        );
-      }
       const delReview = await ReviewsDao.deleteReview(validatedData);
       return delReview;
     } catch (err) {

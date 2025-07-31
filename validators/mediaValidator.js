@@ -27,7 +27,7 @@ const updateMediaSchema = z.object({
   id: z.int(),
   mediaType: z.enum(["book", "movie"]),
   mediaKey: z.string(),
-  title: z.string(),
+  title: z.string().optional(),
   description: z.string().optional(),
   releaseDate: z
     .string()

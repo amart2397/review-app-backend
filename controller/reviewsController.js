@@ -73,13 +73,14 @@ class ReviewsController {
     const inputReviewData = {
       id,
       mediaId,
+      userId: requestUserId,
       reviewTitle,
       reviewText,
       reviewRating,
     };
     const validatedData =
       ReviewsValidator.validateUpdateReviewSchema(inputReviewData);
-    await ReviewsService.updateReview(validatedData, requestUserId);
+    await ReviewsService.updateReview(validatedData);
     res.json({
       message: `Review with id ${id} updated`,
     });
@@ -95,12 +96,11 @@ class ReviewsController {
     if (id_body && id_body !== id) {
       throw AppError.badRequest("ID in request body does not match ID in URL");
     }
-    const inputReviewData = { id };
+    const inputReviewData = { id, userId: requestUserId };
     const validatedData =
       ReviewsValidator.validateReviewIdSchema(inputReviewData);
     const { id: review_id, review_title } = await ReviewsService.deleteReview(
-      validatedData,
-      requestUserId
+      validatedData
     );
     res.json({
       message: `Review: ${review_title} with id ${review_id} was deleted`,
