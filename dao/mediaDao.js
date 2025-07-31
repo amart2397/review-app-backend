@@ -42,13 +42,6 @@ class MediaDao {
     return media;
   }
 
-  async getMediaByType(type) {
-    const media = await db("media")
-      .first(mediaColumnsToReturn)
-      .where("media_type", type);
-    return media;
-  }
-
   async getMediaByKeyAndType(mediaKey, type) {
     const media = await db("media")
       .first(mediaColumnsToReturn)

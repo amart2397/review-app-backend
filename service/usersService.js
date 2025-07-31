@@ -74,6 +74,7 @@ class UsersService {
     }
   }
 
+  //Below methods are used by passport for authenticatiing users
   async getUserByEmail(inputUserData) {
     try {
       const { email } = inputUserData;
