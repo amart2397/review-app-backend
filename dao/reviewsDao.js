@@ -3,7 +3,7 @@ import {
   transformReviewData,
   transformReturnReviewData,
 } from "../transformers/transformData.js";
-import { reviewsColumnsToReturn } from "../config/returnColumnsConfig.js";
+import { reviewsColumnsToReturn } from "./config/returnColumnsConfig.js";
 
 class ReviewsDao {
   async getAllReviews() {

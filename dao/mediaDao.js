@@ -1,11 +1,12 @@
 import db from "../db/db.js";
-import { mediaColumnsToReturn } from "../config/returnColumnsConfig.js";
+import { mediaColumnsToReturn } from "./config/returnColumnsConfig.js";
 import { transformMediaData } from "../transformers/transformData.js";
 
 class MediaDao {
   async getAllMedia() {
     const media = await db("media").select(mediaColumnsToReturn);
     return media;
+    6;
   }
 
   async createMedia(inputMediaData) {
