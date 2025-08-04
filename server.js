@@ -6,6 +6,7 @@ import reviewRouter from "./routes/reviewRoutes.js";
 import authRouter from "./routes/authRoutes.js";
 import mediaSearchRouter from "./routes/mediaSearchRoutes.js";
 import clubRouter from "./routes/clubRoutes.js";
+import meRouter from "./routes/meRoutes.js";
 import UsersService from "./service/usersService.js";
 import path from "path";
 import logger from "./middleware/logger.js";
@@ -37,6 +38,7 @@ app.use("/", express.static(path.join(__dirname, "public")));
 //Routing
 app.use("/", rootRouter);
 app.use("/auth", authRouter);
+app.use("/me", meRouter);
 app.use("/users", userRouter);
 app.use("/media", mediaRouter);
 app.use("/reviews", reviewRouter);
