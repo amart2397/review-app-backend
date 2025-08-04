@@ -6,15 +6,24 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    ClubsController.getAllPublicClubs
-  )
+  .get(ClubsController.getAllPublicClubs)
   .post(
     isAuthenticated,
     csrfSynchronisedProtection,
     ClubsController.createClub
+  );
+
+router
+  .route("/:id")
+  .patch(
+    isAuthenticated,
+    csrfSynchronisedProtection,
+    ClubsController.updateClub
+  )
+  .delete(
+    isAuthenticated,
+    csrfSynchronisedProtection,
+    ClubsController.deleteClub
   );
 
 export default router;

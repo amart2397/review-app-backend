@@ -24,6 +24,31 @@ class ClubsService {
       handleError(err);
     }
   }
+
+  async updateClub(inputClubData) {
+    try {
+      const validatedData = await ClubsValidator.validateUpdateClub(
+        inputClubData
+      );
+      await ClubsDao.updateClub(validatedData);
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
+
+  async deleteClub(inputClubData) {
+    try {
+      const validatedData = await ClubsValidator.validateDeleteClub(
+        inputClubData
+      );
+      const delClub = await ClubsDao.deleteClub(validatedData);
+      return delClub;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
 }
 
 export default new ClubsService();

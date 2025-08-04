@@ -7,16 +7,33 @@ env.config();
 
 const newClubSchema = z.object({
   name: z.string(),
-  description: z.string(),
   creatorId: z.int(),
   mediaType: z.enum(["book", "movie"]),
   isPrivate: z.boolean(),
+});
+
+const updateClubSchema = z.object({
+  id: z.int(),
+  userId: z.int(),
+  name: z.string().optional(),
+  isPrivate: z.boolean().optional(),
+});
+
+const deleteClubSchema = z.object({
+  id: z.int(),
+  userId: z.int(),
 });
 
 class ClubsValidator {
   //schema validation (using zod)
   validateNewClubSchema(inputClubData) {
     return compareSchema(newClubSchema, inputClubData);
+  }
+  validateUpdateClubSchema(inputClubData) {
+    return compareSchema(updateClubSchema, inputClubData);
+  }
+  validateDeleteClubSchema(inputClubData) {
+    return compareSchema(deleteClubSchema, inputClubData);
   }
 
   //app logic validation
@@ -28,6 +45,28 @@ class ClubsValidator {
       throw AppError.forbidden(
         "Already created max clubs, please delete a club first"
       );
+    }
+    return inputClubData;
+  }
+  async validateUpdateClub(inputClubData) {
+    const { id, userId } = inputClubData;
+    const club = await ClubsDao.getClubById(id);
+    if (!club) {
+      throw AppError.badRequest("Club not found");
+    }
+    if (club.creator?.id !== userId) {
+      throw AppError.forbidden("You are not authorized to modify this club.");
+    }
+    return inputClubData;
+  }
+  async validateDeleteClub(inputClubData) {
+    const { id, userId } = inputClubData;
+    const club = await ClubsDao.getClubById(id);
+    if (!club) {
+      throw AppError.badRequest("Club not found");
+    }
+    if (club.creator?.id !== userId) {
+      throw AppError.forbidden("You are not authorized to modify this club.");
     }
     return inputClubData;
   }

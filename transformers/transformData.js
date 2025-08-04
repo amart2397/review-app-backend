@@ -18,7 +18,7 @@ export const transformUserData = (data) => {
   const renamed = {};
 
   for (const key in data) {
-    if (data.hasOwnProperty(key)) {
+    if (data.hasOwnProperty(key) && data[key] !== undefined) {
       const newKey = newKeys[key] || key;
       renamed[newKey] = data[key];
     }
@@ -47,7 +47,7 @@ export const transformMediaData = (data) => {
   const renamed = {};
 
   for (const key in data) {
-    if (data.hasOwnProperty(key)) {
+    if (data.hasOwnProperty(key) && data[key] !== undefined) {
       const newKey = newKeys[key] || key;
       renamed[newKey] = data[key];
     }
@@ -74,7 +74,7 @@ export const transformReviewData = (data) => {
   const renamed = {};
 
   for (const key in data) {
-    if (data.hasOwnProperty(key)) {
+    if (data.hasOwnProperty(key) && data[key] !== undefined) {
       const newKey = newKeys[key] || key;
       renamed[newKey] = data[key];
     }
@@ -96,7 +96,7 @@ export const transformClubData = (data) => {
   const renamed = {};
 
   for (const key in data) {
-    if (data.hasOwnProperty(key)) {
+    if (data.hasOwnProperty(key) && data[key] !== undefined) {
       const newKey = newKeys[key] || key;
       renamed[newKey] = data[key];
     }

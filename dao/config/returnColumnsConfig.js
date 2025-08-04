@@ -34,7 +34,6 @@ export const reviewsColumnsToReturn = [
 export const clubsColumnsToReturn = [
   "clubs.id as clubId",
   "clubs.name as clubName",
-  "clubs.description as clubDescription",
   "clubs.media_type",
   "clubs.is_private",
   "clubs.creator_id",
