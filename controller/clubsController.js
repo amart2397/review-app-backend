@@ -4,6 +4,8 @@ import ClubsValidator from "../validators/clubsValidator.js";
 import AppError from "../utils/AppError.js";
 
 class ClubsController {
+  //CLUBS
+
   // @desc Get all public clubs
   // @route GET /clubs
   // @access Private
@@ -37,7 +39,7 @@ class ClubsController {
   updateClub = expressAsyncHandler(async (req, res) => {
     const { id: id_body, name, isPrivate } = req.body;
     const userId = req.user.id;
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.clubId);
     if (id_body && id_body !== id) {
       throw AppError.badRequest("ID in request body does not match ID in URL");
     }
@@ -50,10 +52,13 @@ class ClubsController {
     });
   });
 
+  // @desc delete existing club
+  // @route DELETE /clubs/:id
+  // @access Private
   deleteClub = expressAsyncHandler(async (req, res) => {
     const { id: id_body } = req?.body;
     const userId = req.user.id;
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.clubId);
     if (id_body && id_body !== id) {
       throw AppError.badRequest("ID in request body does not match ID in URL");
     }
@@ -63,6 +68,36 @@ class ClubsController {
     const { id: club_id, name } = await ClubsService.deleteClub(validatedData);
     res.json({
       message: `Club: ${name} with id ${club_id} was deleted`,
+    });
+  });
+
+  //CLUB INVITES
+
+  // @desc Get current invites for club
+  // @route GET /clubs/:clubId/invites
+  // @access Private
+  getClubInvites = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const invites = await ClubsService.getClubInvites(clubId);
+    res.json(invites);
+  });
+
+  // @desc Create new invite for club
+  // @route POST /clubs/:clubId/invites
+  // @access Private
+  createClubInvite = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const inviterId = req.user.id;
+    const { inviteeId } = req.body;
+    const inputInviteData = {
+      clubId,
+      inviterId,
+      inviteeId,
+      expiration: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), //Expires in one week
+    };
+    const id = await ClubsService.createClubInvite(inputInviteData);
+    res.json({
+      message: `Invite with id ${id} was created`,
     });
   });
 }

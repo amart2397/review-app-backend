@@ -4,11 +4,16 @@ import isAuthenticated from "../middleware/isAuthenticated.js";
 import MeController from "../controller/meController.js";
 const router = express.Router();
 
-router.get(
-  "/",
-  isAuthenticated,
-  csrfSynchronisedProtection,
-  MeController.getMe
-);
+router.use(isAuthenticated, csrfSynchronisedProtection);
+
+router.route("/").get(MeController.getMe);
+
+router.route("/clubs").get(MeController.getMyClubs);
+
+router.route("/clubs/invites").get(MeController.getMyInvites);
+
+router
+  .route("/clubs/:clubId/invites/:inviteId")
+  .post(MeController.respondToInvite);
 
 export default router;

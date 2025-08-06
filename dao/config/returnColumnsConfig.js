@@ -39,3 +39,35 @@ export const clubsColumnsToReturn = [
   "clubs.creator_id",
   "users.display_name",
 ];
+
+//Club Invites Columns
+export const clubInvitesColumnsToReturn = [
+  "club_invites.id as id",
+  "club_invites.club_id as clubId",
+  "clubs.name as clubName",
+  "users.id as userId",
+  "users.display_name",
+];
+
+//Club Invites for Me Columns
+export const meClubInvitesColumnsToReturn = [
+  "club_invites.id as id",
+  "club_invites.club_id as clubId",
+  "clubs.name as clubName",
+  "inviter.id as inviterId",
+  "inviter.display_name as inviterDisplayName",
+  "invitee.id as inviteeId",
+  "invitee.display_name as inviteeDisplayName",
+  "club_invites.expires_at",
+  "club_members.role as inviterMemberRole",
+];
+
+//Club Members Columns
+export const clubMembersColumnsToReturn = [
+  "club_members.id as memberId",
+  "club_members.club_id as clubId",
+  "club_members.user_id as userId",
+  "club_members.role as memberRole",
+  "users.display_name as displayName",
+  "clubs.name as clubName",
+];

@@ -13,11 +13,5 @@ router.post(
   AuthController.logoutUser
 );
 router.get("/csrf-token", isAuthenticated, AuthController.getCsrfToken);
-router.get(
-  "/me",
-  isAuthenticated,
-  csrfSynchronisedProtection,
-  AuthController.getMe
-);
 
 export default router;

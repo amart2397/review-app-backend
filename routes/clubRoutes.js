@@ -14,7 +14,7 @@ router
   );
 
 router
-  .route("/:id")
+  .route("/:clubId")
   .patch(
     isAuthenticated,
     csrfSynchronisedProtection,
@@ -24,6 +24,19 @@ router
     isAuthenticated,
     csrfSynchronisedProtection,
     ClubsController.deleteClub
+  );
+
+router
+  .route("/:clubId/invites")
+  .get(
+    isAuthenticated,
+    csrfSynchronisedProtection,
+    ClubsController.getClubInvites
+  )
+  .post(
+    isAuthenticated,
+    csrfSynchronisedProtection,
+    ClubsController.createClubInvite
   );
 
 export default router;

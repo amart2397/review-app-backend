@@ -105,6 +105,47 @@ export const transformClubData = (data) => {
   return renamed;
 };
 
+export const transformClubInviteData = (data) => {
+  const newKeys = {
+    id: "id",
+    clubId: "club_id",
+    inviterId: "inviter_id",
+    inviteeId: "invitee_id",
+    expiration: "expires_at",
+  };
+
+  const renamed = {};
+
+  for (const key in data) {
+    if (data.hasOwnProperty(key) && data[key] !== undefined) {
+      const newKey = newKeys[key] || key;
+      renamed[newKey] = data[key];
+    }
+  }
+
+  return renamed;
+};
+
+export const transformClubMemberData = (data) => {
+  const newKeys = {
+    id: "id",
+    clubId: "club_id",
+    userId: "user_id",
+    role: "role",
+  };
+
+  const renamed = {};
+
+  for (const key in data) {
+    if (data.hasOwnProperty(key) && data[key] !== undefined) {
+      const newKey = newKeys[key] || key;
+      renamed[newKey] = data[key];
+    }
+  }
+
+  return renamed;
+};
+
 //transform data to return to client
 export const transformReturnReviewData = (data) => {
   let cleanData;
@@ -156,4 +197,65 @@ export const transformReturnClubsData = (data) => {
   }
 
   return cleanData;
+};
+
+export const transformReturnClubInvitesData = (data) => {
+  if (!data || data.length === 0) return null;
+
+  return {
+    clubId: data[0].clubId,
+    clubName: data[0].clubName,
+    invites: data.map((entry) => ({
+      id: entry.id,
+      userId: entry.userId,
+      userName: entry.display_name,
+    })),
+  };
+};
+
+export const transformReturnUserInvitesData = (data) => {
+  if (!data || data.length === 0) return null;
+
+  return {
+    userId: data[0].inviteeId,
+    userName: data[0].inviteeDisplayName,
+    invites: data.map((entry) => ({
+      id: entry.id,
+      inviterId: entry.inviterId,
+      inviterName: entry.inviterDisplayName,
+      clubId: entry.clubId,
+      clubName: entry.clubName,
+      expiration: entry.expires_at,
+    })),
+  };
+};
+
+export const transformReturnClubMemberData = (data) => {
+  if (!data || data.length === 0) return null;
+
+  return {
+    clubId: data[0].clubId,
+    clubName: data[0].clubName,
+    members: data.map((entry) => ({
+      memberId: entry.memberId,
+      userId: entry.userId,
+      userName: entry.displayName,
+      role: entry.memberRole,
+    })),
+  };
+};
+
+export const transformReturnUserClubsData = (data) => {
+  if (!data || data.length === 0) return null;
+
+  return {
+    userId: data[0].userId,
+    userName: data[0].displayName,
+    clubs: data.map((entry) => ({
+      clubId: entry.clubId,
+      clubName: entry.clubName,
+      memberId: entry.memberId,
+      role: entry.memberRole,
+    })),
+  };
 };
