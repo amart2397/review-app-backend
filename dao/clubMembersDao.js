@@ -41,7 +41,7 @@ class ClubMembersDao {
     const member = await db("club_members")
       .join("users", "club_members.user_id", "users.id")
       .join("clubs", "club_members.club_id", "clubs.id")
-      .where("id", memberId)
+      .where("club_members.id", memberId)
       .first(clubMembersColumnsToReturn);
     return member;
   }

@@ -2,6 +2,8 @@ import expressAsyncHandler from "express-async-handler";
 import ClubsService from "../service/clubsService.js";
 import ClubsValidator from "../validators/clubsValidator.js";
 import AppError from "../utils/AppError.js";
+import ClubMembersValidator from "../validators/clubMembersValidator.js";
+import ClubInviteValidator from "../validators/clubInviteValidator.js";
 
 class ClubsController {
   //CLUBS
@@ -78,7 +80,8 @@ class ClubsController {
   // @access Private
   getClubInvites = expressAsyncHandler(async (req, res) => {
     const clubId = parseInt(req.params.clubId);
-    const invites = await ClubsService.getClubInvites(clubId);
+    const userId = parseInt(req.user.id);
+    const invites = await ClubsService.getClubInvites(userId, clubId);
     res.json(invites);
   });
 
@@ -95,10 +98,93 @@ class ClubsController {
       inviteeId,
       expiration: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), //Expires in one week
     };
-    const id = await ClubsService.createClubInvite(inputInviteData);
+    const validatedData =
+      ClubInviteValidator.validateNewInviteSchema(inputInviteData);
+    const id = await ClubsService.createClubInvite(validatedData);
     res.json({
       message: `Invite with id ${id} was created`,
     });
+  });
+
+  // @desc delete invite for club
+  // @route DELETE /clubs/:clubId/invites/:inviteId
+  // @access Private
+  deleteClubInvite = expressAsyncHandler(async (req, res) => {
+    const inviteId = parseInt(req.params.inviteId);
+    const userId = req.user.id;
+    const inputInviteData = {
+      id: inviteId,
+      userId,
+    };
+    const validatedData =
+      ClubInviteValidator.validateDeleteInviteSchema(inputInviteData);
+    const id = await ClubsService.deleteClubInvite(validatedData);
+    res.json({
+      message: `Invite with id ${id} was deleted`,
+    });
+  });
+
+  //CLUB MEMBERS
+
+  // @desc Get current members for club
+  // @route GET /clubs/:clubId/members
+  // @access Private
+  getClubMembers = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const userId = parseInt(req.user.id);
+    const invites = await ClubsService.getClubMembers(userId, clubId);
+    res.json(invites);
+  });
+
+  // @desc Add current user to public club
+  // @route POST /clubs/:clubId/members
+  // @access Private
+  addClubMember = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const userId = parseInt(req.user.id);
+    const inputClubMemberData = { clubId, userId };
+    const validatedMember =
+      ClubMembersValidator.validateNewClubMemberSchema(inputClubMemberData);
+    const resId = await ClubsService.addClubMember(validatedMember);
+    res.json({ message: `Member ${resId} added to club` });
+  });
+
+  // @desc Update member permissions for given club
+  // @route PATCH /clubs/:clubId/members/:memberId
+  // @access Private
+  updateClubMemberRole = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const memberId = parseInt(req.params.memberId);
+    const userId = parseInt(req.user.id);
+    const { role } = req?.body;
+    const inputClubMemberData = {
+      id: memberId,
+      role,
+      userId,
+      clubId,
+    };
+    const validatedData =
+      ClubMembersValidator.validateUpdateClubMemberSchema(inputClubMemberData);
+    await ClubsService.updateClubMember(validatedData);
+    res.json({ message: `Member ${memberId} successfully updated` });
+  });
+
+  // @desc remove member from given club
+  // @route DELETE /clubs/:clubId/members/:memberId
+  // @access Private
+  deleteClubMember = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const memberId = parseInt(req.params.memberId);
+    const userId = parseInt(req.user.id);
+    const inputClubMemberData = {
+      id: memberId,
+      userId,
+      clubId,
+    };
+    const validatedData =
+      ClubMembersValidator.validateDeleteClubMemberSchema(inputClubMemberData);
+    const delId = await ClubsService.removeClubMember(validatedData);
+    res.json({ message: `Member ${delId} successfully removed` });
   });
 }
 

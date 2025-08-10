@@ -46,7 +46,7 @@ class ClubInviteValidator {
       inviterId,
       clubId
     );
-    if (!inviter || inviter?.memberRole === "member") {
+    if (inviter?.memberRole === "member") {
       throw AppError.forbidden(
         "You are not authorized to add members to this club"
       );

@@ -97,8 +97,9 @@ class ClubsService {
     }
   }
 
-  async getClubInvites(clubId) {
+  async getClubInvites(userId, clubId) {
     try {
+      await ClubMembersValidator.validateUserIsClubMember(userId, clubId);
       const invites = await ClubInvitesDao.getClubInvites(clubId);
       return invites;
     } catch (err) {
@@ -137,8 +138,9 @@ class ClubsService {
   }
 
   //Club Members
-  async getClubMembers(clubId) {
+  async getClubMembers(userId, clubId) {
     try {
+      await ClubMembersValidator.validateUserIsClubMember(userId, clubId);
       const members = await ClubMembersDao.getClubMembers(clubId);
       return members;
     } catch (err) {
@@ -149,9 +151,17 @@ class ClubsService {
 
   async addClubMember(inputClubMemberData) {
     try {
+      const { userId, clubId } = inputClubMemberData;
       const validatedData = await ClubMembersValidator.validateNewClubMember(
         inputClubMemberData
       );
+      const invite = await ClubInvitesDao.getInviteByUserAndClub(
+        userId,
+        clubId
+      );
+      if (invite) {
+        await ClubInvitesDao.deleteInvite(invite.invites[0].id); //Delete current invite if it exists
+      }
       const newId = await ClubMembersDao.createMember(validatedData);
       return newId;
     } catch (err) {
@@ -165,7 +175,10 @@ class ClubsService {
       const validatedData = await ClubMembersValidator.validateUpdateClubMember(
         inputClubMemberData
       );
-      await ClubMembersDao.updateMemberRole(validatedData.id, role);
+      await ClubMembersDao.updateMemberRole(
+        validatedData.id,
+        validatedData.role
+      );
     } catch (err) {
       if (err instanceof AppError) throw err;
       handleError(err);

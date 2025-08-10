@@ -3,6 +3,7 @@ import ClubsService from "../service/clubsService.js";
 import ClubInviteValidator from "../validators/clubInviteValidator.js";
 import ClubMembersValidator from "../validators/clubMembersValidator.js";
 import AppError from "../utils/AppError.js";
+import ClubMembersDao from "../dao/clubMembersDao.js";
 
 class MeController {
   // @desc get basic user info for req session
@@ -75,6 +76,26 @@ class MeController {
 
     res.json({
       message,
+    });
+  });
+
+  // @desc delete current user's club membership
+  // @route DELETE /me/clubs/:clubId/member
+  // @access Private
+  removeFromClub = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const userId = parseInt(req.user.id);
+    const member = await ClubMembersDao.getMemberByUserAndClub(userId, clubId);
+    const memberId = member?.memberId;
+    if (!memberId) {
+      throw AppError.badRequest("You are not a member of this club");
+    }
+    const inputDelData = { id: memberId, userId, clubId };
+    const validatedData =
+      ClubMembersValidator.validateDeleteClubMemberSchema(inputDelData);
+    const delId = await ClubsService.removeClubMember(validatedData);
+    res.json({
+      message: `successfully removed from club with member Id ${delId}`,
     });
   });
 }

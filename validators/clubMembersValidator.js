@@ -64,16 +64,19 @@ class ClubMembersValidator {
   async validateUpdateClubMember(inputClubMemberData) {
     const { id, role, userId, clubId } = inputClubMemberData;
     const member = await ClubMembersDao.getMemberById(id);
-    const requestMember = ClubMembersDao.getMemberByUserAndClub(userId, clubId);
+    const requestMember = await ClubMembersDao.getMemberByUserAndClub(
+      userId,
+      clubId
+    );
     if (!member) {
       throw AppError.badRequest("Club member does not exist");
     }
-    if (!requestMember || requestMember?.role === "member") {
+    if (requestMember?.memberRole === "member") {
       throw AppError.forbidden(
-        "You are not authorized to change member roles foir this club"
+        "You are not authorized to change member roles for this club"
       );
     }
-    if (role === "member" && requestMember?.role !== "creator") {
+    if (role === "member" && requestMember?.memberRole !== "creator") {
       throw AppError.forbidden("Only the club creator can revoke permissions");
     }
     return inputClubMemberData;
@@ -81,17 +84,40 @@ class ClubMembersValidator {
 
   async validateDeleteClubMember(inputClubMemberData) {
     const { id, userId, clubId } = inputClubMemberData;
-    const requestMember = ClubMembersDao.getMemberByUserAndClub(userId, clubId);
-    const delMember = ClubMembersDao.getMemberById(id);
+    const requestMember = await ClubMembersDao.getMemberByUserAndClub(
+      userId,
+      clubId
+    );
+    const delMember = await ClubMembersDao.getMemberById(id);
     if (!delMember) {
       throw AppError.badRequest("Member does not exist");
     }
-    if (requestMember?.role === "member") {
+    if (
+      requestMember?.memberRole === "member" &&
+      requestMember?.userId !== delMember?.userId
+    ) {
       throw AppError.forbidden(
-        "You are not authroized to remove members from this club"
+        "You are not authorized to remove members from this club"
       );
     }
+    if (delMember?.memberRole === "creator") {
+      throw AppError.badRequest("Cannot remove the creator");
+    }
+    if (
+      delMember?.memberRole === "admin" &&
+      requestMember?.memberRole !== "creator"
+    ) {
+      throw AppError.forbidden("Only the creator is allowed to remove admins");
+    }
     return inputClubMemberData;
+  }
+
+  async validateUserIsClubMember(userId, clubId) {
+    const member = await ClubMembersDao.getMemberByUserAndClub(userId, clubId);
+    if (!member) {
+      throw AppError.forbidden("You are not a member of this club");
+    }
+    return;
   }
 }
 
