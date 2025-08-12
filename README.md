@@ -31,6 +31,10 @@ This service handles authentication, authorization, club and review management, 
 - Private reviews with optional club sharing
 - Personal user profiles
 
+### Testing & CI/CD
+
+Centralized unit and integration test files are in development and will be integrated into a CI/CD workflow once the project is ready for deployment.
+
 ---
 
 ## Tech Stack
