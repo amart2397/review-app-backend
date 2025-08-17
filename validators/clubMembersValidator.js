@@ -71,7 +71,7 @@ class ClubMembersValidator {
     if (!member) {
       throw AppError.badRequest("Club member does not exist");
     }
-    if (requestMember?.memberRole === "member") {
+    if (!requestMember || requestMember?.memberRole === "member") {
       throw AppError.forbidden(
         "You are not authorized to change member roles for this club"
       );
@@ -93,7 +93,7 @@ class ClubMembersValidator {
       throw AppError.badRequest("Member does not exist");
     }
     if (
-      requestMember?.memberRole === "member" &&
+      (!requestMember || requestMember?.memberRole === "member") &&
       requestMember?.userId !== delMember?.userId
     ) {
       throw AppError.forbidden(
