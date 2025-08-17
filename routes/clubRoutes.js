@@ -28,11 +28,7 @@ router
 
 router
   .route("/:clubId/invites")
-  .get(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    ClubsController.getClubInvites
-  )
+  .get(isAuthenticated, ClubsController.getClubInvites)
   .post(
     isAuthenticated,
     csrfSynchronisedProtection,
@@ -49,11 +45,7 @@ router
 
 router
   .route("/:clubId/members")
-  .get(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    ClubsController.getClubMembers
-  )
+  .get(isAuthenticated, ClubsController.getClubMembers)
   .post(
     isAuthenticated,
     csrfSynchronisedProtection,
@@ -71,6 +63,23 @@ router
     isAuthenticated,
     csrfSynchronisedProtection,
     ClubsController.deleteClubMember
+  );
+
+router
+  .route("/:clubId/media")
+  .get(isAuthenticated, ClubsController.getClubMedia)
+  .post(
+    isAuthenticated,
+    csrfSynchronisedProtection,
+    ClubsController.addClubMedia
+  );
+
+router
+  .route("/:clubId/media/:clubMediaId")
+  .delete(
+    isAuthenticated,
+    csrfSynchronisedProtection,
+    ClubsController.deleteClubMedia
   );
 
 export default router;

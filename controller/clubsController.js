@@ -4,6 +4,7 @@ import ClubsValidator from "../validators/clubsValidator.js";
 import AppError from "../utils/AppError.js";
 import ClubMembersValidator from "../validators/clubMembersValidator.js";
 import ClubInviteValidator from "../validators/clubInviteValidator.js";
+import ClubMediaValidator from "../validators/clubMediaValidator.js";
 
 class ClubsController {
   //CLUBS
@@ -185,6 +186,55 @@ class ClubsController {
       ClubMembersValidator.validateDeleteClubMemberSchema(inputClubMemberData);
     const delId = await ClubsService.removeClubMember(validatedData);
     res.json({ message: `Member ${delId} successfully removed` });
+  });
+
+  //CLUB MEDIA
+
+  // @desc get media for a given club
+  // @route GET /clubs/:clubId/media
+  // @access Private
+  getClubMedia = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const userId = parseInt(req.user.id);
+    const clubMedia = await ClubsService.getClubMedia(userId, clubId);
+    res.json(clubMedia);
+  });
+
+  // @desc add new media for a given club
+  // @route POST /clubs/:clubId/media
+  // @access Private
+  addClubMedia = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const userId = parseInt(req.user.id);
+    const { mediaId, media } = req.body;
+    const inputClubMediaData = {
+      assignedBy: userId,
+      mediaId,
+      clubId,
+      media,
+    };
+    const validatedData =
+      ClubMediaValidator.validateNewClubMediaSchema(inputClubMediaData);
+    const newId = await ClubsService.addClubMedia(validatedData);
+    res.json({ message: `New club media with id ${newId} added` });
+  });
+
+  // @desc delete a club media for a give club
+  // @route DELETE /clubs/:clubId/media/:clubMediaId
+  // @access Private
+  deleteClubMedia = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const clubMediaId = parseInt(req.params.clubMediaId);
+    const userId = parseInt(req.user.id);
+    const inputClubMediaData = {
+      id: clubMediaId,
+      userId,
+      clubId,
+    };
+    const validatedData =
+      ClubMediaValidator.validateDeleteClubMediaSchema(inputClubMediaData);
+    const delId = await ClubsService.deleteClubMedia(validatedData);
+    res.json({ message: `Club media with id ${delId} deleted` });
   });
 }
 

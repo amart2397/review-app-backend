@@ -71,3 +71,22 @@ export const clubMembersColumnsToReturn = [
   "users.display_name as displayName",
   "clubs.name as clubName",
 ];
+
+//Club Media Columns
+export const clubMediaColumnsToReturn = [
+  "club_media.id as clubMediaId",
+  "clubs.id as clubId",
+  "clubs.name as clubName",
+  "clubs.media_type as mediaType",
+  "users.id as creatorId",
+  "users.display_name as displayName",
+  "media.id as mediaId",
+  "media.title as mediaTitle",
+  "media.description as mediaDescription",
+  "media.art_large",
+  "media.art_small",
+  "media.authors",
+  "media.release_date",
+  "media.publisher",
+  "media.runtime",
+];

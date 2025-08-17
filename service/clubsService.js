@@ -1,3 +1,4 @@
+import env from "dotenv";
 import ClubsDao from "../dao/clubsDao.js";
 import ClubsValidator from "../validators/clubsValidator.js";
 import AppError from "../utils/AppError.js";
@@ -6,6 +7,13 @@ import ClubInviteValidator from "../validators/clubInviteValidator.js";
 import ClubInvitesDao from "../dao/clubInvitesDao.js";
 import ClubMembersDao from "../dao/clubMembersDao.js";
 import ClubMembersValidator from "../validators/clubMembersValidator.js";
+import ClubMediaDao from "../dao/clubMediaDao.js";
+import ClubMediaValidator from "../validators/clubMediaValidator.js";
+import MediaDao from "../dao/mediaDao.js";
+import MediaValidator from "../validators/mediaValidator.js";
+import ClubThreadsDao from "../dao/clubThreadsDao.js";
+import ClubThreadsValidator from "../validators/clubThreadsValidator.js";
+env.config();
 
 class ClubsService {
   //Clubs
@@ -192,6 +200,69 @@ class ClubsService {
       );
       const id = await ClubMembersDao.deleteMember(validatedData.id);
       return id;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
+
+  //Club Media
+  async getClubMedia(userId, clubId) {
+    try {
+      await ClubMembersValidator.validateUserIsClubMember(userId, clubId);
+      const clubMedia = await ClubMediaDao.getClubMedia(clubId);
+      return clubMedia;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
+
+  async addClubMedia(inputClubMediaData) {
+    try {
+      const clubMediaData = { ...inputClubMediaData };
+      const { mediaId, media } = clubMediaData;
+      //create new media if necessary
+      if (!mediaId) {
+        //check if media exists
+        const checkMedia = await MediaDao.getMediaByKey(media.mediaKey);
+        if (checkMedia) {
+          clubMediaData.mediaId = checkMedia.id;
+        } else {
+          //if not create new media and add media id
+          const validatedMedia = await MediaValidator.validateNewMedia(media);
+          const newMediaId = await MediaDao.createMedia(validatedMedia);
+          clubMediaData.mediaId = newMediaId;
+        }
+      }
+      if ("media" in clubMediaData) delete clubMediaData.media;
+
+      const validatedData = await ClubMediaValidator.validateNewClubMedia(
+        clubMediaData
+      );
+      const newClubMediaId = await ClubMediaDao.addClubMedia(validatedData);
+      //default thread created with every media
+      const defaultThread = {
+        clubMediaId: newClubMediaId,
+        userId: Number(process.env.ADMIN_ID), //creator is set to an app admin
+        title: "Open Discussion",
+        default: true,
+      };
+      await ClubThreadsDao.createNewThread(defaultThread);
+      return newClubMediaId;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
+
+  async deleteClubMedia(inputClubMediaData) {
+    try {
+      const validatedData = await ClubMediaValidator.validateDeleteClubMedia(
+        inputClubMediaData
+      );
+      const delId = await ClubMediaDao.deleteClubMedia(validatedData.id);
+      return delId;
     } catch (err) {
       if (err instanceof AppError) throw err;
       handleError(err);

@@ -146,6 +146,47 @@ export const transformClubMemberData = (data) => {
   return renamed;
 };
 
+export const transformClubMediaData = (data) => {
+  const newKeys = {
+    id: "id",
+    clubId: "club_id",
+    mediaId: "media_id",
+    assignedBy: "assigned_by",
+  };
+
+  const renamed = {};
+
+  for (const key in data) {
+    if (data.hasOwnProperty(key) && data[key] !== undefined) {
+      const newKey = newKeys[key] || key;
+      renamed[newKey] = data[key];
+    }
+  }
+
+  return renamed;
+};
+
+export const transformClubThreadData = (data) => {
+  const newKeys = {
+    id: "id",
+    clubMediaId: "club_media_id",
+    userId: "created_by",
+    title: "title",
+    default: "default",
+  };
+
+  const renamed = {};
+
+  for (const key in data) {
+    if (data.hasOwnProperty(key) && data[key] !== undefined) {
+      const newKey = newKeys[key] || key;
+      renamed[newKey] = data[key];
+    }
+  }
+
+  return renamed;
+};
+
 //transform data to return to client
 export const transformReturnReviewData = (data) => {
   let cleanData;
@@ -256,6 +297,32 @@ export const transformReturnUserClubsData = (data) => {
       clubName: entry.clubName,
       memberId: entry.memberId,
       role: entry.memberRole,
+    })),
+  };
+};
+
+export const transformReturnClubMediaData = (data) => {
+  if (!data || data.length === 0) return null;
+
+  return {
+    clubId: data[0].clubId,
+    clubName: data[0].clubName,
+    clubType: data[0].mediaType,
+    media: data.map((entry) => ({
+      clubMediaId: entry.clubMediaId,
+      mediaId: entry.mediaId,
+      title: entry.mediaTitle,
+      description: entry.mediaDescrription,
+      artSmall: entry.art_small,
+      artLarge: entry.art_large,
+      authors: entry.authors,
+      releaseDate: entry.release_date,
+      publisher: entry.publisher,
+      runtime: entry.runtime,
+      assignedBy: {
+        id: entry.creatorId,
+        displayName: entry.displayName,
+      },
     })),
   };
 };
