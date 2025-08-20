@@ -90,3 +90,14 @@ export const clubMediaColumnsToReturn = [
   "media.publisher",
   "media.runtime",
 ];
+
+//Club Thread Columns
+export const clubThreadColumnsToReturn = [
+  "threads.id as threadId",
+  "threads.club_media_id as clubMediaId",
+  "threads.created_by as creatorId",
+  "users.display_name as creatorName",
+  "threads.title",
+  "threads.default",
+  "threads.created_at",
+];

@@ -1,16 +1,47 @@
 import db from "../db/db.js";
-import { transformClubThreadData } from "../transformers/transformData.js";
+import {
+  transformClubThreadData,
+  transformReturnClubThreadData,
+} from "../transformers/transformData.js";
+import { clubThreadColumnsToReturn } from "./config/returnColumnsConfig.js";
 
 class ClubThreadsDao {
-  async getClubThreads(clubMediaId) {
-    const threads = await db("threads")
-      .where("club_media_id", clubMediaId)
-      .select();
-    return threads;
+  async getClubThreads(clubMediaId, cursor = null, limit = 10) {
+    let query = db("threads")
+      .join("users", "threads.created_by", "users.id")
+      .where("threads.club_media_id", clubMediaId)
+      .select(clubThreadColumnsToReturn)
+      .orderBy("threads.created_at", "desc")
+      .limit(limit);
+
+    // If cursor is provided, fetch threads older than that timestamp
+    if (cursor) {
+      query = query.andWhere("threads.created_at", "<", cursor);
+    }
+
+    const threadsRaw = await query;
+
+    const threads = threadsRaw.map((entry) =>
+      transformReturnClubThreadData(entry)
+    );
+
+    // Next cursor = created_at of the last thread in this batch
+    const nextCursor =
+      threads.length > 0 ? threads[threads.length - 1].createdAt : null;
+
+    return {
+      threads,
+      nextCursor,
+      hasMore: threads.length === limit, // client can check if more available
+    };
   }
 
   async getClubThreadById(threadId) {
-    const thread = await db("threads").where("id", threadId).first();
+    const threadRaw = await db("threads")
+      .join("users", "threads.created_by", "users.id")
+      .where("threads.id", threadId)
+      .first(clubThreadColumnsToReturn);
+    const thread = transformReturnClubThreadData(threadRaw);
     return thread;
   }
 
@@ -20,6 +51,10 @@ class ClubThreadsDao {
       .insert(transformedData)
       .returning("id");
     return id;
+  }
+
+  async updateThread(threadId, newTitle) {
+    await db("threads").where("id", threadId).update({ title: newTitle });
   }
 
   async deleteThread(threadId) {

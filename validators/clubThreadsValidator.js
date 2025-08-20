@@ -17,6 +17,7 @@ const newClubThreadSchema = z.object({
 const updateClubThreadSchema = z
   .object({
     id: z.int(),
+    clubMediaId: z.int(),
     userId: z.int(),
     clubId: z.int(),
     title: z.string(),
@@ -25,6 +26,7 @@ const updateClubThreadSchema = z
 
 const deleteClubThreadSchema = z.object({
   id: z.int(),
+  clubMediaId: z.int(),
   userId: z.int(),
   clubId: z.int(),
 });
@@ -71,31 +73,49 @@ class ClubThreadsValidator {
   }
 
   async validateUpdateThread(inputThreadData) {
-    const { id, userId, clubId } = inputThreadData;
+    const { id, userId, clubId, clubMediaId } = inputThreadData;
     const updater = await ClubMembersDao.getMemberByUserAndClub(userId, clubId);
     const thread = await ClubThreadsDao.getClubThreadById(id);
+    const clubMedia = await ClubMediaDao.getClubMediaById(clubMediaId);
     //Thread must exist
     if (!thread) {
       throw AppError.badRequest("Thread id does not exist");
     }
-    //Only the creator can edit threads
-    if (!updater || thread?.created_by !== userId) {
+    //Club media must match to thread
+    if (clubMedia?.media[0]?.clubMediaId !== thread.clubMediaId) {
+      throw AppError.badRequest("Invalid thread selection for this club media");
+    }
+    //Club media must be for selected club
+    if (clubMedia.clubId !== clubId) {
+      throw AppError.badRequest("Invalid media selection for this club");
+    }
+    //Only the club admins/creator can edit threads
+    if (!updater || updater.memberRole === "member") {
       throw AppError.forbidden("You are not authorized to update this thread");
     }
     return inputThreadData;
   }
 
   async validateDeleteThread(inputThreadData) {
-    const { id, userId, clubId } = inputThreadData;
+    const { id, userId, clubId, clubMediaId } = inputThreadData;
     const deleter = await ClubMembersDao.getMemberByUserAndClub(userId, clubId);
     const thread = await ClubThreadsDao.getClubThreadById(id);
+    const clubMedia = await ClubMediaDao.getClubMediaById(clubMediaId);
     //Thread must exist
     if (!thread) {
       throw AppError.badRequest("Thread id does not exist");
     }
-    //Only the creator can edit threads
-    if (!deleter || thread?.created_by !== userId) {
-      throw AppError.forbidden("You are not authorized to delete this thread");
+    //Club media must match to thread
+    if (clubMedia?.media[0]?.clubMediaId !== thread.clubMediaId) {
+      throw AppError.badRequest("Invalid thread selection for this club media");
+    }
+    //Club media must be for selected club
+    if (clubMedia.clubId !== clubId) {
+      throw AppError.badRequest("Invalid media selection for this club");
+    }
+    //Only the club admins/creator can edit threads
+    if (!deleter || deleter.memberRole === "member") {
+      throw AppError.forbidden("You are not authorized to update this thread");
     }
     return inputThreadData;
   }

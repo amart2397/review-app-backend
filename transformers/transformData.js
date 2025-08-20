@@ -326,3 +326,18 @@ export const transformReturnClubMediaData = (data) => {
     })),
   };
 };
+
+export const transformReturnClubThreadData = (data) => {
+  if (!data || data.length === 0) return null;
+
+  return {
+    threadId: data.threadId,
+    title: data.title,
+    clubMediaId: data.clubMediaId,
+    creator: {
+      id: data.creatorId,
+      displayName: data.displayName,
+    },
+    createdAt: data.created_at,
+  };
+};

@@ -5,6 +5,7 @@ import AppError from "../utils/AppError.js";
 import ClubMembersValidator from "../validators/clubMembersValidator.js";
 import ClubInviteValidator from "../validators/clubInviteValidator.js";
 import ClubMediaValidator from "../validators/clubMediaValidator.js";
+import ClubThreadsValidator from "../validators/clubThreadsValidator.js";
 
 class ClubsController {
   //CLUBS
@@ -235,6 +236,91 @@ class ClubsController {
       ClubMediaValidator.validateDeleteClubMediaSchema(inputClubMediaData);
     const delId = await ClubsService.deleteClubMedia(validatedData);
     res.json({ message: `Club media with id ${delId} deleted` });
+  });
+
+  //CLUB THREADS
+
+  // @desc get threads for a given club media
+  // @route GET /clubs/:clubId/media/:clubMediaId/threads?cursor
+  // @access Private
+  getClubThreads = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const userId = parseInt(req.user.id);
+    const clubMediaId = parseInt(req.params.clubMediaId);
+    const cursor = req.query.cursor || null;
+    const { threads, nextCursor, hasMore } = await ClubsService.getClubThreads(
+      userId,
+      clubId,
+      clubMediaId,
+      cursor
+    );
+    res.json({
+      threads,
+      nextCursor,
+      hasMore,
+    });
+  });
+
+  // @desc add new thread for a given club media
+  // @route POST /clubs/:clubId/media/:clubMediaId/threads
+  // @access Private
+  addClubThread = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const userId = parseInt(req.user.id);
+    const clubMediaId = parseInt(req.params.clubMediaId);
+    const { title } = req.body;
+    const inputThreadData = {
+      clubMediaId,
+      userId,
+      clubId,
+      title,
+    };
+    const validatedData =
+      ClubThreadsValidator.validateNewThreadSchema(inputThreadData);
+    const newId = await ClubsService.addClubThread(validatedData);
+    res.json({ message: `New club thread with id ${newId} added` });
+  });
+
+  // @desc Update member permissions for given club
+  // @route PATCH /clubs/:clubId/media/:clubMediaId/threads/:threadId
+  // @access Private
+  updateThreadTitle = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const userId = parseInt(req.user.id);
+    const clubMediaId = parseInt(req.params.clubMediaId);
+    const threadId = parseInt(req.params.threadId);
+    const { title } = req.body;
+    const inputThreadData = {
+      id: threadId,
+      clubMediaId,
+      userId,
+      clubId,
+      title,
+    };
+    const validatedData =
+      ClubThreadsValidator.validateUpdateThreadSchema(inputThreadData);
+    await ClubsService.updateClubThread(validatedData);
+    res.json({ message: `Thread with id ${threadId} updated` });
+  });
+
+  // @desc delete a thread for a given club media
+  // @route DELETE /clubs/:clubId/media/:clubMediaId/threads/:threadId
+  // @access Private
+  deleteClubThread = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const userId = parseInt(req.user.id);
+    const clubMediaId = parseInt(req.params.clubMediaId);
+    const threadId = parseInt(req.params.threadId);
+    const inputThreadData = {
+      id: threadId,
+      clubMediaId,
+      userId,
+      clubId,
+    };
+    const validatedData =
+      ClubThreadsValidator.validateDeleteThreadSchema(inputThreadData);
+    await ClubsService.deleteClubThread(validatedData);
+    res.json({ message: `Thread with id ${threadId} deleted` });
   });
 }
 

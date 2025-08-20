@@ -268,6 +268,60 @@ class ClubsService {
       handleError(err);
     }
   }
+
+  //Club Threads
+  async getClubThreads(userId, clubId, clubMediaId, cursor = null) {
+    try {
+      await ClubMembersValidator.validateUserIsClubMember(userId, clubId);
+      const clubThreads = await ClubThreadsDao.getClubThreads(
+        clubMediaId,
+        cursor
+      );
+      return clubThreads;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
+
+  async addClubThread(inputClubThreadData) {
+    try {
+      const validatedData = await ClubThreadsValidator.validateNewThread(
+        inputClubThreadData
+      );
+      if ("clubId" in validatedData) delete validatedData.clubId;
+      const newId = await ClubThreadsDao.createNewThread(validatedData);
+      return newId;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
+
+  async updateClubThread(inputClubThreadData) {
+    try {
+      const validatedData = await ClubThreadsValidator.validateUpdateThread(
+        inputClubThreadData
+      );
+      await ClubThreadsDao.updateThread(validatedData.id, validatedData.title);
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
+
+  async deleteClubThread(inputClubThreadData) {
+    try {
+      const validatedData = await ClubThreadsValidator.validateDeleteThread(
+        inputClubThreadData
+      );
+      const delId = await ClubThreadsDao.deleteThread(validatedData.id);
+      return delId;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
 }
 
 export default new ClubsService();

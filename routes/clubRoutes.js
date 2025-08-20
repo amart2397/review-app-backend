@@ -4,6 +4,7 @@ import isAuthenticated from "../middleware/isAuthenticated.js";
 import { csrfSynchronisedProtection } from "../config/csrfSync.js";
 const router = express.Router();
 
+//clubs
 router
   .route("/")
   .get(ClubsController.getAllPublicClubs)
@@ -26,6 +27,7 @@ router
     ClubsController.deleteClub
   );
 
+//invites
 router
   .route("/:clubId/invites")
   .get(isAuthenticated, ClubsController.getClubInvites)
@@ -43,6 +45,7 @@ router
     ClubsController.deleteClubInvite
   );
 
+//members
 router
   .route("/:clubId/members")
   .get(isAuthenticated, ClubsController.getClubMembers)
@@ -65,6 +68,7 @@ router
     ClubsController.deleteClubMember
   );
 
+//club media
 router
   .route("/:clubId/media")
   .get(isAuthenticated, ClubsController.getClubMedia)
@@ -80,6 +84,29 @@ router
     isAuthenticated,
     csrfSynchronisedProtection,
     ClubsController.deleteClubMedia
+  );
+
+//threads
+router
+  .route("/:clubId/media/:clubMediaId/threads")
+  .get(isAuthenticated, ClubsController.getClubThreads)
+  .post(
+    isAuthenticated,
+    csrfSynchronisedProtection,
+    ClubsController.addClubThread
+  );
+
+router
+  .route("/:clubId/media/:clubMediaId/threads/:threadId")
+  .patch(
+    isAuthenticated,
+    csrfSynchronisedProtection,
+    ClubsController.updateThreadTitle
+  )
+  .delete(
+    isAuthenticated,
+    csrfSynchronisedProtection,
+    ClubsController.deleteClubThread
   );
 
 export default router;
