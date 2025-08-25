@@ -98,10 +98,20 @@ class ClubMediaValidator {
     if (!media) {
       throw AppError.badRequest("Club media does not exist");
     }
+    if (media.clubId !== clubId) {
+      throw AppError.badRequest("Invalid club media id and club id pair");
+    }
     if (!requestedBy || requestedBy?.memberRole === "member") {
       throw AppError.forbidden("You are not authorized to delete club media");
     }
     return inputClubMediaData;
+  }
+
+  async validateClubMediaAndClub(clubMediaId, clubId) {
+    const clubMedia = await ClubMediaDao.getClubMediaById(clubMediaId);
+    if (clubMedia.clubId !== clubId) {
+      throw AppError.badRequest("Invalid club media id and club id pair");
+    }
   }
 }
 

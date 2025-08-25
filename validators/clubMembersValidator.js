@@ -71,6 +71,9 @@ class ClubMembersValidator {
     if (!member) {
       throw AppError.badRequest("Club member does not exist");
     }
+    if (member.clubId !== clubId) {
+      throw AppError.badRequest("invalid member id and club id pair");
+    }
     if (!requestMember || requestMember?.memberRole === "member") {
       throw AppError.forbidden(
         "You are not authorized to change member roles for this club"
@@ -91,6 +94,9 @@ class ClubMembersValidator {
     const delMember = await ClubMembersDao.getMemberById(id);
     if (!delMember) {
       throw AppError.badRequest("Member does not exist");
+    }
+    if (delMember.clubId !== clubId) {
+      throw AppError.badRequest("invalid member id and club id pair");
     }
     if (
       (!requestMember || requestMember?.memberRole === "member") &&

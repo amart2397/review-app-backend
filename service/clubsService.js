@@ -274,6 +274,7 @@ class ClubsService {
   //Club Threads
   async getClubThreads(userId, clubId, clubMediaId, cursor = null) {
     try {
+      await ClubMediaValidator.validateClubMediaAndClub(clubMediaId, clubId);
       await ClubMembersValidator.validateUserIsClubMember(userId, clubId);
       const clubThreads = await ClubThreadsDao.getClubThreads(
         clubMediaId,
@@ -328,6 +329,7 @@ class ClubsService {
   //Club Thread Comments
   async getClubThreadComments(userId, clubId, threadId) {
     try {
+      await ClubThreadsValidator.validateThreadAndClub(threadId, clubId);
       await ClubMembersValidator.validateUserIsClubMember(userId, clubId);
       const threadComments = await ClubThreadCommentsDao.getClubThreadComments({
         threadId,

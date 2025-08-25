@@ -67,7 +67,7 @@ class ClubThreadsValidator {
     }
     //Media must be associated with current club
     if (media.clubId !== clubId) {
-      throw AppError.badRequest("Media id not associated with club");
+      throw AppError.badRequest("Invalid club media id and club id pair");
     }
     return inputThreadData;
   }
@@ -83,11 +83,13 @@ class ClubThreadsValidator {
     }
     //Club media must match to thread
     if (clubMedia?.media[0]?.clubMediaId !== thread.clubMediaId) {
-      throw AppError.badRequest("Invalid thread selection for this club media");
+      throw AppError.badRequest(
+        "Invalid club media id and club thread id pair"
+      );
     }
     //Club media must be for selected club
     if (clubMedia.clubId !== clubId) {
-      throw AppError.badRequest("Invalid media selection for this club");
+      throw AppError.badRequest("Invalid club media id and club id pair");
     }
     //Only the club admins/creator can edit threads
     if (!updater || updater.memberRole === "member") {
@@ -107,17 +109,27 @@ class ClubThreadsValidator {
     }
     //Club media must match to thread
     if (clubMedia?.media[0]?.clubMediaId !== thread.clubMediaId) {
-      throw AppError.badRequest("Invalid thread selection for this club media");
+      throw AppError.badRequest(
+        "Invalid club media id and club thread id pair"
+      );
     }
     //Club media must be for selected club
     if (clubMedia.clubId !== clubId) {
-      throw AppError.badRequest("Invalid media selection for this club");
+      throw AppError.badRequest("Invalid club media id and club id pair");
     }
     //Only the club admins/creator can edit threads
     if (!deleter || deleter.memberRole === "member") {
       throw AppError.forbidden("You are not authorized to update this thread");
     }
     return inputThreadData;
+  }
+
+  async validateThreadAndClub(threadId, clubId) {
+    const thread = await ClubThreadsDao.getClubThreadById(threadId);
+    const clubMedia = await ClubMediaDao.getClubMediaById(thread.clubMediaId);
+    if (clubMedia.clubId !== clubId) {
+      throw AppError.badRequest("Invlaid thread id and club id pair");
+    }
   }
 }
 
