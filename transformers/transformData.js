@@ -69,6 +69,7 @@ export const transformReviewData = (data) => {
     reviewTitle: "review_title",
     reviewText: "review_text",
     reviewRating: "review_rating",
+    private: "private",
   };
 
   const renamed = {};
@@ -217,6 +218,7 @@ export const transformReturnReviewData = (data) => {
       title: data.review_title,
       text: data.review_text,
       rating: data.review_rating,
+      private: data.private,
       author: {
         id: data.userId,
         displayName: data.display_name,

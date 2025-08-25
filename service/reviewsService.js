@@ -1,8 +1,10 @@
 import MediaDao from "../dao/mediaDao.js";
+import ReviewClubSharesDao from "../dao/reviewClubSharesDao.js";
 import ReviewsDao from "../dao/reviewsDao.js";
 import AppError from "../utils/AppError.js";
 import handleError from "../utils/handleError.js";
 import MediaValidator from "../validators/mediaValidator.js";
+import ReviewClubSharesValidator from "../validators/reviewClubSharesValidator.js";
 import ReviewsValidator from "../validators/reviewsValidator.js";
 
 class ReviewsService {
@@ -74,6 +76,38 @@ class ReviewsService {
       const { id } = inputReviewData;
       const review = await ReviewsDao.getReviewById(id);
       return review;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
+
+  async shareReviewToClub(reviewId, clubId, userId) {
+    try {
+      await ReviewClubSharesValidator.validateNewReviewShare(
+        reviewId,
+        clubId,
+        userId
+      );
+      const newId = await ReviewClubSharesDao.addReviewClubShare(
+        reviewId,
+        clubId
+      );
+      return newId;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
+
+  async removeReviewShare(shareId, userId) {
+    try {
+      await ReviewClubSharesValidator.validateDeleteReviewShare(
+        shareId,
+        userId
+      );
+      const delId = await ReviewClubSharesDao.deleteReviewClubShare(shareId);
+      return delId;
     } catch (err) {
       if (err instanceof AppError) throw err;
       handleError(err);

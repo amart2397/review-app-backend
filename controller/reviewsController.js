@@ -19,7 +19,8 @@ class ReviewsController {
   // @route POST /reviews
   // @access Private
   createReview = expressAsyncHandler(async (req, res) => {
-    const { mediaId, reviewTitle, reviewText, reviewRating, media } = req.body;
+    const { mediaId, reviewTitle, reviewText, reviewRating, media, isPrivate } =
+      req.body;
     const userId = req.user.id;
     if (media && media.mediaKey != null) {
       media.mediaKey = String(media.mediaKey);
@@ -32,6 +33,7 @@ class ReviewsController {
       reviewRating,
       media,
     };
+    if (isPrivate) inputReviewData.private = isPrivate;
     const validatedData =
       ReviewsValidator.validateNewReviewSchema(inputReviewData);
     const newReviewId = await ReviewsService.createReview(validatedData);
@@ -64,6 +66,7 @@ class ReviewsController {
       reviewTitle,
       reviewText,
       reviewRating,
+      isPrivate,
     } = req.body;
     const id = parseInt(req.params.id);
     const requestUserId = req.user.id;
@@ -78,6 +81,7 @@ class ReviewsController {
       reviewText,
       reviewRating,
     };
+    if (isPrivate) inputReviewData.private = isPrivate;
     const validatedData =
       ReviewsValidator.validateUpdateReviewSchema(inputReviewData);
     await ReviewsService.updateReview(validatedData);

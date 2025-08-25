@@ -13,6 +13,7 @@ const newReviewSchema = z
     reviewTitle: z.string(),
     reviewText: z.string(),
     reviewRating: z.number().nonnegative().multipleOf(0.1).max(10),
+    private: z.boolean().optional(),
     media: z
       .object({
         //Allow new media to be passed in with reviews
@@ -47,6 +48,7 @@ const updateReviewSchema = z.object({
   reviewTitle: z.string().optional(),
   reviewText: z.string().optional(),
   reviewRating: z.number().nonnegative().multipleOf(0.1).max(10).optional(),
+  private: z.boolean().optional(),
 });
 
 const reviewIdSchema = z.object({

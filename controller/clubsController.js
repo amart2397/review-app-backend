@@ -7,6 +7,7 @@ import ClubInviteValidator from "../validators/clubInviteValidator.js";
 import ClubMediaValidator from "../validators/clubMediaValidator.js";
 import ClubThreadsValidator from "../validators/clubThreadsValidator.js";
 import ClubThreadCommentValidator from "../validators/clubThreadCommentValidator.js";
+import ReviewsService from "../service/reviewsService.js";
 
 class ClubsController {
   //CLUBS
@@ -428,6 +429,33 @@ class ClubsController {
       ClubThreadCommentValidator.validateDeleteThreadCommentSchema(inputData);
     await ClubsService.deleteClubThreadComment(validatedData);
     res.json({ message: `Comment with id ${commentId} deleted` });
+  });
+
+  //CLUB REVIEW SHARES
+
+  // @desc share private review to club
+  // @route POST /clubs/:clubId/media/:clubMediaId/reviews/:reviewId/share
+  // @access Private
+  shareReview = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const userId = parseInt(req.user.id);
+    const reviewId = parseInt(req.params.reviewId);
+    const newId = await ReviewsService.shareReviewToClub(
+      reviewId,
+      clubId,
+      userId
+    );
+    res.json({ message: `New review share with id ${newId} added` });
+  });
+
+  // @desc remove review share from club
+  // @route DELETE /clubs/:clubId/media/:clubMediaId/reviews/:reviewId/share/:shareId
+  // @access Private
+  removeReviewShare = expressAsyncHandler(async (req, res) => {
+    const userId = parseInt(req.user.id);
+    const shareId = parseInt(req.params.shareId);
+    const delId = await ReviewsService.removeReviewShare(shareId, userId);
+    res.json({ message: `Review share with id ${delId} removed` });
   });
 }
 

@@ -17,6 +17,7 @@ export const reviewsColumnsToReturn = [
   "reviews.review_title",
   "reviews.review_text",
   "reviews.review_rating",
+  "reviews.private",
   "users.id as userId",
   "users.display_name",
   "media.id as mediaId",

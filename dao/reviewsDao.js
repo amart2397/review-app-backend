@@ -10,6 +10,7 @@ class ReviewsDao {
     const reviewsRaw = await db("reviews")
       .join("users", "reviews.user_id", "users.id")
       .join("media", "reviews.media_id", "media.id")
+      .where("reviews.private", false) //Only fetch public reviews
       .select(reviewsColumnsToReturn);
     const reviews = reviewsRaw.map((entry) => transformReturnReviewData(entry));
     return reviews;

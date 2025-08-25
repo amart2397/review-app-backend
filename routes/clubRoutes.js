@@ -138,4 +138,20 @@ router
     ClubsController.deleteClubThreadComment
   );
 
+router
+  .route("/:clubId/media/:clubMediaId/reviews/:reviewId/share")
+  .post(
+    isAuthenticated,
+    csrfSynchronisedProtection,
+    ClubsController.shareReview
+  );
+
+router
+  .route("/:clubId/media/:clubMediaId/reviews/:reviewId/share/:shareId")
+  .delete(
+    isAuthenticated,
+    csrfSynchronisedProtection,
+    ClubsController.removeReviewShare
+  );
+
 export default router;
