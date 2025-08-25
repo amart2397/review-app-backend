@@ -101,3 +101,15 @@ export const clubThreadColumnsToReturn = [
   "threads.default",
   "threads.created_at",
 ];
+
+//Club Thread Commments Columns
+export const clubThreadCommentsColumnsToReturn = [
+  "c.id as commentId",
+  "c.content",
+  "c.created_at",
+  "c.parent_comment_id",
+  "c.author_id",
+  "c.deleted_at",
+  "c.thread_id",
+  "u.display_name as displayName",
+];

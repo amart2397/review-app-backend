@@ -6,6 +6,7 @@ import ClubMembersValidator from "../validators/clubMembersValidator.js";
 import ClubInviteValidator from "../validators/clubInviteValidator.js";
 import ClubMediaValidator from "../validators/clubMediaValidator.js";
 import ClubThreadsValidator from "../validators/clubThreadsValidator.js";
+import ClubThreadCommentValidator from "../validators/clubThreadCommentValidator.js";
 
 class ClubsController {
   //CLUBS
@@ -281,7 +282,7 @@ class ClubsController {
     res.json({ message: `New club thread with id ${newId} added` });
   });
 
-  // @desc Update member permissions for given club
+  // @desc Update thread title
   // @route PATCH /clubs/:clubId/media/:clubMediaId/threads/:threadId
   // @access Private
   updateThreadTitle = expressAsyncHandler(async (req, res) => {
@@ -321,6 +322,112 @@ class ClubsController {
       ClubThreadsValidator.validateDeleteThreadSchema(inputThreadData);
     await ClubsService.deleteClubThread(validatedData);
     res.json({ message: `Thread with id ${threadId} deleted` });
+  });
+
+  //CLUB THREAD COMMENTS
+
+  // @desc get thread comments for a given club thread
+  // @route GET /clubs/:clubId/media/:clubMediaId/threads/:threadId/comments
+  // @access Private
+  getClubThreadComments = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const userId = parseInt(req.user.id);
+    const threadId = parseInt(req.params.threadId);
+    const commentData = await ClubsService.getClubThreadComments(
+      userId,
+      clubId,
+      threadId
+    );
+    res.json(commentData);
+  });
+
+  // @desc get replies for a given thread comment
+  // @route GET /clubs/:clubId/media/:clubMediaId/threads/:threadId/comments/:commentId/replies?cursor
+  // @access Private
+  getCommentReplies = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const userId = parseInt(req.user.id);
+    const commentId = parseInt(req.params.commentId);
+    const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const replies = await ClubsService.getCommentReplies(
+      userId,
+      clubId,
+      commentId,
+      cursor
+    );
+    res.json(replies);
+  });
+
+  // @desc add new comment for a given thread
+  // @route POST /clubs/:clubId/media/:clubMediaId/threads/:threadId/comments
+  // @access Private
+  addClubThreadComment = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const userId = parseInt(req.user.id);
+    const clubMediaId = parseInt(req.params.clubMediaId);
+    const threadId = parseInt(req.params.threadId);
+    const { content, parentId } = req.body;
+    const inputData = {
+      threadId,
+      userId,
+      content,
+      clubId,
+      clubMediaId,
+    };
+
+    if (parentId) inputData.parentId = parentId;
+    const validatedData =
+      ClubThreadCommentValidator.validateNewThreadCommentSchema(inputData);
+    const newId = await ClubsService.addClubThreadComment(validatedData);
+    res.json({ message: `New comment with id ${newId} added` });
+  });
+
+  // @desc update comment for a given thread
+  // @route PATCH /clubs/:clubId/media/:clubMediaId/threads/:threadId/comments/:commentId
+  // @access Private
+  updateClubThreadComment = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const userId = parseInt(req.user.id);
+    const clubMediaId = parseInt(req.params.clubMediaId);
+    const threadId = parseInt(req.params.threadId);
+    const commentId = parseInt(req.params.commentId);
+    const { content } = req.body;
+    const inputData = {
+      id: commentId,
+      threadId,
+      userId,
+      content,
+      clubId,
+      clubMediaId,
+    };
+    const validatedData =
+      ClubThreadCommentValidator.validateUpdateThreadCommentSchema(inputData);
+    await ClubsService.updateClubThreadComment(validatedData);
+    res.json({ message: `Comment with id ${commentId} updated` });
+  });
+
+  // @desc delete a thread comment
+  // @route DELETE /clubs/:clubId/media/:clubMediaId/threads/:threadId/comments/:commentId
+  // @access Private
+  deleteClubThreadComment = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const userId = parseInt(req.user.id);
+    const role = req.user.role;
+    const clubMediaId = parseInt(req.params.clubMediaId);
+    const threadId = parseInt(req.params.threadId);
+    const commentId = parseInt(req.params.commentId);
+    const inputData = {
+      id: commentId,
+      threadId,
+      userId,
+      clubId,
+      clubMediaId,
+      role,
+    };
+    const validatedData =
+      ClubThreadCommentValidator.validateDeleteThreadCommentSchema(inputData);
+    await ClubsService.deleteClubThreadComment(validatedData);
+    res.json({ message: `Comment with id ${commentId} deleted` });
   });
 }
 

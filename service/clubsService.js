@@ -13,6 +13,8 @@ import MediaDao from "../dao/mediaDao.js";
 import MediaValidator from "../validators/mediaValidator.js";
 import ClubThreadsDao from "../dao/clubThreadsDao.js";
 import ClubThreadsValidator from "../validators/clubThreadsValidator.js";
+import ClubThreadCommentsDao from "../dao/clubThreadCommentsDao.js";
+import ClubThreadCommentValidator from "../validators/clubThreadCommentValidator.js";
 env.config();
 
 class ClubsService {
@@ -317,6 +319,99 @@ class ClubsService {
       );
       const delId = await ClubThreadsDao.deleteThread(validatedData.id);
       return delId;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
+
+  //Club Thread Comments
+  async getClubThreadComments(userId, clubId, threadId) {
+    try {
+      await ClubMembersValidator.validateUserIsClubMember(userId, clubId);
+      const threadComments = await ClubThreadCommentsDao.getClubThreadComments({
+        threadId,
+      });
+      return threadComments;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
+
+  async getCommentReplies(userId, clubId, commentId, cursor = null) {
+    try {
+      await ClubThreadCommentValidator.validateCommentAndClub(
+        commentId,
+        clubId
+      );
+      await ClubMembersValidator.validateUserIsClubMember(userId, clubId);
+      const replies = await ClubThreadCommentsDao.getClubThreadComments({
+        parentId: commentId,
+        parentCursor: cursor,
+        threadId: null, //not needed for reply fetching
+      });
+      return replies;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
+
+  async addClubThreadComment(inputCommentData) {
+    try {
+      const validatedData =
+        await ClubThreadCommentValidator.validateNewThreadCommment(
+          inputCommentData
+        );
+      const { threadId, userId, content, parentId } = validatedData;
+      const newData = {
+        threadId,
+        userId,
+        content,
+      };
+      if (parentId) newData.parentId = parentId;
+      const id = await ClubThreadCommentsDao.addClubThreadComment(newData);
+      return id;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
+
+  async updateClubThreadComment(inputCommentData) {
+    try {
+      const validatedData =
+        await ClubThreadCommentValidator.validateUpdatedThreadComment(
+          inputCommentData
+        );
+      const { id, content } = validatedData;
+      await ClubThreadCommentsDao.updateClubThreadComment(id, content);
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
+
+  async deleteClubThreadComment(inputCommentData) {
+    try {
+      const validatedData =
+        await ClubThreadCommentValidator.validateDeleteThreadComment(
+          inputCommentData
+        );
+      const { id, userId } = validatedData;
+      const { replies } = await ClubThreadCommentsDao.getClubThreadComments({
+        parentId: id,
+      });
+      let hardDelete;
+      if (!replies) {
+        await ClubThreadCommentsDao.hardDeleteClubThreadComment(id);
+        hardDelete = true;
+      } else {
+        await ClubThreadCommentsDao.deleteClubThreadComment(id, userId);
+        hardDelete = false;
+      }
+      return hardDelete;
     } catch (err) {
       if (err instanceof AppError) throw err;
       handleError(err);

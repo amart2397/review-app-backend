@@ -109,4 +109,33 @@ router
     ClubsController.deleteClubThread
   );
 
+//thread comments
+router
+  .route("/:clubId/media/:clubMediaId/threads/:threadId/comments")
+  .get(isAuthenticated, ClubsController.getClubThreadComments)
+  .post(
+    isAuthenticated,
+    csrfSynchronisedProtection,
+    ClubsController.addClubThreadComment
+  );
+
+router
+  .route(
+    "/:clubId/media/:clubMediaId/threads/:threadId/comments/:commentId/replies"
+  )
+  .get(isAuthenticated, ClubsController.getCommentReplies);
+
+router
+  .route("/:clubId/media/:clubMediaId/threads/:threadId/comments/:commentId")
+  .patch(
+    isAuthenticated,
+    csrfSynchronisedProtection,
+    ClubsController.updateClubThreadComment
+  )
+  .delete(
+    isAuthenticated,
+    csrfSynchronisedProtection,
+    ClubsController.deleteClubThreadComment
+  );
+
 export default router;

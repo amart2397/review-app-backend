@@ -187,6 +187,27 @@ export const transformClubThreadData = (data) => {
   return renamed;
 };
 
+export const transformClubCommentData = (data) => {
+  const newKeys = {
+    id: "id",
+    threadId: "thread_id",
+    userId: "author_id",
+    content: "content",
+    parentId: "parent_comment_id",
+  };
+
+  const renamed = {};
+
+  for (const key in data) {
+    if (data.hasOwnProperty(key) && data[key] !== undefined) {
+      const newKey = newKeys[key] || key;
+      renamed[newKey] = data[key];
+    }
+  }
+
+  return renamed;
+};
+
 //transform data to return to client
 export const transformReturnReviewData = (data) => {
   let cleanData;
@@ -339,5 +360,27 @@ export const transformReturnClubThreadData = (data) => {
       displayName: data.displayName,
     },
     createdAt: data.created_at,
+  };
+};
+
+export const transformReturnClubThreadCommentData = (data) => {
+  if (!data || data.length === 0) return null;
+
+  const isDeleted = !!data.deleted_at;
+
+  return {
+    id: data.commentId,
+    content: isDeleted ? null : data.content,
+    deleted: isDeleted,
+    createdAt: data.created_at,
+    parentCommentId: data.parent_comment_id,
+    threadId: data.thread_id,
+    author: data.author_id
+      ? { id: data.author_id, displayName: data.displayName }
+      : { id: null, username: "[deleted]" },
+    replyCount: 0, //default to 0 and adjust in dao method
+    repliesLeft: 0, //default to 0 and adjust in dao method
+    nextCursor: null, //default to null and adjust in dao method
+    replies: [],
   };
 };
