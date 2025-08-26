@@ -97,10 +97,11 @@ class ReviewsController {
     const id = parseInt(req.params.id);
     const { id: id_body } = req.body;
     const requestUserId = req.user.id;
+    const role = req.user.role;
     if (id_body && id_body !== id) {
       throw AppError.badRequest("ID in request body does not match ID in URL");
     }
-    const inputReviewData = { id, userId: requestUserId };
+    const inputReviewData = { id, userId: requestUserId, role };
     const validatedData =
       ReviewsValidator.validateReviewIdSchema(inputReviewData);
     const { id: review_id, review_title } = await ReviewsService.deleteReview(

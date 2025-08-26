@@ -29,6 +29,7 @@ const deleteClubThreadSchema = z.object({
   clubMediaId: z.int(),
   userId: z.int(),
   clubId: z.int(),
+  role: z.string(),
 });
 
 class ClubThreadsValidator {
@@ -99,7 +100,7 @@ class ClubThreadsValidator {
   }
 
   async validateDeleteThread(inputThreadData) {
-    const { id, userId, clubId, clubMediaId } = inputThreadData;
+    const { id, userId, clubId, clubMediaId, role } = inputThreadData;
     const deleter = await ClubMembersDao.getMemberByUserAndClub(userId, clubId);
     const thread = await ClubThreadsDao.getClubThreadById(id);
     const clubMedia = await ClubMediaDao.getClubMediaById(clubMediaId);
@@ -117,9 +118,13 @@ class ClubThreadsValidator {
     if (clubMedia.clubId !== clubId) {
       throw AppError.badRequest("Invalid club media id and club id pair");
     }
-    //Only the club admins/creator can edit threads
-    if (!deleter || deleter.memberRole === "member") {
-      throw AppError.forbidden("You are not authorized to update this thread");
+    if (role !== "admin") {
+      //Only the club admins/creator can edit threads
+      if (!deleter || deleter.memberRole === "member") {
+        throw AppError.forbidden(
+          "You are not authorized to update this thread"
+        );
+      }
     }
     return inputThreadData;
   }

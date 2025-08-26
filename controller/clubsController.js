@@ -64,11 +64,12 @@ class ClubsController {
   deleteClub = expressAsyncHandler(async (req, res) => {
     const { id: id_body } = req?.body;
     const userId = req.user.id;
+    const role = req.user.role;
     const id = parseInt(req.params.clubId);
     if (id_body && id_body !== id) {
       throw AppError.badRequest("ID in request body does not match ID in URL");
     }
-    const inputClubData = { id, userId };
+    const inputClubData = { id, userId, role };
     const validatedData =
       ClubsValidator.validateDeleteClubSchema(inputClubData);
     const { id: club_id, name } = await ClubsService.deleteClub(validatedData);
@@ -229,10 +230,12 @@ class ClubsController {
     const clubId = parseInt(req.params.clubId);
     const clubMediaId = parseInt(req.params.clubMediaId);
     const userId = parseInt(req.user.id);
+    const role = req.user.role;
     const inputClubMediaData = {
       id: clubMediaId,
       userId,
       clubId,
+      role,
     };
     const validatedData =
       ClubMediaValidator.validateDeleteClubMediaSchema(inputClubMediaData);
@@ -312,12 +315,14 @@ class ClubsController {
     const clubId = parseInt(req.params.clubId);
     const userId = parseInt(req.user.id);
     const clubMediaId = parseInt(req.params.clubMediaId);
+    const role = req.user.role;
     const threadId = parseInt(req.params.threadId);
     const inputThreadData = {
       id: threadId,
       clubMediaId,
       userId,
       clubId,
+      role,
     };
     const validatedData =
       ClubThreadsValidator.validateDeleteThreadSchema(inputThreadData);

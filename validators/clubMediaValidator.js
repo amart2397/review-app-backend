@@ -41,6 +41,7 @@ const newClubMediaSchema = z
 const deleteClubMediaSchema = z.object({
   id: z.int(),
   userId: z.int(),
+  role: z.string(),
   clubId: z.int(),
 });
 
@@ -89,7 +90,7 @@ class ClubMediaValidator {
   }
 
   async validateDeleteClubMedia(inputClubMediaData) {
-    const { id, userId, clubId } = inputClubMediaData;
+    const { id, userId, clubId, role } = inputClubMediaData;
     const media = await ClubMediaDao.getClubMediaById(id);
     const requestedBy = await ClubMembersDao.getMemberByUserAndClub(
       userId,
@@ -101,8 +102,10 @@ class ClubMediaValidator {
     if (media.clubId !== clubId) {
       throw AppError.badRequest("Invalid club media id and club id pair");
     }
-    if (!requestedBy || requestedBy?.memberRole === "member") {
-      throw AppError.forbidden("You are not authorized to delete club media");
+    if (role !== "admin") {
+      if (!requestedBy || requestedBy?.memberRole === "member") {
+        throw AppError.forbidden("You are not authorized to delete club media");
+      }
     }
     return inputClubMediaData;
   }

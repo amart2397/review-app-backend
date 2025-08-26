@@ -22,6 +22,7 @@ const updateClubSchema = z.object({
 const deleteClubSchema = z.object({
   id: z.int(),
   userId: z.int(),
+  role: z.string(),
 });
 
 class ClubsValidator {
@@ -60,13 +61,15 @@ class ClubsValidator {
     return inputClubData;
   }
   async validateDeleteClub(inputClubData) {
-    const { id, userId } = inputClubData;
+    const { id, userId, role } = inputClubData;
     const club = await ClubsDao.getClubById(id);
     if (!club) {
       throw AppError.badRequest("Club not found");
     }
-    if (club.creator?.id !== userId) {
-      throw AppError.forbidden("You are not authorized to modify this club.");
+    if (role !== "admin") {
+      if (club.creator?.id !== userId) {
+        throw AppError.forbidden("You are not authorized to modify this club.");
+      }
     }
     return inputClubData;
   }

@@ -54,6 +54,7 @@ const updateReviewSchema = z.object({
 const reviewIdSchema = z.object({
   id: z.int(),
   userId: z.int(),
+  role: z.string(),
 });
 
 class ReviewsValidator {
@@ -121,13 +122,17 @@ class ReviewsValidator {
   }
 
   async validateDeleteReview(inputReviewData) {
-    const { id, userId } = inputReviewData;
+    const { id, userId, role } = inputReviewData;
     const existingReview = await ReviewsDao.getReviewById(id);
     if (!existingReview) {
       throw AppError.badRequest("Review not found");
     }
-    if (userId !== existingReview.author?.id) {
-      throw AppError.forbidden("You are not authorized to modify this review.");
+    if (role !== "admin") {
+      if (userId !== existingReview.author?.id) {
+        throw AppError.forbidden(
+          "You are not authorized to modify this review."
+        );
+      }
     }
     return inputReviewData;
   }
