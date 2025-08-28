@@ -2,6 +2,7 @@ import express from "express";
 import ClubsController from "../controller/clubsController.js";
 import isAuthenticated from "../middleware/isAuthenticated.js";
 import { csrfSynchronisedProtection } from "../config/csrfSync.js";
+import hasPostPermissions from "../middleware/hasPostPermissions.js";
 const router = express.Router();
 
 //clubs
@@ -14,144 +15,88 @@ router
     ClubsController.createClub
   );
 
+//Auth check
+router.use(isAuthenticated, csrfSynchronisedProtection);
+
+//Post permission check on non-GET routes
+router.use((req, res, next) => {
+  if (["POST", "PATCH", "DELETE"].includes(req.method)) {
+    return hasPostPermissions(req, res, next);
+  }
+  next();
+});
+
 router
   .route("/:clubId")
-  .patch(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    ClubsController.updateClub
-  )
-  .delete(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    ClubsController.deleteClub
-  );
+  .patch(ClubsController.updateClub)
+  .delete(ClubsController.deleteClub);
 
 //invites
 router
   .route("/:clubId/invites")
-  .get(isAuthenticated, ClubsController.getClubInvites)
-  .post(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    ClubsController.createClubInvite
-  );
+  .get(ClubsController.getClubInvites)
+  .post(ClubsController.createClubInvite);
 
 router
   .route("/:clubId/invites/:inviteId")
-  .delete(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    ClubsController.deleteClubInvite
-  );
+  .delete(ClubsController.deleteClubInvite);
 
 //members
 router
   .route("/:clubId/members")
-  .get(isAuthenticated, ClubsController.getClubMembers)
-  .post(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    ClubsController.addClubMember
-  );
+  .get(ClubsController.getClubMembers)
+  .post(ClubsController.addClubMember);
 
 router
   .route("/:clubId/members/:memberId")
-  .patch(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    ClubsController.updateClubMemberRole
-  )
-  .delete(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    ClubsController.deleteClubMember
-  );
+  .patch(ClubsController.updateClubMemberRole)
+  .delete(ClubsController.deleteClubMember);
 
 //club media
 router
   .route("/:clubId/media")
-  .get(isAuthenticated, ClubsController.getClubMedia)
-  .post(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    ClubsController.addClubMedia
-  );
+  .get(ClubsController.getClubMedia)
+  .post(ClubsController.addClubMedia);
 
 router
   .route("/:clubId/media/:clubMediaId")
-  .delete(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    ClubsController.deleteClubMedia
-  );
+  .delete(ClubsController.deleteClubMedia);
 
 //threads
 router
   .route("/:clubId/media/:clubMediaId/threads")
-  .get(isAuthenticated, ClubsController.getClubThreads)
-  .post(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    ClubsController.addClubThread
-  );
+  .get(ClubsController.getClubThreads)
+  .post(ClubsController.addClubThread);
 
 router
   .route("/:clubId/media/:clubMediaId/threads/:threadId")
-  .patch(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    ClubsController.updateThreadTitle
-  )
-  .delete(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    ClubsController.deleteClubThread
-  );
+  .patch(ClubsController.updateThreadTitle)
+  .delete(ClubsController.deleteClubThread);
 
 //thread comments
 router
   .route("/:clubId/media/:clubMediaId/threads/:threadId/comments")
-  .get(isAuthenticated, ClubsController.getClubThreadComments)
-  .post(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    ClubsController.addClubThreadComment
-  );
+  .get(ClubsController.getClubThreadComments)
+  .post(ClubsController.addClubThreadComment);
 
 router
   .route(
     "/:clubId/media/:clubMediaId/threads/:threadId/comments/:commentId/replies"
   )
-  .get(isAuthenticated, ClubsController.getCommentReplies);
+  .get(ClubsController.getCommentReplies);
 
 router
   .route("/:clubId/media/:clubMediaId/threads/:threadId/comments/:commentId")
-  .patch(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    ClubsController.updateClubThreadComment
-  )
-  .delete(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    ClubsController.deleteClubThreadComment
-  );
+  .patch(ClubsController.updateClubThreadComment)
+  .delete(ClubsController.deleteClubThreadComment);
 
+//review club shares
 router
   .route("/:clubId/media/:clubMediaId/reviews/:reviewId/share")
-  .post(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    ClubsController.shareReview
-  );
+  .post(ClubsController.shareReview);
 
 router
   .route("/:clubId/media/:clubMediaId/reviews/:reviewId/share/:shareId")
-  .delete(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    ClubsController.removeReviewShare
-  );
+  .delete(ClubsController.removeReviewShare);
 
 export default router;

@@ -16,12 +16,6 @@ router
   .route("/clubs/:clubId/invites/:inviteId")
   .post(MeController.respondToInvite);
 
-router
-  .route("/clubs/:clubId/member")
-  .delete(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    MeController.removeFromClub
-  );
+router.route("/clubs/:clubId/member").delete(MeController.removeFromClub);
 
 export default router;
