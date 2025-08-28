@@ -6,13 +6,24 @@ import {
 } from "../transformers/transformData.js";
 
 class ClubsDao {
-  async getPublicClubs() {
+  async getPublicClubs(cursor = null, limit = 15) {
     const clubsRaw = await db("clubs")
-      .join("users", "clubs.creator_id", "users.id")
+      .leftJoin("users", "clubs.creator_id", "users.id")
       .select(clubsColumnsToReturn)
-      .where("clubs.is_private", false);
+      .where("clubs.is_private", false)
+      .modify((qb) => {
+        if (cursor) {
+          qb.andWhere("clubs.id", "<", cursor);
+        }
+      })
+      .orderBy("clubs.id", "desc")
+      .limit(limit);
     const clubs = clubsRaw.map((entry) => transformReturnClubsData(entry));
-    return clubs;
+
+    const nextCursor =
+      clubs.length > 0 ? clubs[clubs.length - 1].memberId : null;
+
+    return { nextCursor, clubs };
   }
 
   async createClub(inputClubData) {

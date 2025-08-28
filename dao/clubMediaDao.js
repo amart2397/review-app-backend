@@ -6,13 +6,20 @@ import {
 import { clubMediaColumnsToReturn } from "./config/returnColumnsConfig.js";
 
 class ClubMediaDao {
-  async getClubMedia(clubId) {
+  async getClubMedia(clubId, cursor = null, limit = 20) {
     const clubMediaRaw = await db("club_media")
       .join("clubs", "club_media.club_id", "clubs.id")
       .join("media", "club_media.media_id", "media.id")
-      .join("users", "club_media.assigned_by", "users.id")
+      .leftJoin("users", "club_media.assigned_by", "users.id")
       .where("club_media.club_id", clubId)
-      .select(clubMediaColumnsToReturn);
+      .select(clubMediaColumnsToReturn)
+      .modify((qb) => {
+        if (cursor) {
+          qb.andWhere("club_media.id", "<", cursor);
+        }
+      })
+      .orderBy("club_media.id", "desc")
+      .limit(limit);
     const clubMedia = transformReturnClubMediaData(clubMediaRaw);
     return clubMedia;
   }

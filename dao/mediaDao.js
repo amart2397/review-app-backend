@@ -3,9 +3,18 @@ import { mediaColumnsToReturn } from "./config/returnColumnsConfig.js";
 import { transformMediaData } from "../transformers/transformData.js";
 
 class MediaDao {
-  async getAllMedia() {
-    const media = await db("media").select(mediaColumnsToReturn);
-    return media;
+  async getAllMedia(cursor = null, limit = 20) {
+    const media = await db("media")
+      .select(mediaColumnsToReturn)
+      .modify((qb) => {
+        if (cursor) {
+          qb.andWhere("media.id", "<", cursor);
+        }
+      })
+      .orderBy("media.id", "desc")
+      .limit(limit);
+    const nextCursor = media.length > 0 ? media[media.length - 1].id : null;
+    return { nextCursor, media };
     6;
   }
 

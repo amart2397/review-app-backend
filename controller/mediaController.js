@@ -5,10 +5,11 @@ import AppError from "../utils/AppError.js";
 
 class MediaController {
   // @desc Get all media
-  // @route GET /media
+  // @route GET /media?cursor
   // @access Private
   getAllMedia = expressAsyncHandler(async (req, res) => {
-    const media = await MediaService.getAllMedia();
+    const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const media = await MediaService.getAllMedia(cursor);
     if (media.length === 0) {
       throw AppError.badRequest("No media found");
     }

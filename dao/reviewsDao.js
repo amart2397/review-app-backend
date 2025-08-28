@@ -6,14 +6,23 @@ import {
 import { reviewsColumnsToReturn } from "./config/returnColumnsConfig.js";
 
 class ReviewsDao {
-  async getAllReviews() {
+  async getPublicReviews(cursor = null, limit = 20) {
     const reviewsRaw = await db("reviews")
       .join("users", "reviews.user_id", "users.id")
       .join("media", "reviews.media_id", "media.id")
       .where("reviews.private", false) //Only fetch public reviews
-      .select(reviewsColumnsToReturn);
+      .select(reviewsColumnsToReturn)
+      .modify((qb) => {
+        if (cursor) {
+          qb.andWhere("reviews.id", "<", cursor);
+        }
+      })
+      .orderBy("reviews.id", "desc")
+      .limit(limit);
     const reviews = reviewsRaw.map((entry) => transformReturnReviewData(entry));
-    return reviews;
+    const nextCursor =
+      reviews.length > 0 ? reviews[reviews.length - 1].id : null;
+    return { nextCursor, reviews };
   }
 
   async createReview(inputReviewData) {

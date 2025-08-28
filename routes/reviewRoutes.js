@@ -6,7 +6,7 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(ReviewsController.getAllReviews)
+  .get(ReviewsController.getPublicReviews)
   .post(
     isAuthenticated,
     csrfSynchronisedProtection,

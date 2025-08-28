@@ -21,11 +21,12 @@ class MeController {
   });
 
   // @desc get user clubs for req session
-  // @route GET /me/clubs
+  // @route GET /me/clubs?cursor
   // @access Private
   getMyClubs = expressAsyncHandler(async (req, res, next) => {
     const userId = parseInt(req.user.id);
-    const myClubs = await ClubsService.getUserClubs(userId);
+    const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const myClubs = await ClubsService.getUserClubs(userId, cursor);
     res.json(myClubs);
   });
 

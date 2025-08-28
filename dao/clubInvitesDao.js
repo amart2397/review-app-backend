@@ -10,13 +10,20 @@ import {
 } from "../transformers/transformData.js";
 
 class ClubInvitesDao {
-  async getClubInvites(clubId) {
+  async getClubInvites(clubId, cursor = null, limit = 20) {
     const invitesRaw = await db("club_invites")
       .join("users", "club_invites.invitee_id", "users.id")
       .join("clubs", "club_invites.club_id", "clubs.id")
       .select(clubInvitesColumnsToReturn)
       .where("club_invites.club_id", clubId)
-      .where("club_invites.expires_at", ">", new Date());
+      .andWhere("club_invites.expires_at", ">", new Date())
+      .modify((qb) => {
+        if (cursor) {
+          qb.andWhere("club_invites.id", "<", cursor);
+        }
+      })
+      .orderBy("club_invites.id", "desc")
+      .limit(limit);
     const invites = transformReturnClubInvitesData(invitesRaw);
     return invites;
   }

@@ -13,10 +13,11 @@ class ClubsController {
   //CLUBS
 
   // @desc Get all public clubs
-  // @route GET /clubs
+  // @route GET /clubs?cursor
   // @access Private
   getAllPublicClubs = expressAsyncHandler(async (req, res) => {
-    const clubs = await ClubsService.getPublicClubs();
+    const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const clubs = await ClubsService.getPublicClubs(cursor);
     res.json(clubs);
   });
 
@@ -81,12 +82,13 @@ class ClubsController {
   //CLUB INVITES
 
   // @desc Get current invites for club
-  // @route GET /clubs/:clubId/invites
+  // @route GET /clubs/:clubId/invites?cursor
   // @access Private
   getClubInvites = expressAsyncHandler(async (req, res) => {
     const clubId = parseInt(req.params.clubId);
     const userId = parseInt(req.user.id);
-    const invites = await ClubsService.getClubInvites(userId, clubId);
+    const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const invites = await ClubsService.getClubInvites(userId, clubId, cursor);
     res.json(invites);
   });
 
@@ -132,12 +134,13 @@ class ClubsController {
   //CLUB MEMBERS
 
   // @desc Get current members for club
-  // @route GET /clubs/:clubId/members
+  // @route GET /clubs/:clubId/members?cursor
   // @access Private
   getClubMembers = expressAsyncHandler(async (req, res) => {
     const clubId = parseInt(req.params.clubId);
     const userId = parseInt(req.user.id);
-    const invites = await ClubsService.getClubMembers(userId, clubId);
+    const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const invites = await ClubsService.getClubMembers(userId, clubId, cursor);
     res.json(invites);
   });
 
@@ -195,12 +198,13 @@ class ClubsController {
   //CLUB MEDIA
 
   // @desc get media for a given club
-  // @route GET /clubs/:clubId/media
+  // @route GET /clubs/:clubId/media?cursor
   // @access Private
   getClubMedia = expressAsyncHandler(async (req, res) => {
     const clubId = parseInt(req.params.clubId);
     const userId = parseInt(req.user.id);
-    const clubMedia = await ClubsService.getClubMedia(userId, clubId);
+    const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const clubMedia = await ClubsService.getClubMedia(userId, clubId, cursor);
     res.json(clubMedia);
   });
 

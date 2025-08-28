@@ -7,14 +7,38 @@ import {
 import { clubMembersColumnsToReturn } from "./config/returnColumnsConfig.js";
 
 class ClubMembersDao {
-  async getClubMembers(clubId) {
+  async getClubMembers(clubId, cursor = null, limit = 50) {
     const membersRaw = await db("club_members")
       .join("users", "club_members.user_id", "users.id")
       .join("clubs", "club_members.club_id", "clubs.id")
       .where("club_members.club_id", clubId)
-      .select(clubMembersColumnsToReturn);
+      .select(clubMembersColumnsToReturn)
+      .modify((qb) => {
+        if (cursor) {
+          qb.andWhere("club_members.id", "<", cursor);
+        }
+      })
+      .orderBy("club_members.id", "desc")
+      .limit(limit);
     const members = transformReturnClubMemberData(membersRaw);
     return members;
+  }
+
+  async getClubsForUser(userId, cursor = null, limit = 20) {
+    const userClubsRaw = await db("club_members")
+      .join("users", "club_members.user_id", "users.id")
+      .join("clubs", "club_members.club_id", "clubs.id")
+      .where("club_members.user_id", userId)
+      .select(clubMembersColumnsToReturn)
+      .modify((qb) => {
+        if (cursor) {
+          qb.andWhere("clubs.id", "<", cursor);
+        }
+      })
+      .orderBy("clubs.id", "desc")
+      .limit(limit);
+    const userClubs = transformReturnUserClubsData(userClubsRaw);
+    return userClubs;
   }
 
   async createMember(inputMemberData) {
@@ -54,16 +78,6 @@ class ClubMembersDao {
       .where("club_id", clubId)
       .first(clubMembersColumnsToReturn);
     return member;
-  }
-
-  async getClubsForUser(userId) {
-    const userClubsRaw = await db("club_members")
-      .join("users", "club_members.user_id", "users.id")
-      .join("clubs", "club_members.club_id", "clubs.id")
-      .where("club_members.user_id", userId)
-      .select(clubMembersColumnsToReturn);
-    const userClubs = transformReturnUserClubsData(userClubsRaw);
-    return userClubs;
   }
 }
 

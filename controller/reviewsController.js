@@ -5,10 +5,11 @@ import ReviewsValidator from "../validators/reviewsValidator.js";
 
 class ReviewsController {
   // @desc Get all reviews
-  // @route GET /reviews
+  // @route GET /reviews?cursor
   // @access Public
-  getAllReviews = expressAsyncHandler(async (req, res) => {
-    const reviews = await ReviewsService.getAllReviews();
+  getPublicReviews = expressAsyncHandler(async (req, res) => {
+    const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const reviews = await ReviewsService.getPublicReviews(cursor);
     if (reviews?.length === 0) {
       throw AppError.badRequest("No reviews found");
     }

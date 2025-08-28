@@ -19,9 +19,9 @@ env.config();
 
 class ClubsService {
   //Clubs
-  async getPublicClubs() {
+  async getPublicClubs(cursor = null) {
     try {
-      const clubs = await ClubsDao.getPublicClubs();
+      const clubs = await ClubsDao.getPublicClubs(cursor);
       return clubs;
     } catch (err) {
       if (err instanceof AppError) throw err;
@@ -70,9 +70,9 @@ class ClubsService {
     }
   }
 
-  async getUserClubs(userId) {
+  async getUserClubs(userId, cursor = null) {
     try {
-      const clubs = await ClubMembersDao.getClubsForUser(userId);
+      const clubs = await ClubMembersDao.getClubsForUser(userId, cursor);
       return clubs;
     } catch (err) {
       if (err instanceof AppError) throw err;
@@ -107,10 +107,10 @@ class ClubsService {
     }
   }
 
-  async getClubInvites(userId, clubId) {
+  async getClubInvites(userId, clubId, cursor = null) {
     try {
       await ClubMembersValidator.validateUserIsClubMember(userId, clubId);
-      const invites = await ClubInvitesDao.getClubInvites(clubId);
+      const invites = await ClubInvitesDao.getClubInvites(clubId, cursor);
       return invites;
     } catch (err) {
       if (err instanceof AppError) throw err;
@@ -148,10 +148,10 @@ class ClubsService {
   }
 
   //Club Members
-  async getClubMembers(userId, clubId) {
+  async getClubMembers(userId, clubId, cursor = null) {
     try {
       await ClubMembersValidator.validateUserIsClubMember(userId, clubId);
-      const members = await ClubMembersDao.getClubMembers(clubId);
+      const members = await ClubMembersDao.getClubMembers(clubId, cursor);
       return members;
     } catch (err) {
       if (err instanceof AppError) throw err;
@@ -209,10 +209,10 @@ class ClubsService {
   }
 
   //Club Media
-  async getClubMedia(userId, clubId) {
+  async getClubMedia(userId, clubId, cursor = null) {
     try {
       await ClubMembersValidator.validateUserIsClubMember(userId, clubId);
-      const clubMedia = await ClubMediaDao.getClubMedia(clubId);
+      const clubMedia = await ClubMediaDao.getClubMedia(clubId, cursor);
       return clubMedia;
     } catch (err) {
       if (err instanceof AppError) throw err;

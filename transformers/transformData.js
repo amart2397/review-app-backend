@@ -266,7 +266,10 @@ export const transformReturnClubsData = (data) => {
 export const transformReturnClubInvitesData = (data) => {
   if (!data || data.length === 0) return null;
 
+  const nextCursor = data[data.length - 1].id;
+
   return {
+    nextCursor,
     clubId: data[0].clubId,
     clubName: data[0].clubName,
     invites: data.map((entry) => ({
@@ -297,7 +300,10 @@ export const transformReturnUserInvitesData = (data) => {
 export const transformReturnClubMemberData = (data) => {
   if (!data || data.length === 0) return null;
 
+  const nextCursor = data[data.length - 1].memberId;
+
   return {
+    nextCursor,
     clubId: data[0].clubId,
     clubName: data[0].clubName,
     members: data.map((entry) => ({
@@ -312,7 +318,10 @@ export const transformReturnClubMemberData = (data) => {
 export const transformReturnUserClubsData = (data) => {
   if (!data || data.length === 0) return null;
 
+  const nextCursor = data[data.length - 1].clubId;
+
   return {
+    nextCursor,
     userId: data[0].userId,
     userName: data[0].displayName,
     clubs: data.map((entry) => ({
@@ -327,7 +336,10 @@ export const transformReturnUserClubsData = (data) => {
 export const transformReturnClubMediaData = (data) => {
   if (!data || data.length === 0) return null;
 
+  const nextCursor = data[data.length - 1].clubMediaId;
+
   return {
+    nextCursor,
     clubId: data[0].clubId,
     clubName: data[0].clubName,
     clubType: data[0].mediaType,
@@ -342,10 +354,12 @@ export const transformReturnClubMediaData = (data) => {
       releaseDate: entry.release_date,
       publisher: entry.publisher,
       runtime: entry.runtime,
-      assignedBy: {
-        id: entry.creatorId,
-        displayName: entry.displayName,
-      },
+      assignedBy: entry.creatorId
+        ? {
+            id: entry.creatorId,
+            displayName: entry.displayName,
+          }
+        : { id: null, displayName: "[deleted]" },
     })),
   };
 };
@@ -379,7 +393,7 @@ export const transformReturnClubThreadCommentData = (data) => {
     threadId: data.thread_id,
     author: data.author_id
       ? { id: data.author_id, displayName: data.displayName }
-      : { id: null, username: "[deleted]" },
+      : { id: null, displayName: "[deleted]" },
     replyCount: 0, //default to 0 and adjust in dao method
     repliesLeft: 0, //default to 0 and adjust in dao method
     nextCursor: null, //default to null and adjust in dao method

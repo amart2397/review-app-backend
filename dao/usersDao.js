@@ -4,9 +4,18 @@ import { usersColumnsToReturn } from "./config/returnColumnsConfig.js";
 
 class UsersDao {
   //Safe methods for returning data to client
-  async getAllUsers() {
-    const users = await db("users").select(usersColumnsToReturn);
-    return users;
+  async getAllUsers(cursor = null, limit = 20) {
+    const users = await db("users")
+      .select(usersColumnsToReturn)
+      .modify((qb) => {
+        if (cursor) {
+          qb.andWhere("users.id", "<", cursor);
+        }
+      })
+      .orderBy("users.id", "desc")
+      .limit(limit);
+    const nextCursor = users.length > 0 ? users[users.length - 1].id : null;
+    return { nextCursor, users };
   }
 
   async createUser(inputUserData) {

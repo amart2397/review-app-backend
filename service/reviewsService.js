@@ -8,9 +8,9 @@ import ReviewClubSharesValidator from "../validators/reviewClubSharesValidator.j
 import ReviewsValidator from "../validators/reviewsValidator.js";
 
 class ReviewsService {
-  async getAllReviews() {
+  async getPublicReviews(cursor = null) {
     try {
-      const reviews = await ReviewsDao.getAllReviews();
+      const reviews = await ReviewsDao.getPublicReviews(cursor);
       return reviews;
     } catch (err) {
       if (err instanceof AppError) throw err;
