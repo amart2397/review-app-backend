@@ -1,10 +1,13 @@
 import db from "../db/db.js";
 import { mediaColumnsToReturn } from "./config/returnColumnsConfig.js";
-import { transformMediaData } from "../transformers/transformData.js";
+import {
+  transformMediaData,
+  transformReturnMediaData,
+} from "../transformers/transformData.js";
 
 class MediaDao {
   async getAllMedia(cursor = null, limit = 20) {
-    const media = await db("media")
+    const mediaRaw = await db("media")
       .select(mediaColumnsToReturn)
       .modify((qb) => {
         if (cursor) {
@@ -13,9 +16,8 @@ class MediaDao {
       })
       .orderBy("media.id", "desc")
       .limit(limit);
-    const nextCursor = media.length > 0 ? media[media.length - 1].id : null;
-    return { nextCursor, media };
-    6;
+    const media = transformReturnMediaData(mediaRaw);
+    return media;
   }
 
   async createMedia(inputMediaData) {

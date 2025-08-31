@@ -1,402 +1,160 @@
+import {
+  returnKeyMaps,
+  keyMaps,
+  postProcessors,
+} from "./schemaForTransformers.js";
+
 /**
- * These functions transform input data to match database table schema
- * @param {Object} data input data object
- * @returns {Object} renamed data object
+ * Generic data transformer
+ * @param {Object} data - Input data
+ * @param {Object} keyMap - Map of inputKey -> dbColumn
+ * @param {Function[]} [postProcessors=[]] - Array of functions to run on the transformed object
+ * @returns {Object} transformed data
  */
-
-export const transformUserData = (data) => {
-  const newKeys = {
-    id: "id",
-    email: "email",
-    firstName: "first_name",
-    lastName: "last_name",
-    displayName: "display_name",
-    password: "password",
-    role: "role",
-  };
-
+const transformData = (data, keyMap, postProcessors = []) => {
   const renamed = {};
 
-  for (const key in data) {
-    if (data.hasOwnProperty(key) && data[key] !== undefined) {
-      const newKey = newKeys[key] || key;
-      renamed[newKey] = data[key];
+  for (const [key, value] of Object.entries(data)) {
+    if (value !== undefined) {
+      const newKey = keyMap[key] || key;
+      renamed[newKey] = value;
     }
+  }
+
+  for (const fn of postProcessors) {
+    fn(renamed);
   }
 
   return renamed;
 };
 
-export const transformMediaData = (data) => {
-  const newKeys = {
-    id: "id",
-    mediaType: "media_type",
-    mediaKey: "media_key",
-    title: "title",
-    description: "description",
-    releaseDate: "release_date",
-    artSmall: "art_small",
-    artLarge: "art_large",
-    genres: "genres",
-    runtime: "runtime",
-    authors: "authors",
-    publisher: "publisher",
-    pageCount: "page_count",
-  };
+//Transform incoming Data
+export const transformUserData = (data) => transformData(data, keyMaps.user);
+export const transformMediaData = (data) =>
+  transformData(data, keyMaps.media, [postProcessors.media]);
+export const transformReviewData = (data) =>
+  transformData(data, keyMaps.review);
+export const transformClubData = (data) => transformData(data, keyMaps.club);
+export const transformClubInviteData = (data) =>
+  transformData(data, keyMaps.clubInvite);
+export const transformClubMemberData = (data) =>
+  transformData(data, keyMaps.clubMember);
+export const transformClubMediaData = (data) =>
+  transformData(data, keyMaps.clubMedia);
+export const transformClubThreadData = (data) =>
+  transformData(data, keyMaps.clubThread);
+export const transformClubCommentData = (data) =>
+  transformData(data, keyMaps.clubComment);
 
-  const renamed = {};
-
-  for (const key in data) {
-    if (data.hasOwnProperty(key) && data[key] !== undefined) {
-      const newKey = newKeys[key] || key;
-      renamed[newKey] = data[key];
-    }
-  }
-
-  //stringify genre array before insert into jsonb field.  this accepts both arrays and objects
-  if (Array.isArray(renamed.genres) || typeof renamed.genres === "object") {
-    renamed.genres = JSON.stringify(renamed.genres);
-  }
-
-  return renamed;
-};
-
-export const transformReviewData = (data) => {
-  const newKeys = {
-    id: "id",
-    userId: "user_id",
-    mediaId: "media_id",
-    reviewTitle: "review_title",
-    reviewText: "review_text",
-    reviewRating: "review_rating",
-    private: "private",
-  };
-
-  const renamed = {};
-
-  for (const key in data) {
-    if (data.hasOwnProperty(key) && data[key] !== undefined) {
-      const newKey = newKeys[key] || key;
-      renamed[newKey] = data[key];
-    }
-  }
-
-  return renamed;
-};
-
-export const transformClubData = (data) => {
-  const newKeys = {
-    id: "id",
-    name: "name",
-    description: "description",
-    creatorId: "creator_id",
-    mediaType: "media_type",
-    isPrivate: "is_private",
-  };
-
-  const renamed = {};
-
-  for (const key in data) {
-    if (data.hasOwnProperty(key) && data[key] !== undefined) {
-      const newKey = newKeys[key] || key;
-      renamed[newKey] = data[key];
-    }
-  }
-
-  return renamed;
-};
-
-export const transformClubInviteData = (data) => {
-  const newKeys = {
-    id: "id",
-    clubId: "club_id",
-    inviterId: "inviter_id",
-    inviteeId: "invitee_id",
-    expiration: "expires_at",
-  };
-
-  const renamed = {};
-
-  for (const key in data) {
-    if (data.hasOwnProperty(key) && data[key] !== undefined) {
-      const newKey = newKeys[key] || key;
-      renamed[newKey] = data[key];
-    }
-  }
-
-  return renamed;
-};
-
-export const transformClubMemberData = (data) => {
-  const newKeys = {
-    id: "id",
-    clubId: "club_id",
-    userId: "user_id",
-    role: "role",
-  };
-
-  const renamed = {};
-
-  for (const key in data) {
-    if (data.hasOwnProperty(key) && data[key] !== undefined) {
-      const newKey = newKeys[key] || key;
-      renamed[newKey] = data[key];
-    }
-  }
-
-  return renamed;
-};
-
-export const transformClubMediaData = (data) => {
-  const newKeys = {
-    id: "id",
-    clubId: "club_id",
-    mediaId: "media_id",
-    assignedBy: "assigned_by",
-  };
-
-  const renamed = {};
-
-  for (const key in data) {
-    if (data.hasOwnProperty(key) && data[key] !== undefined) {
-      const newKey = newKeys[key] || key;
-      renamed[newKey] = data[key];
-    }
-  }
-
-  return renamed;
-};
-
-export const transformClubThreadData = (data) => {
-  const newKeys = {
-    id: "id",
-    clubMediaId: "club_media_id",
-    userId: "created_by",
-    title: "title",
-    default: "default",
-  };
-
-  const renamed = {};
-
-  for (const key in data) {
-    if (data.hasOwnProperty(key) && data[key] !== undefined) {
-      const newKey = newKeys[key] || key;
-      renamed[newKey] = data[key];
-    }
-  }
-
-  return renamed;
-};
-
-export const transformClubCommentData = (data) => {
-  const newKeys = {
-    id: "id",
-    threadId: "thread_id",
-    userId: "author_id",
-    content: "content",
-    parentId: "parent_comment_id",
-  };
-
-  const renamed = {};
-
-  for (const key in data) {
-    if (data.hasOwnProperty(key) && data[key] !== undefined) {
-      const newKey = newKeys[key] || key;
-      renamed[newKey] = data[key];
-    }
-  }
-
-  return renamed;
-};
-
-//transform data to return to client
-export const transformReturnReviewData = (data) => {
-  let cleanData;
-  if (data) {
-    cleanData = {
-      id: data.reviewId,
-      title: data.review_title,
-      text: data.review_text,
-      rating: data.review_rating,
-      private: data.private,
-      author: {
-        id: data.userId,
-        displayName: data.display_name,
-      },
-      media: {
-        id: data.mediaId,
-        mediaType: data.media_type,
-        mediaKey: data.media_key,
-        title: data.media_title,
-        description: data.media_description,
-        artSmall: data.art_small,
-        artLarge: data.art_large,
-        authors: data.authors,
-        releaseDate: data.release_date,
-      },
-    };
-  } else {
-    cleanData = null;
-  }
-
-  return cleanData;
-};
-
-export const transformReturnClubsData = (data) => {
-  let cleanData;
-  if (data) {
-    cleanData = {
-      id: data.clubId,
-      name: data.clubName,
-      description: data.clubDescription,
-      mediaType: data.media_type,
-      isPrivate: data.is_private,
-      creator: {
-        id: data.creator_id,
-        displayName: data.display_name,
-      },
-    };
-  } else {
-    cleanData = null;
-  }
-
-  return cleanData;
-};
-
-export const transformReturnClubInvitesData = (data) => {
+/**
+ * Generic data transformer for database rows to client-facing objects.
+ *
+ * @param {Object[]} data - Array of database rows to transform
+ * @param {Object} keyMap - Mapping of output keys to row fields or functions
+ * @param {string} rootKey - Key under which the transformed array is returned
+ * @returns {Object|null} Returns null if data is empty, otherwise an object with `nextCursor` and transformed array
+ */
+const transformReturnData = ({ data, keyMap, rootKey }) => {
   if (!data || data.length === 0) return null;
 
   const nextCursor = data[data.length - 1].id;
 
-  return {
-    nextCursor,
-    clubId: data[0].clubId,
-    clubName: data[0].clubName,
-    invites: data.map((entry) => ({
-      id: entry.id,
-      userId: entry.userId,
-      userName: entry.display_name,
-    })),
-  };
-};
+  const transformedArray = data.map((row) => {
+    const obj = {};
 
-export const transformReturnUserInvitesData = (data) => {
-  if (!data || data.length === 0) return null;
+    for (const [outKey, mapping] of Object.entries(keyMap)) {
+      // If mapping is a function, call it with the current row
+      if (typeof mapping === "function") {
+        setNestedValue(obj, outKey, mapping(row));
+      } else {
+        // mapping is a string -> direct column
+        setNestedValue(obj, outKey, row[mapping]);
+      }
+    }
 
-  return {
-    userId: data[0].inviteeId,
-    userName: data[0].inviteeDisplayName,
-    invites: data.map((entry) => ({
-      id: entry.id,
-      inviterId: entry.inviterId,
-      inviterName: entry.inviterDisplayName,
-      clubId: entry.clubId,
-      clubName: entry.clubName,
-      expiration: entry.expires_at,
-    })),
-  };
-};
-
-export const transformReturnClubMemberData = (data) => {
-  if (!data || data.length === 0) return null;
-
-  const nextCursor = data[data.length - 1].memberId;
+    return obj;
+  });
 
   return {
     nextCursor,
-    clubId: data[0].clubId,
-    clubName: data[0].clubName,
-    members: data.map((entry) => ({
-      memberId: entry.memberId,
-      userId: entry.userId,
-      userName: entry.displayName,
-      role: entry.memberRole,
-    })),
+    [rootKey]: transformedArray,
   };
 };
+// Helper to handle nested keys like "author.id"
+function setNestedValue(obj, keyPath, value) {
+  const keys = keyPath.split(".");
+  let current = obj;
 
-export const transformReturnUserClubsData = (data) => {
-  if (!data || data.length === 0) return null;
+  keys.forEach((key, index) => {
+    if (index === keys.length - 1) {
+      current[key] = value;
+    } else {
+      current[key] = current[key] || {};
+      current = current[key];
+    }
+  });
+}
 
-  const nextCursor = data[data.length - 1].clubId;
-
-  return {
-    nextCursor,
-    userId: data[0].userId,
-    userName: data[0].displayName,
-    clubs: data.map((entry) => ({
-      clubId: entry.clubId,
-      clubName: entry.clubName,
-      memberId: entry.memberId,
-      role: entry.memberRole,
-    })),
-  };
-};
-
-export const transformReturnClubMediaData = (data) => {
-  if (!data || data.length === 0) return null;
-
-  const nextCursor = data[data.length - 1].clubMediaId;
-
-  return {
-    nextCursor,
-    clubId: data[0].clubId,
-    clubName: data[0].clubName,
-    clubType: data[0].mediaType,
-    media: data.map((entry) => ({
-      clubMediaId: entry.clubMediaId,
-      mediaId: entry.mediaId,
-      title: entry.mediaTitle,
-      description: entry.mediaDescrription,
-      artSmall: entry.art_small,
-      artLarge: entry.art_large,
-      authors: entry.authors,
-      releaseDate: entry.release_date,
-      publisher: entry.publisher,
-      runtime: entry.runtime,
-      assignedBy: entry.creatorId
-        ? {
-            id: entry.creatorId,
-            displayName: entry.displayName,
-          }
-        : { id: null, displayName: "[deleted]" },
-    })),
-  };
-};
-
-export const transformReturnClubThreadData = (data) => {
-  if (!data || data.length === 0) return null;
-
-  return {
-    threadId: data.threadId,
-    title: data.title,
-    clubMediaId: data.clubMediaId,
-    creator: {
-      id: data.creatorId,
-      displayName: data.displayName,
-    },
-    createdAt: data.created_at,
-  };
-};
-
-export const transformReturnClubThreadCommentData = (data) => {
-  if (!data || data.length === 0) return null;
-
-  const isDeleted = !!data.deleted_at;
-
-  return {
-    id: data.commentId,
-    content: isDeleted ? null : data.content,
-    deleted: isDeleted,
-    createdAt: data.created_at,
-    parentCommentId: data.parent_comment_id,
-    threadId: data.thread_id,
-    author: data.author_id
-      ? { id: data.author_id, displayName: data.displayName }
-      : { id: null, displayName: "[deleted]" },
-    replyCount: 0, //default to 0 and adjust in dao method
-    repliesLeft: 0, //default to 0 and adjust in dao method
-    nextCursor: null, //default to null and adjust in dao method
-    replies: [],
-  };
-};
+//transform return data
+export const transformReturnReviewData = (data) =>
+  transformReturnData({
+    data,
+    keyMap: returnKeyMaps.reviews,
+    rootKey: "reviews",
+  });
+export const transformReturnClubsData = (data) =>
+  transformReturnData({ data, keyMap: returnKeyMaps.clubs, rootKey: "clubs" });
+export const transformReturnClubInvitesData = (data) =>
+  transformReturnData({
+    data,
+    keyMap: returnKeyMaps.clubInvites,
+    rootKey: "invites",
+  });
+export const transformReturnUserInvitesData = (data) =>
+  transformReturnData({
+    data,
+    keyMap: returnKeyMaps.userInvites,
+    rootKey: "invites",
+  });
+export const transformReturnClubMemberData = (data) =>
+  transformReturnData({
+    data,
+    keyMap: returnKeyMaps.clubMembers,
+    rootKey: "members",
+  });
+export const transformReturnUserClubsData = (data) =>
+  transformReturnData({
+    data,
+    keyMap: returnKeyMaps.userClubs,
+    rootKey: "clubs",
+  });
+export const transformReturnClubMediaData = (data) =>
+  transformReturnData({
+    data,
+    keyMap: returnKeyMaps.clubMedia,
+    rootKey: "media",
+  });
+export const transformReturnClubThreadData = (data) =>
+  transformReturnData({
+    data,
+    keyMap: returnKeyMaps.clubThreads,
+    rootKey: "threads",
+  });
+export const transformReturnClubThreadCommentData = (data) =>
+  transformReturnData({
+    data,
+    keyMap: returnKeyMaps.clubThreadComments,
+    rootKey: "comments",
+  });
+export const transformReturnMediaData = (data) =>
+  transformReturnData({
+    data,
+    keyMap: returnKeyMaps.media,
+    rootKey: "media",
+  });
+export const transformReturnUserData = (data) =>
+  transformReturnData({
+    data,
+    keyMap: returnKeyMaps.users,
+    rootKey: "users",
+  });

@@ -42,7 +42,8 @@ class ClubThreadCommentsDao {
 
       topLevelComments = await Promise.all(
         topLevelRaw.map(async (row) => {
-          const node = transformReturnClubThreadCommentData(row);
+          const nodeData = transformReturnClubThreadCommentData([row]);
+          const node = nodeData?.comments?.[0] ?? {};
 
           // Count immediate children
           const { count } = await db("thread_comments")
@@ -79,7 +80,8 @@ class ClubThreadCommentsDao {
 
       topLevelComments = await Promise.all(
         topLevelRaw.map(async (row) => {
-          const node = transformReturnClubThreadCommentData(row);
+          const nodeData = transformReturnClubThreadCommentData([row]);
+          const node = nodeData?.comments?.[0] ?? {};
 
           // Count immediate children
           const { count } = await db("thread_comments")
@@ -132,7 +134,10 @@ class ClubThreadCommentsDao {
             continue;
           }
 
-          const reply = transformReturnClubThreadCommentData(replyRaw[0]);
+          const reply = transformReturnClubThreadCommentData([replyRaw[0]])
+            ?.comments?.[0];
+
+          if (!reply) continue;
 
           // Count children for reply
           const { count } = await db("thread_comments")
@@ -182,10 +187,11 @@ class ClubThreadCommentsDao {
 
   async getClubThreadCommentById(commentId) {
     const commentRaw = await db("thread_comments as c")
-      .first(clubThreadCommentsColumnsToReturn)
+      .select(clubThreadCommentsColumnsToReturn)
       .leftJoin("users as u", "c.author_id", "u.id")
       .where("c.id", commentId);
-    const comment = transformReturnClubThreadCommentData(commentRaw);
+    const comment =
+      transformReturnClubThreadCommentData(commentRaw)?.comments?.[0];
     return comment;
   }
 

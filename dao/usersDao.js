@@ -1,11 +1,14 @@
 import db from "../db/db.js";
-import { transformUserData } from "../transformers/transformData.js";
+import {
+  transformReturnUserData,
+  transformUserData,
+} from "../transformers/transformData.js";
 import { usersColumnsToReturn } from "./config/returnColumnsConfig.js";
 
 class UsersDao {
   //Safe methods for returning data to client
   async getAllUsers(cursor = null, limit = 20) {
-    const users = await db("users")
+    const usersRaw = await db("users")
       .select(usersColumnsToReturn)
       .modify((qb) => {
         if (cursor) {
@@ -14,8 +17,8 @@ class UsersDao {
       })
       .orderBy("users.id", "desc")
       .limit(limit);
-    const nextCursor = users.length > 0 ? users[users.length - 1].id : null;
-    return { nextCursor, users };
+    const users = transformReturnUserData(usersRaw);
+    return users;
   }
 
   async createUser(inputUserData) {

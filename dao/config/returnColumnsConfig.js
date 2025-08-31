@@ -8,12 +8,15 @@ export const mediaColumnsToReturn = [
   "media_key",
   "title",
   "description",
+  "art_small",
   "art_large",
+  "authors",
+  "release_date",
 ];
 
 //Reviews Columns
 export const reviewsColumnsToReturn = [
-  "reviews.id as reviewId",
+  "reviews.id as id",
   "reviews.review_title",
   "reviews.review_text",
   "reviews.review_rating",
@@ -33,7 +36,7 @@ export const reviewsColumnsToReturn = [
 
 //Clubs Columns
 export const clubsColumnsToReturn = [
-  "clubs.id as clubId",
+  "clubs.id as id",
   "clubs.name as clubName",
   "clubs.media_type",
   "clubs.is_private",
@@ -65,7 +68,7 @@ export const meClubInvitesColumnsToReturn = [
 
 //Club Members Columns
 export const clubMembersColumnsToReturn = [
-  "club_members.id as memberId",
+  "club_members.id as id",
   "club_members.club_id as clubId",
   "club_members.user_id as userId",
   "club_members.role as memberRole",
@@ -75,7 +78,7 @@ export const clubMembersColumnsToReturn = [
 
 //Club Media Columns
 export const clubMediaColumnsToReturn = [
-  "club_media.id as clubMediaId",
+  "club_media.id as id",
   "clubs.id as clubId",
   "clubs.name as clubName",
   "clubs.media_type as mediaType",
@@ -94,7 +97,7 @@ export const clubMediaColumnsToReturn = [
 
 //Club Thread Columns
 export const clubThreadColumnsToReturn = [
-  "threads.id as threadId",
+  "threads.id as id",
   "threads.club_media_id as clubMediaId",
   "threads.created_by as creatorId",
   "users.display_name as creatorName",
@@ -105,7 +108,7 @@ export const clubThreadColumnsToReturn = [
 
 //Club Thread Commments Columns
 export const clubThreadCommentsColumnsToReturn = [
-  "c.id as commentId",
+  "c.id as id",
   "c.content",
   "c.created_at",
   "c.parent_comment_id",

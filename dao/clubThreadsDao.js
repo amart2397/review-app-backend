@@ -20,19 +20,11 @@ class ClubThreadsDao {
     }
 
     const threadsRaw = await query;
-
-    const threads = threadsRaw.map((entry) =>
-      transformReturnClubThreadData(entry)
-    );
-
-    // Next cursor = created_at of the last thread in this batch
-    const nextCursor =
-      threads.length > 0 ? threads[threads.length - 1].createdAt : null;
+    const threads = transformReturnClubThreadData(threadsRaw);
 
     return {
-      threads,
-      nextCursor,
-      hasMore: threads.length === limit, // client can check if more available
+      ...threads,
+      hasMore: threads.threads.length === limit, // client can check if more available
     };
   }
 
@@ -40,7 +32,7 @@ class ClubThreadsDao {
     const threadRaw = await db("threads")
       .join("users", "threads.created_by", "users.id")
       .where("threads.id", threadId)
-      .first(clubThreadColumnsToReturn);
+      .select(clubThreadColumnsToReturn);
     const thread = transformReturnClubThreadData(threadRaw);
     return thread;
   }

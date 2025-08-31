@@ -19,10 +19,8 @@ class ReviewsDao {
       })
       .orderBy("reviews.id", "desc")
       .limit(limit);
-    const reviews = reviewsRaw.map((entry) => transformReturnReviewData(entry));
-    const nextCursor =
-      reviews.length > 0 ? reviews[reviews.length - 1].id : null;
-    return { nextCursor, reviews };
+    const reviews = transformReturnReviewData(reviewsRaw);
+    return reviews;
   }
 
   async createReview(inputReviewData) {
@@ -52,7 +50,7 @@ class ReviewsDao {
     const reviewRaw = await db("reviews")
       .join("users", "reviews.user_id", "users.id")
       .join("media", "reviews.media_id", "media.id")
-      .first(reviewsColumnsToReturn)
+      .select(reviewsColumnsToReturn)
       .where("reviews.id", id);
     const review = transformReturnReviewData(reviewRaw);
     return review;
@@ -64,7 +62,7 @@ class ReviewsDao {
       .join("media", "reviews.media_id", "media.id")
       .select(reviewsColumnsToReturn)
       .where("reviews.user_id", userId);
-    const reviews = reviewsRaw.map((entry) => transformReturnReviewData(entry));
+    const reviews = transformReturnReviewData(reviewsRaw);
     return reviews;
   }
 
@@ -74,7 +72,7 @@ class ReviewsDao {
       .join("media", "reviews.media_id", "media.id")
       .select(reviewsColumnsToReturn)
       .where("reviews.media_id", mediaId);
-    const reviews = reviewsRaw.map((entry) => transformReturnReviewData(entry));
+    const reviews = transformReturnReviewData(reviewsRaw);
     return reviews;
   }
 
@@ -82,7 +80,7 @@ class ReviewsDao {
     const reviewRaw = await db("reviews")
       .join("users", "reviews.user_id", "users.id")
       .join("media", "reviews.media_id", "media.id")
-      .first(reviewsColumnsToReturn)
+      .select(reviewsColumnsToReturn)
       .where("users.id", userId)
       .andWhere("media.id", mediaId);
     const review = transformReturnReviewData(reviewRaw);
