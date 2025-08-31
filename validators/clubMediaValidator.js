@@ -116,6 +116,6 @@ class ClubMediaValidator {
       throw AppError.badRequest("Invalid club media id and club id pair");
     }
   }
-}
+} //cleaned
 
 export default new ClubMediaValidator();

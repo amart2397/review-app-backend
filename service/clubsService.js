@@ -72,7 +72,7 @@ class ClubsService {
 
   async getUserClubs(userId, cursor = null) {
     try {
-      const clubs = await ClubMembersDao.getClubsForUser(userId, cursor);
+      const clubs = await ClubsDao.getClubsForUser(userId, cursor);
       return clubs;
     } catch (err) {
       if (err instanceof AppError) throw err;

@@ -148,6 +148,7 @@ export const returnKeyMaps = {
   clubMedia: {
     id: "id",
     mediaId: "mediaId",
+    clubId: "clubId",
     title: "mediaTitle",
     description: "mediaDescription",
     artSmall: "art_small",

@@ -22,6 +22,23 @@ class ClubsDao {
     return clubs;
   }
 
+  async getClubsForUser(userId, cursor = null, limit = 20) {
+    const clubsRaw = await db("clubs")
+      .leftJoin("users", "clubs.creator_id", "users.id")
+      .join("club_members", "clubs.id", "club_members.club_id")
+      .select(clubsColumnsToReturn)
+      .where("club_members.user_id", userId)
+      .modify((qb) => {
+        if (cursor) {
+          qb.andWhere("clubs.id", "<", cursor);
+        }
+      })
+      .orderBy("clubs.id", "desc")
+      .limit(limit);
+    const clubs = transformReturnClubsData(clubsRaw);
+    return clubs;
+  }
+
   async createClub(inputClubData) {
     const transformedData = transformClubData(inputClubData);
     const [{ id }] = await db("clubs").insert(transformedData).returning("id");
@@ -57,7 +74,7 @@ class ClubsDao {
       .join("users", "clubs.creator_id", "users.id")
       .select(clubsColumnsToReturn)
       .where("clubs.id", clubId);
-    const club = transformReturnClubsData(clubRaw);
+    const club = transformReturnClubsData(clubRaw).clubs?.[0];
     return club;
   }
 }

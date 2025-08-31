@@ -40,9 +40,9 @@ class ClubsValidator {
   //app logic validation
   async validateNewClub(inputClubData) {
     const { creatorId } = inputClubData;
-    const clubs = await ClubsDao.getClubsByCreator(creatorId);
+    const clubData = await ClubsDao.getClubsByCreator(creatorId);
     //Limit users to a maximum amount of clubs to maintain size of app
-    if (clubs?.length === Number(process.env.MAX_CLUBS_BY_USER)) {
+    if (clubData.clubs?.length === Number(process.env.MAX_CLUBS_BY_USER)) {
       throw AppError.forbidden(
         "Already created max clubs, please delete a club first"
       );

@@ -158,7 +158,7 @@ class ReviewsDao {
       .join("media", "reviews.media_id", "media.id")
       .select(reviewsColumnsToReturn)
       .where("reviews.id", id);
-    const review = transformReturnReviewData(reviewRaw);
+    const review = transformReturnReviewData(reviewRaw).reviews?.[0];
     return review;
   }
 
@@ -169,7 +169,7 @@ class ReviewsDao {
       .select(reviewsColumnsToReturn)
       .where("u.id", userId)
       .andWhere("m.id", mediaId);
-    const review = transformReturnReviewData(reviewRaw);
+    const review = transformReturnReviewData(reviewRaw).reviews?.[0];
     return review;
   }
 }

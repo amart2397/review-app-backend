@@ -45,7 +45,7 @@ class ClubMembersValidator {
     const { clubId, userId, role } = inputClubMemberData;
     const club = await ClubsDao.getClubById(clubId);
     const invite = await ClubInvitesDao.getInviteByUserAndClub(userId, clubId);
-    const members = await ClubMembersDao.getClubMembers(clubId);
+    const memberData = await ClubMembersDao.getClubMembers(clubId);
 
     if (!club) {
       throw AppError.badRequest("Club id does not exist");
@@ -55,7 +55,11 @@ class ClubMembersValidator {
         "You do not have an active invitation to this club"
       );
     }
-    if (members && members.length > 0 && role === "creator") {
+    if (
+      memberData.members &&
+      memberData.members.length > 0 &&
+      role === "creator"
+    ) {
       throw AppError.conflict("Clubs can only have one creator");
     }
     return inputClubMemberData;

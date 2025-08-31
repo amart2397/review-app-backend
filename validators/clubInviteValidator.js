@@ -61,10 +61,9 @@ class ClubInviteValidator {
       inviteeId,
       clubId
     );
-    if (existingInvite?.invites?.length > 0) {
-      const invite = existingInvite.invites[0];
-      if (new Date(invite.expiration) < new Date()) {
-        await ClubInvitesDao.deleteInvite(invite.id); //if existing invite is expired, delete it
+    if (existingInvite) {
+      if (new Date(existingInvite.expiration) < new Date()) {
+        await ClubInvitesDao.deleteInvite(existingInvite.id); //if existing invite is expired, delete it
       } else {
         throw AppError.conflict("Invitee already has a pending invite");
       }
