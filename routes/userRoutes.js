@@ -27,4 +27,12 @@ router
     UsersController.deleteUser
   );
 
+router
+  .route("/:id/reviews")
+  .get(
+    isAuthenticated,
+    csrfSynchronisedProtection,
+    UsersController.getReviewsByUser
+  );
+
 export default router;

@@ -18,4 +18,6 @@ router
 
 router.route("/clubs/:clubId/member").delete(MeController.removeFromClub);
 
+router.route("/reviews").get(MeController.getMyReviews);
+
 export default router;

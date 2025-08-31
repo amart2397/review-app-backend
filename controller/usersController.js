@@ -2,12 +2,13 @@ import expressAsyncHandler from "express-async-handler";
 import UsersValidator from "../validators/usersValidator.js";
 import UsersService from "../service/usersService.js";
 import AppError from "../utils/AppError.js";
+import ReviewsService from "../service/reviewsService.js";
 
 //NOTES:
 //This class is structured differently than the other service, dao, and validator classes.
 //Arrow functions might be useful in other classes (since I am exporting single instances of the classes), but it makes it harder to mock for testing
 class UsersController {
-  // @desc Get all users
+  // @desc get all users
   // @route GET /users?cursor
   // @access Private
   getAllUsers = expressAsyncHandler(async (req, res) => {
@@ -37,7 +38,7 @@ class UsersController {
     });
   });
 
-  // @desc Get specific user
+  // @desc get specific user
   // @route GET /users/:id
   // @access Private
   getUser = expressAsyncHandler(async (req, res) => {
@@ -51,7 +52,7 @@ class UsersController {
     res.json(user);
   });
 
-  // @desc Update a user
+  // @desc update a user
   // @route PATCH /users/:id
   // @access Private
   updateUser = expressAsyncHandler(async (req, res) => {
@@ -88,7 +89,7 @@ class UsersController {
     });
   });
 
-  // @desc Delete a user
+  // @desc delete a user
   // @route DELETE /users/:id
   // @access Private
   deleteUser = expressAsyncHandler(async (req, res) => {
@@ -107,6 +108,21 @@ class UsersController {
     res.json({
       message: `User ${email} with id ${id} was deleted`,
     });
+  });
+
+  // @desc get reviews for a given user
+  // @route GET /users/:id/reviews?cursor
+  // @access Private
+  getReviewsByUser = expressAsyncHandler(async (req, res) => {
+    const userId = parseInt(req.params.id);
+    const currentUserId = parseInt(req.user.id);
+    const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const reviews = await ReviewsService.getReviewsByUser(
+      currentUserId,
+      userId,
+      cursor
+    );
+    res.json(reviews);
   });
 }
 

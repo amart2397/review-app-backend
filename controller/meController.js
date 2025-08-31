@@ -4,6 +4,7 @@ import ClubInviteValidator from "../validators/clubInviteValidator.js";
 import ClubMembersValidator from "../validators/clubMembersValidator.js";
 import AppError from "../utils/AppError.js";
 import ClubMembersDao from "../dao/clubMembersDao.js";
+import ReviewsService from "../service/reviewsService.js";
 
 class MeController {
   // @desc get basic user info for req session
@@ -98,6 +99,16 @@ class MeController {
     res.json({
       message: `successfully removed from club with member Id ${delId}`,
     });
+  });
+
+  // @desc get current users reviews
+  // @route GET /me/reviews?cursor
+  // @access Private
+  getMyReviews = expressAsyncHandler(async (req, res) => {
+    const currentUserId = parseInt(req.user.id);
+    const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const reviews = await ReviewsService.getMyReviews(currentUserId, cursor);
+    res.json(reviews);
   });
 }
 

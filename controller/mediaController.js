@@ -2,9 +2,10 @@ import expressAsyncHandler from "express-async-handler";
 import MediaService from "../service/mediaService.js";
 import MediaValidator from "../validators/mediaValidator.js";
 import AppError from "../utils/AppError.js";
+import ReviewsService from "../service/reviewsService.js";
 
 class MediaController {
-  // @desc Get all media
+  // @desc get all media
   // @route GET /media?cursor
   // @access Private
   getAllMedia = expressAsyncHandler(async (req, res) => {
@@ -55,7 +56,7 @@ class MediaController {
     });
   });
 
-  // @desc Get specific media entry
+  // @desc get specific media entry
   // @route GET /media/:id
   // @access Private
   getMedia = expressAsyncHandler(async (req, res) => {
@@ -69,7 +70,7 @@ class MediaController {
     res.json(media);
   });
 
-  // @desc Update a media entry
+  // @desc update a media entry
   // @route PATCH /media/:id
   // @access Private
   updateMedia = expressAsyncHandler(async (req, res) => {
@@ -115,7 +116,7 @@ class MediaController {
     });
   });
 
-  // @desc Delete a media entry
+  // @desc delete a media entry
   // @route DELETE /media/:id
   // @access Private
   deleteMedia = expressAsyncHandler(async (req, res) => {
@@ -130,6 +131,21 @@ class MediaController {
     res.json({
       message: `Media entry: ${title} with id ${id} was deleted`,
     });
+  });
+
+  // @desc get reviews for a given media
+  // @route GET /media/:id/reviews?cursor
+  // @access Private
+  getReviewsByMedia = expressAsyncHandler(async (req, res) => {
+    const mediaId = parseInt(req.params.id);
+    const currentUserId = parseInt(req.user.id);
+    const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const reviews = await ReviewsService.getReviewsByMedia(
+      currentUserId,
+      mediaId,
+      cursor
+    );
+    res.json(reviews);
   });
 }
 

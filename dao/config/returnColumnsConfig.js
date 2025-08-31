@@ -16,22 +16,22 @@ export const mediaColumnsToReturn = [
 
 //Reviews Columns
 export const reviewsColumnsToReturn = [
-  "reviews.id as id",
-  "reviews.review_title",
-  "reviews.review_text",
-  "reviews.review_rating",
-  "reviews.private",
-  "users.id as userId",
-  "users.display_name",
-  "media.id as mediaId",
-  "media.media_type",
-  "media.media_key",
-  "media.title as media_title",
-  "media.description as media_description",
-  "media.art_large",
-  "media.art_small",
-  "media.authors",
-  "media.release_date",
+  "r.id as id",
+  "r.review_title",
+  "r.review_text",
+  "r.review_rating",
+  "r.private",
+  "u.id as userId",
+  "u.display_name",
+  "m.id as mediaId",
+  "m.media_type",
+  "m.media_key",
+  "m.title as media_title",
+  "m.description as media_description",
+  "m.art_large",
+  "m.art_small",
+  "m.authors",
+  "m.release_date",
 ];
 
 //Clubs Columns

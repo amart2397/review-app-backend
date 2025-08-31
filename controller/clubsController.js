@@ -466,6 +466,25 @@ class ClubsController {
     const delId = await ReviewsService.removeReviewShare(shareId, userId);
     res.json({ message: `Review share with id ${delId} removed` });
   });
+
+  //CLUB REVIEWS
+
+  // @desc get reviews for a given club media
+  // @route GET /clubs/:clubId/media/:clubMediaId/reviews?cursor
+  // @access Private
+  getReviewsByClubMedia = expressAsyncHandler(async (req, res) => {
+    const clubMediaId = parseInt(req.params.clubMediaId);
+    const clubId = parseInt(req.params.clubId);
+    const currentUserId = parseInt(req.user.id);
+    const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const reviews = await ReviewsService.getReviewsByClubMedia(
+      clubMediaId,
+      clubId,
+      currentUserId,
+      cursor
+    );
+    res.json(reviews);
+  });
 }
 
 export default new ClubsController();

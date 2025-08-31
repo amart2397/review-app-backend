@@ -99,4 +99,9 @@ router
   .route("/:clubId/media/:clubMediaId/reviews/:reviewId/share/:shareId")
   .delete(ClubsController.removeReviewShare);
 
+//reviews
+router
+  .route("/:clubId/media/:clubMediaId/reviews")
+  .get(ClubsController.getReviewsByClubMedia);
+
 export default router;
