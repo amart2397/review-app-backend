@@ -5,6 +5,7 @@ import ClubMembersValidator from "../validators/clubMembersValidator.js";
 import AppError from "../utils/AppError.js";
 import ClubMembersDao from "../dao/clubMembersDao.js";
 import ReviewsService from "../service/reviewsService.js";
+import FeedService from "../service/feedService.js";
 
 class MeController {
   // @desc get basic user info for req session
@@ -109,6 +110,29 @@ class MeController {
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
     const reviews = await ReviewsService.getMyReviews(currentUserId, cursor);
     res.json(reviews);
+  });
+
+  // @desc get current users feed
+  // @route GET /me/feed?reviewsCursor&clubMediaCursor&clubThreadCursor
+  // @access Private
+  getMyFeed = expressAsyncHandler(async (req, res) => {
+    const currentUserId = parseInt(req.user.id);
+    const reviewsCursor = req.query.reviewsCursor
+      ? parseInt(req.query.reviewsCursor)
+      : null;
+    const clubMediaCursor = req.query.clubMediaCursor
+      ? parseInt(req.query.clubMediaCursor)
+      : null;
+    const clubThreadCursor = req.query.clubThreadCursor
+      ? parseInt(req.query.clubThreadCursor)
+      : null;
+    const cursors = {
+      reviewsCursor,
+      clubMediaCursor,
+      clubThreadCursor,
+    };
+    const feed = await FeedService.getUserFeed(currentUserId, cursors);
+    res.json(feed);
   });
 }
 

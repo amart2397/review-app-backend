@@ -20,4 +20,6 @@ router.route("/clubs/:clubId/member").delete(MeController.removeFromClub);
 
 router.route("/reviews").get(MeController.getMyReviews);
 
+router.route("/feed").get(MeController.getMyFeed);
+
 export default router;

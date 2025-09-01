@@ -78,32 +78,32 @@ export const clubMembersColumnsToReturn = [
 
 //Club Media Columns
 export const clubMediaColumnsToReturn = [
-  "club_media.id as id",
-  "clubs.id as clubId",
-  "clubs.name as clubName",
-  "clubs.media_type as mediaType",
-  "users.id as creatorId",
-  "users.display_name as displayName",
-  "media.id as mediaId",
-  "media.title as mediaTitle",
-  "media.description as mediaDescription",
-  "media.art_large",
-  "media.art_small",
-  "media.authors",
-  "media.release_date",
-  "media.publisher",
-  "media.runtime",
+  "cmd.id as id",
+  "c.id as clubId",
+  "c.name as clubName",
+  "c.media_type as mediaType",
+  "u.id as creatorId",
+  "u.display_name as displayName",
+  "m.id as mediaId",
+  "m.title as mediaTitle",
+  "m.description as mediaDescription",
+  "m.art_large",
+  "m.art_small",
+  "m.authors",
+  "m.release_date",
+  "m.publisher",
+  "m.runtime",
 ];
 
 //Club Thread Columns
 export const clubThreadColumnsToReturn = [
-  "threads.id as id",
-  "threads.club_media_id as clubMediaId",
-  "threads.created_by as creatorId",
-  "users.display_name as creatorName",
-  "threads.title",
-  "threads.default",
-  "threads.created_at",
+  "t.id as id",
+  "t.club_media_id as clubMediaId",
+  "t.created_by as creatorId",
+  "u.display_name as creatorName",
+  "t.title",
+  "t.default",
+  "t.created_at",
 ];
 
 //Club Thread Commments Columns

@@ -158,3 +158,52 @@ export const transformReturnUserData = (data) =>
     keyMap: returnKeyMaps.users,
     rootKey: "users",
   });
+export const transformReturnFeedData = (feedArray) => {
+  if (!feedArray || feedArray.length === 0)
+    return {
+      nextCursor: {
+        reviewsCursor: null,
+        clubMediaCursor: null,
+        clubThreadCursor: null,
+      },
+      feed: [],
+    };
+  // Setup next cursor for pagination
+  const nextCursor = {
+    reviewsCursor: null,
+    clubMediaCursor: null,
+    clubThreadCursor: null,
+  };
+
+  // Transform each row using its type
+  const transformedArray = feedArray.map((row) => {
+    const keyMap = returnKeyMaps[row.type];
+
+    switch (row.type) {
+      case "reviews":
+        nextCursor.reviewsCursor = row.id;
+        break;
+      case "clubMedia":
+        nextCursor.clubMediaCursor = row.id;
+        break;
+      case "clubThreads":
+        nextCursor.clubThreadCursor = row.id;
+        break;
+    }
+
+    if (!keyMap) return row; // fallback: return raw row if type not mapped
+
+    const transformedData = transformReturnData({
+      data: [row.data], // feed row data is already in 'data' JSONB
+      keyMap,
+      rootKey: "data", // we only want the object itself
+    }).data[0]; // extract the single transformed object
+
+    return { type: row.type, ...transformedData };
+  });
+
+  return {
+    nextCursor,
+    feed: transformedArray,
+  };
+};
