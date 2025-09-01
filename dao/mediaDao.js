@@ -7,14 +7,21 @@ import {
 
 class MediaDao {
   async getAllMedia(cursor = null, limit = 20) {
-    const mediaRaw = await db("media")
-      .select(mediaColumnsToReturn)
+    const mediaRaw = await db("media as m")
+      .leftJoin("reviews as r", "m.id", "r.media_id")
+      .groupBy(mediaColumnsToReturn)
+      .select(
+        ...mediaColumnsToReturn,
+        db.raw(
+          `AVG(CASE WHEN r.private IS NOT TRUE THEN r.review_rating END)::numeric(4,2) as global_average_rating`
+        )
+      )
       .modify((qb) => {
         if (cursor) {
-          qb.andWhere("media.id", "<", cursor);
+          qb.andWhere("m.id", "<", cursor);
         }
       })
-      .orderBy("media.id", "desc")
+      .orderBy("m.id", "desc")
       .limit(limit);
     const media = transformReturnMediaData(mediaRaw);
     return media;
@@ -42,7 +49,17 @@ class MediaDao {
 
   //helper queries
   async getMediaById(id) {
-    const media = await db("media").first(mediaColumnsToReturn).where("id", id);
+    const mediaRaw = await db("media as m")
+      .leftJoin("reviews as r", "m.id", "r.media_id")
+      .where("m.id", id)
+      .groupBy(mediaColumnsToReturn)
+      .select(
+        ...mediaColumnsToReturn,
+        db.raw(
+          `AVG(CASE WHEN r.private IS NOT TRUE THEN r.review_rating END)::numeric(4,2) as global_average_rating`
+        )
+      );
+    const media = transformReturnMediaData(mediaRaw).media?.[0];
     return media;
   }
 

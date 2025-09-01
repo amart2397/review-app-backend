@@ -189,15 +189,18 @@ export const returnKeyMaps = {
   },
 
   media: {
-    id: "mediaId",
+    id: "id",
     mediaType: "media_type",
+    averageGlobalRating: "global_average_rating",
     mediaKey: "media_key",
-    title: "media_title",
-    description: "media_description",
+    title: "title",
+    description: "description",
     artSmall: "art_small",
     artLarge: "art_large",
     authors: "authors",
     releaseDate: "release_date",
+    publisher: "publisher",
+    runtime: "runtime",
   },
 
   users: {

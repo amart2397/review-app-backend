@@ -3,15 +3,17 @@ export const usersColumnsToReturn = ["id", "display_name", "role"];
 
 //Media Columns
 export const mediaColumnsToReturn = [
-  "id",
-  "media_type",
-  "media_key",
-  "title",
-  "description",
-  "art_small",
-  "art_large",
-  "authors",
-  "release_date",
+  "m.id",
+  "m.media_type",
+  "m.media_key",
+  "m.title",
+  "m.description",
+  "m.art_small",
+  "m.art_large",
+  "m.authors",
+  "m.release_date",
+  "m.publisher",
+  "m.runtime",
 ];
 
 //Reviews Columns
