@@ -153,11 +153,11 @@ class ReviewsDao {
 
   //helper queries
   async getReviewById(id) {
-    const reviewRaw = await db("reviews")
-      .join("users", "reviews.user_id", "users.id")
-      .join("media", "reviews.media_id", "media.id")
+    const reviewRaw = await db("reviews as r")
+      .join("users as u", "r.user_id", "u.id")
+      .join("media as m", "r.media_id", "m.id")
       .select(reviewsColumnsToReturn)
-      .where("reviews.id", id);
+      .where("r.id", id);
     const review = transformReturnReviewData(reviewRaw).reviews?.[0];
     return review;
   }
