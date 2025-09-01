@@ -7,33 +7,33 @@ import {
 
 class ClubsDao {
   async getPublicClubs(cursor = null, limit = 15) {
-    const clubsRaw = await db("clubs")
-      .leftJoin("users", "clubs.creator_id", "users.id")
+    const clubsRaw = await db("clubs as c")
+      .leftJoin("users as u", "c.creator_id", "u.id")
       .select(clubsColumnsToReturn)
-      .where("clubs.is_private", false)
+      .where("c.is_private", false)
       .modify((qb) => {
         if (cursor) {
-          qb.andWhere("clubs.id", "<", cursor);
+          qb.andWhere("c.id", "<", cursor);
         }
       })
-      .orderBy("clubs.id", "desc")
+      .orderBy("c.id", "desc")
       .limit(limit);
     const clubs = transformReturnClubsData(clubsRaw);
     return clubs;
   }
 
   async getClubsForUser(userId, cursor = null, limit = 20) {
-    const clubsRaw = await db("clubs")
-      .leftJoin("users", "clubs.creator_id", "users.id")
-      .join("club_members", "clubs.id", "club_members.club_id")
+    const clubsRaw = await db("clubs as c")
+      .leftJoin("users as u", "c.creator_id", "u.id")
+      .join("club_members as cm", "c.id", "cm.club_id")
       .select(clubsColumnsToReturn)
-      .where("club_members.user_id", userId)
+      .where("cm.user_id", userId)
       .modify((qb) => {
         if (cursor) {
-          qb.andWhere("clubs.id", "<", cursor);
+          qb.andWhere("c.id", "<", cursor);
         }
       })
-      .orderBy("clubs.id", "desc")
+      .orderBy("c.id", "desc")
       .limit(limit);
     const clubs = transformReturnClubsData(clubsRaw);
     return clubs;
@@ -61,19 +61,19 @@ class ClubsDao {
   }
 
   async getClubsByCreator(creatorId) {
-    const clubsRaw = await db("clubs")
-      .join("users", "clubs.creator_id", "users.id")
+    const clubsRaw = await db("clubs as c")
+      .join("users as u", "c.creator_id", "u.id")
       .select(clubsColumnsToReturn)
-      .where("clubs.creator_id", creatorId);
+      .where("c.creator_id", creatorId);
     const clubs = transformReturnClubsData(clubsRaw);
     return clubs;
   }
 
   async getClubById(clubId) {
-    const clubRaw = await db("clubs")
-      .join("users", "clubs.creator_id", "users.id")
+    const clubRaw = await db("clubs as c")
+      .join("users as u", "c.creator_id", "u.id")
       .select(clubsColumnsToReturn)
-      .where("clubs.id", clubId);
+      .where("c.id", clubId);
     const club = transformReturnClubsData(clubRaw).clubs?.[0];
     return club;
   }

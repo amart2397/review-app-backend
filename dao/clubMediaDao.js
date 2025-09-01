@@ -7,41 +7,41 @@ import { clubMediaColumnsToReturn } from "./config/returnColumnsConfig.js";
 
 class ClubMediaDao {
   async getClubMedia(clubId, cursor = null, limit = 20) {
-    const clubMediaRaw = await db("club_media")
-      .join("clubs", "club_media.club_id", "clubs.id")
-      .join("media", "club_media.media_id", "media.id")
-      .leftJoin("users", "club_media.assigned_by", "users.id")
-      .where("club_media.club_id", clubId)
+    const clubMediaRaw = await db("club_media as cmd")
+      .join("clubs as c", "cmd.club_id", "c.id")
+      .join("media as m", "cmd.media_id", "m.id")
+      .leftJoin("users as u", "cmd.assigned_by", "u.id")
+      .where("cmd.club_id", clubId)
       .select(clubMediaColumnsToReturn)
       .modify((qb) => {
         if (cursor) {
-          qb.andWhere("club_media.id", "<", cursor);
+          qb.andWhere("cmd.id", "<", cursor);
         }
       })
-      .orderBy("club_media.id", "desc")
+      .orderBy("cmd.id", "desc")
       .limit(limit);
     const clubMedia = transformReturnClubMediaData(clubMediaRaw);
     return clubMedia;
   }
 
   async getClubMediaByClubAndMediaId(clubId, mediaId) {
-    const clubMediaRaw = await db("club_media")
-      .join("clubs", "club_media.club_id", "clubs.id")
-      .join("media", "club_media.media_id", "media.id")
-      .join("users", "club_media.assigned_by", "users.id")
-      .where("club_media.club_id", clubId)
-      .where("club_media.media_id", mediaId)
+    const clubMediaRaw = await db("club_media as cmd")
+      .join("clubs as c", "cmd.club_id", "c.id")
+      .join("media as m", "cmd.media_id", "m.id")
+      .join("users as u", "cmd.assigned_by", "u.id")
+      .where("cmd.club_id", clubId)
+      .where("cmd.media_id", mediaId)
       .select(clubMediaColumnsToReturn);
     const clubMedia = transformReturnClubMediaData(clubMediaRaw).media?.[0];
     return clubMedia;
   }
 
   async getClubMediaById(clubMediaId) {
-    const clubMediaRaw = await db("club_media")
-      .join("clubs", "club_media.club_id", "clubs.id")
-      .join("media", "club_media.media_id", "media.id")
-      .join("users", "club_media.assigned_by", "users.id")
-      .where("club_media.id", clubMediaId)
+    const clubMediaRaw = await db("club_media as cmd")
+      .join("clubs as c", "cmd.club_id", "c.id")
+      .join("media as m", "cmd.media_id", "m.id")
+      .join("users as u", "cmd.assigned_by", "u.id")
+      .where("cmd.id", clubMediaId)
       .select(clubMediaColumnsToReturn);
     const clubMedia = transformReturnClubMediaData(clubMediaRaw).media?.[0];
     return clubMedia;

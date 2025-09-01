@@ -8,17 +8,17 @@ import { clubMembersColumnsToReturn } from "./config/returnColumnsConfig.js";
 
 class ClubMembersDao {
   async getClubMembers(clubId, cursor = null, limit = 50) {
-    const membersRaw = await db("club_members")
-      .join("users", "club_members.user_id", "users.id")
-      .join("clubs", "club_members.club_id", "clubs.id")
-      .where("club_members.club_id", clubId)
+    const membersRaw = await db("club_members as cm")
+      .join("users as u", "cm.user_id", "u.id")
+      .join("clubs as c", "cm.club_id", "c.id")
+      .where("cm.club_id", clubId)
       .select(clubMembersColumnsToReturn)
       .modify((qb) => {
         if (cursor) {
-          qb.andWhere("club_members.id", "<", cursor);
+          qb.andWhere("cm.id", "<", cursor);
         }
       })
-      .orderBy("club_members.id", "desc")
+      .orderBy("cm.id", "desc")
       .limit(limit);
     const members = transformReturnClubMemberData(membersRaw);
     return members;
@@ -45,20 +45,20 @@ class ClubMembersDao {
   }
 
   async getMemberById(memberId) {
-    const member = await db("club_members")
-      .join("users", "club_members.user_id", "users.id")
-      .join("clubs", "club_members.club_id", "clubs.id")
-      .where("club_members.id", memberId)
+    const member = await db("club_members as cm")
+      .join("users as u", "cm.user_id", "u.id")
+      .join("clubs as c", "cm.club_id", "c.id")
+      .where("cm.id", memberId)
       .first(clubMembersColumnsToReturn);
     return member;
   }
 
   async getMemberByUserAndClub(userId, clubId) {
-    const member = await db("club_members")
-      .join("users", "club_members.user_id", "users.id")
-      .join("clubs", "club_members.club_id", "clubs.id")
-      .where("user_id", userId)
-      .where("club_id", clubId)
+    const member = await db("club_members as cm")
+      .join("users as u", "cm.user_id", "u.id")
+      .join("clubs as c", "cm.club_id", "c.id")
+      .where("cm.user_id", userId)
+      .where("cm.club_id", clubId)
       .first(clubMembersColumnsToReturn);
     return member;
   }

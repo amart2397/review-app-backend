@@ -11,37 +11,37 @@ import {
 
 class ClubInvitesDao {
   async getClubInvites(clubId, cursor = null, limit = 20) {
-    const invitesRaw = await db("club_invites")
-      .join("users", "club_invites.invitee_id", "users.id")
-      .join("clubs", "club_invites.club_id", "clubs.id")
+    const invitesRaw = await db("club_invites as ci")
+      .join("users as u", "ci.invitee_id", "u.id")
+      .join("clubs as c", "ci.club_id", "c.id")
       .select(clubInvitesColumnsToReturn)
-      .where("club_invites.club_id", clubId)
-      .andWhere("club_invites.expires_at", ">", new Date())
+      .where("ci.club_id", clubId)
+      .andWhere("ci.expires_at", ">", new Date())
       .modify((qb) => {
         if (cursor) {
-          qb.andWhere("club_invites.id", "<", cursor);
+          qb.andWhere("ci.id", "<", cursor);
         }
       })
-      .orderBy("club_invites.id", "desc")
+      .orderBy("ci.id", "desc")
       .limit(limit);
     const invites = transformReturnClubInvitesData(invitesRaw);
     return invites;
   }
 
   async getUserInvites(userId) {
-    const invitesRaw = await db("club_invites")
-      .join("users as inviter", "club_invites.inviter_id", "inviter.id")
-      .join("users as invitee", "club_invites.invitee_id", "invitee.id")
-      .join("clubs", "club_invites.club_id", "clubs.id")
-      .join("club_members", function () {
-        this.on("club_members.user_id", "club_invites.inviter_id").andOn(
-          "club_members.club_id",
-          "club_invites.club_id"
+    const invitesRaw = await db("club_invites as ci")
+      .join("users as inviter", "ci.inviter_id", "inviter.id")
+      .join("users as invitee", "ci.invitee_id", "invitee.id")
+      .join("clubs as c", "ci.club_id", "c.id")
+      .join("club_members as cm", function () {
+        this.on("cm.user_id", "ci.inviter_id").andOn(
+          "cm.club_id",
+          "ci.club_id"
         );
       })
       .select(meClubInvitesColumnsToReturn)
-      .where("club_invites.invitee_id", userId)
-      .where("club_invites.expires_at", ">", new Date());
+      .where("ci.invitee_id", userId)
+      .where("ci.expires_at", ">", new Date());
     const invites = transformReturnUserInvitesData(invitesRaw);
     return invites;
   }
@@ -63,36 +63,36 @@ class ClubInvitesDao {
   }
 
   async getInviteById(inviteId) {
-    const invite = await db("club_invites")
-      .join("users as inviter", "club_invites.inviter_id", "inviter.id")
-      .join("users as invitee", "club_invites.invitee_id", "invitee.id")
-      .join("clubs", "club_invites.club_id", "clubs.id")
-      .join("club_members", function () {
-        this.on("club_members.user_id", "club_invites.inviter_id").andOn(
-          "club_members.club_id",
-          "club_invites.club_id"
+    const invite = await db("club_invites as ci")
+      .join("users as inviter", "ci.inviter_id", "inviter.id")
+      .join("users as invitee", "ci.invitee_id", "invitee.id")
+      .join("clubs as c", "ci.club_id", "c.id")
+      .join("club_members as cm", function () {
+        this.on("cm.user_id", "ci.inviter_id").andOn(
+          "cm.club_id",
+          "ci.club_id"
         );
       })
       .select(meClubInvitesColumnsToReturn)
-      .where("club_invites.id", inviteId)
+      .where("ci.id", inviteId)
       .first();
     return invite;
   }
 
   async getInviteByUserAndClub(userId, clubId) {
-    const inviteRaw = await db("club_invites")
-      .join("users as inviter", "club_invites.inviter_id", "inviter.id")
-      .join("users as invitee", "club_invites.invitee_id", "invitee.id")
-      .join("clubs", "club_invites.club_id", "clubs.id")
-      .join("club_members", function () {
-        this.on("club_members.user_id", "club_invites.inviter_id").andOn(
-          "club_members.club_id",
-          "club_invites.club_id"
+    const inviteRaw = await db("club_invites as ci")
+      .join("users as inviter", "ci.inviter_id", "inviter.id")
+      .join("users as invitee", "ci.invitee_id", "invitee.id")
+      .join("clubs as c", "ci.club_id", "c.id")
+      .join("club_members as cm", function () {
+        this.on("cm.user_id", "ci.inviter_id").andOn(
+          "cm.club_id",
+          "ci.club_id"
         );
       })
       .select(meClubInvitesColumnsToReturn)
-      .where("club_invites.invitee_id", userId)
-      .where("club_invites.club_id", clubId);
+      .where("ci.invitee_id", userId)
+      .where("ci.club_id", clubId);
     const invite = transformReturnUserInvitesData(inviteRaw).invites?.[0];
     return invite;
   }

@@ -7,16 +7,16 @@ import { clubThreadColumnsToReturn } from "./config/returnColumnsConfig.js";
 
 class ClubThreadsDao {
   async getClubThreads(clubMediaId, cursor = null, limit = 10) {
-    let query = db("threads")
-      .join("users", "threads.created_by", "users.id")
-      .where("threads.club_media_id", clubMediaId)
+    let query = db("threads as t")
+      .join("users as u", "t.created_by", "u.id")
+      .where("t.club_media_id", clubMediaId)
       .select(clubThreadColumnsToReturn)
-      .orderBy("threads.created_at", "desc")
+      .orderBy("t.created_at", "desc")
       .limit(limit);
 
     // If cursor is provided, fetch threads older than that timestamp
     if (cursor) {
-      query = query.andWhere("threads.created_at", "<", cursor);
+      query = query.andWhere("t.created_at", "<", cursor);
     }
 
     const threadsRaw = await query;
@@ -29,9 +29,9 @@ class ClubThreadsDao {
   }
 
   async getClubThreadById(threadId) {
-    const threadRaw = await db("threads")
-      .join("users", "threads.created_by", "users.id")
-      .where("threads.id", threadId)
+    const threadRaw = await db("threads as t")
+      .join("users as u", "t.created_by", "u.id")
+      .where("t.id", threadId)
       .select(clubThreadColumnsToReturn);
     const thread = transformReturnClubThreadData(threadRaw).threads?.[0];
     return thread;

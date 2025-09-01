@@ -36,44 +36,44 @@ export const reviewsColumnsToReturn = [
 
 //Clubs Columns
 export const clubsColumnsToReturn = [
-  "clubs.id as id",
-  "clubs.name as clubName",
-  "clubs.media_type",
-  "clubs.is_private",
-  "clubs.creator_id",
-  "users.display_name",
+  "c.id as id",
+  "c.name as clubName",
+  "c.media_type",
+  "c.is_private",
+  "c.creator_id",
+  "u.display_name",
 ];
 
 //Club Invites Columns
 export const clubInvitesColumnsToReturn = [
-  "club_invites.id as id",
-  "club_invites.club_id as clubId",
-  "clubs.name as clubName",
-  "users.id as userId",
-  "users.display_name",
+  "ci.id as id",
+  "ci.club_id as clubId",
+  "c.name as clubName",
+  "u.id as userId",
+  "u.display_name",
 ];
 
 //Club Invites for Me Columns
 export const meClubInvitesColumnsToReturn = [
-  "club_invites.id as id",
-  "club_invites.club_id as clubId",
-  "clubs.name as clubName",
+  "ci.id as id",
+  "ci.club_id as clubId",
+  "c.name as clubName",
   "inviter.id as inviterId",
   "inviter.display_name as inviterDisplayName",
   "invitee.id as inviteeId",
   "invitee.display_name as inviteeDisplayName",
-  "club_invites.expires_at",
-  "club_members.role as inviterMemberRole",
+  "ci.expires_at",
+  "cm.role as inviterMemberRole",
 ];
 
 //Club Members Columns
 export const clubMembersColumnsToReturn = [
-  "club_members.id as id",
-  "club_members.club_id as clubId",
-  "club_members.user_id as userId",
-  "club_members.role as memberRole",
-  "users.display_name as displayName",
-  "clubs.name as clubName",
+  "cm.id as id",
+  "cm.club_id as clubId",
+  "cm.user_id as userId",
+  "cm.role as memberRole",
+  "u.display_name as displayName",
+  "c.name as clubName",
 ];
 
 //Club Media Columns
