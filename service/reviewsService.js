@@ -167,8 +167,11 @@ class ReviewsService {
         currentUserId,
         clubId
       );
-      const clubMedia = await ClubMediaDao.getClubMediaById(clubMediaId);
-      const mediaId = clubMedia?.media?.[0]?.mediaId;
+      const clubMedia = await ClubMediaDao.getClubMediaById(
+        clubMediaId,
+        clubId
+      );
+      const mediaId = clubMedia.mediaId;
       const reviews = await ReviewsDao.getReviewsByClubMedia(
         mediaId,
         clubId,

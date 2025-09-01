@@ -208,6 +208,21 @@ class ClubsController {
     res.json(clubMedia);
   });
 
+  // @desc get club media by id
+  // @route GET /clubs/:clubId/media/:clubMediaId
+  // @access Private
+  getClubMediaById = expressAsyncHandler(async (req, res) => {
+    const clubId = parseInt(req.params.clubId);
+    const userId = parseInt(req.user.id);
+    const clubMediaId = parseInt(req.params.clubMediaId);
+    const clubMedia = await ClubsService.getClubMediaById(
+      clubMediaId,
+      userId,
+      clubId
+    );
+    res.json(clubMedia);
+  });
+
   // @desc add new media for a given club
   // @route POST /clubs/:clubId/media
   // @access Private

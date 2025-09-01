@@ -220,6 +220,25 @@ class ClubsService {
     }
   }
 
+  async getClubMediaById(clubMediaId, userId, clubId) {
+    try {
+      await ClubMembersValidator.validateUserIsClubMember(userId, clubId);
+      const clubMedia = await ClubMediaDao.getClubMediaById(
+        clubMediaId,
+        clubId
+      );
+      if (clubMedia) {
+        if (clubId !== clubMedia.clubId) {
+          throw AppError.badRequest("Invalid club media id and club id pair");
+        }
+      }
+      return clubMedia;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
+
   async addClubMedia(inputClubMediaData) {
     try {
       const clubMediaData = { ...inputClubMediaData };

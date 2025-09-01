@@ -147,6 +147,8 @@ export const returnKeyMaps = {
 
   clubMedia: {
     id: "id",
+    averageGlobalRating: "global_average_rating",
+    averageClubRating: "club_average_rating",
     mediaId: "mediaId",
     clubId: "clubId",
     title: "mediaTitle",

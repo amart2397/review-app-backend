@@ -51,7 +51,7 @@ class ClubThreadsValidator {
     const { clubMediaId, userId, clubId } = inputThreadData;
     const club = await ClubsDao.getClubById(clubId);
     const creator = await ClubMembersDao.getMemberByUserAndClub(userId, clubId);
-    const media = await ClubMediaDao.getClubMediaById(clubMediaId);
+    const clubMedia = await ClubMediaDao.getClubMediaById(clubMediaId, clubId);
     //Club must exist
     if (!club) {
       throw AppError.badRequest("Club id does not exist");
@@ -63,11 +63,11 @@ class ClubThreadsValidator {
       );
     }
     //Media must exist
-    if (!media) {
+    if (!clubMedia) {
       throw AppError.badRequest("Club media id does not exist");
     }
     //Media must be associated with current club
-    if (media.clubId !== clubId) {
+    if (clubMedia.clubId !== clubId) {
       throw AppError.badRequest("Invalid club media id and club id pair");
     }
     return inputThreadData;
@@ -77,7 +77,7 @@ class ClubThreadsValidator {
     const { id, userId, clubId, clubMediaId } = inputThreadData;
     const updater = await ClubMembersDao.getMemberByUserAndClub(userId, clubId);
     const thread = await ClubThreadsDao.getClubThreadById(id);
-    const clubMedia = await ClubMediaDao.getClubMediaById(clubMediaId);
+    const clubMedia = await ClubMediaDao.getClubMediaById(clubMediaId, clubId);
     //Thread must exist
     if (!thread) {
       throw AppError.badRequest("Thread id does not exist");
@@ -103,7 +103,7 @@ class ClubThreadsValidator {
     const { id, userId, clubId, clubMediaId, role } = inputThreadData;
     const deleter = await ClubMembersDao.getMemberByUserAndClub(userId, clubId);
     const thread = await ClubThreadsDao.getClubThreadById(id);
-    const clubMedia = await ClubMediaDao.getClubMediaById(clubMediaId);
+    const clubMedia = await ClubMediaDao.getClubMediaById(clubMediaId, clubId);
     //Thread must exist
     if (!thread) {
       throw AppError.badRequest("Thread id does not exist");
@@ -131,7 +131,10 @@ class ClubThreadsValidator {
 
   async validateThreadAndClub(threadId, clubId) {
     const thread = await ClubThreadsDao.getClubThreadById(threadId);
-    const clubMedia = await ClubMediaDao.getClubMediaById(thread.clubMediaId);
+    const clubMedia = await ClubMediaDao.getClubMediaById(
+      thread.clubMediaId,
+      clubId
+    );
     if (clubMedia.clubId !== clubId) {
       throw AppError.badRequest("Invlaid thread id and club id pair");
     }

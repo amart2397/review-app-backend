@@ -91,7 +91,7 @@ class ClubMediaValidator {
 
   async validateDeleteClubMedia(inputClubMediaData) {
     const { id, userId, clubId, role } = inputClubMediaData;
-    const media = await ClubMediaDao.getClubMediaById(id);
+    const media = await ClubMediaDao.getClubMediaById(id, clubId);
     const requestedBy = await ClubMembersDao.getMemberByUserAndClub(
       userId,
       clubId
@@ -111,7 +111,7 @@ class ClubMediaValidator {
   }
 
   async validateClubMediaAndClub(clubMediaId, clubId) {
-    const clubMedia = await ClubMediaDao.getClubMediaById(clubMediaId);
+    const clubMedia = await ClubMediaDao.getClubMediaById(clubMediaId, clubId);
     if (clubMedia.clubId !== clubId) {
       throw AppError.badRequest("Invalid club media id and club id pair");
     }

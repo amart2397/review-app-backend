@@ -60,6 +60,7 @@ router
 
 router
   .route("/:clubId/media/:clubMediaId")
+  .get(ClubsController.getClubMediaById)
   .delete(ClubsController.deleteClubMedia);
 
 //threads

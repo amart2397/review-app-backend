@@ -55,7 +55,7 @@ class ClubThreadCommentValidator {
     const { threadId, userId, parentId, clubId, clubMediaId } =
       inputCommentData;
     const club = await ClubsDao.getClubById(clubId);
-    const clubMedia = await ClubMediaDao.getClubMediaById(clubMediaId);
+    const clubMedia = await ClubMediaDao.getClubMediaById(clubMediaId, clubId);
     const thread = await ClubThreadsDao.getClubThreadById(threadId);
     const commenter = await ClubMembersDao.getMemberByUserAndClub(
       userId,
@@ -86,7 +86,7 @@ class ClubThreadCommentValidator {
   async validateUpdatedThreadComment(inputCommentData) {
     const { id, threadId, userId, clubId, clubMediaId } = inputCommentData;
     const club = await ClubsDao.getClubById(clubId);
-    const clubMedia = await ClubMediaDao.getClubMediaById(clubMediaId);
+    const clubMedia = await ClubMediaDao.getClubMediaById(clubMediaId, clubId);
     const thread = await ClubThreadsDao.getClubThreadById(threadId);
     const comment = await ClubThreadCommentsDao.getClubThreadCommentById(id);
     const commenter = await ClubMembersDao.getMemberByUserAndClub(
@@ -115,7 +115,7 @@ class ClubThreadCommentValidator {
     const { id, threadId, userId, clubId, clubMediaId, role } =
       inputCommentData;
     const club = await ClubsDao.getClubById(clubId);
-    const clubMedia = await ClubMediaDao.getClubMediaById(clubMediaId);
+    const clubMedia = await ClubMediaDao.getClubMediaById(clubMediaId, clubId);
     const thread = await ClubThreadsDao.getClubThreadById(threadId);
     const comment = await ClubThreadCommentsDao.getClubThreadCommentById(id);
     const commenter = await ClubMembersDao.getMemberByUserAndClub(
@@ -156,7 +156,10 @@ class ClubThreadCommentValidator {
       commentId
     );
     const thread = await ClubThreadsDao.getClubThreadById(comment.threadId);
-    const clubMedia = await ClubMediaDao.getClubMediaById(thread.clubMediaId);
+    const clubMedia = await ClubMediaDao.getClubMediaById(
+      thread.clubMediaId,
+      clubId
+    );
     const compareClubId = clubMedia.clubId;
     if (compareClubId !== clubId) {
       throw AppError.badRequest("Invalid club id and comment id pair");
