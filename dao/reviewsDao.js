@@ -129,6 +129,22 @@ class ReviewsDao {
     return reviews;
   }
 
+  async getAllReviews(cursor = null, limit = 30) {
+    const reviewsRaw = await db("reviews as r")
+      .join("users as u", "r.user_id", "u.id")
+      .join("media as m", "r.media_id", "m.id")
+      .select(reviewsColumnsToReturn)
+      .modify((qb) => {
+        if (cursor) {
+          qb.andWhere("r.id", "<", cursor);
+        }
+      })
+      .orderBy("r.id", "desc")
+      .limit(limit);
+    const reviews = transformReturnReviewData(reviewsRaw);
+    return reviews;
+  }
+
   async createReview(inputReviewData) {
     const transformedData = transformReviewData(inputReviewData);
     const [{ id }] = await db("reviews")

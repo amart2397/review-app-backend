@@ -21,6 +21,20 @@ class UsersDao {
     return users;
   }
 
+  async getAllUsersForAdmin(cursor = null, limit = 30) {
+    const usersRaw = await db("users")
+      .select(usersColumnsToReturn)
+      .modify((qb) => {
+        if (cursor) {
+          qb.andWhere("users.id", "<", cursor);
+        }
+      })
+      .orderBy("users.id", "desc")
+      .limit(limit);
+    const users = transformReturnUserData(usersRaw);
+    return users;
+  }
+
   async createUser(inputUserData) {
     const transformedData = transformUserData(inputUserData);
     const [{ id }] = await db("users").insert(transformedData).returning("id");
