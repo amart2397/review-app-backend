@@ -18,17 +18,16 @@ This service handles authentication, authorization, club and review management, 
 - **Review CRUD** for both short “rating-only” and long-form reviews
 - **Club CRUD** with public and private options, plus user invitations
 - **Media search** via [TMDB API](https://developer.themoviedb.org/docs) and [Google Books API](https://developers.google.com/books)
+- **RBAP** App-level role permissions
+- **Admin Moderation** Admin-only routes
+- **Reviews** View reviews by media item, user, or club
+- **Review Stats** Average ratings by media
+- **Club Media** Club media selection and tracking
+- **Club Discussion Threads** Club discussion threads
+- **Private Reviews** with optional club sharing
 
 ### Planned / In Progress
 
-- App-level role permissions
-- Admin-only routes
-- Pagination for all `GET` routes
-- View reviews by media item or user
-- Average ratings and other review statistics
-- Club media selection and tracking
-- Club discussion threads
-- Private reviews with optional club sharing
 - Personal user profiles
 
 ### Testing & CI/CD
