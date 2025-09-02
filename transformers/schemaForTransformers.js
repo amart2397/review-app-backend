@@ -210,4 +210,12 @@ export const returnKeyMaps = {
     displayName: "display_name",
     role: "role",
   },
+
+  permReq: {
+    id: "id",
+    status: "status",
+    userId: "userId",
+    displayName: "display_name",
+    role: "role",
+  },
 };

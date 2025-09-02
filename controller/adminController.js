@@ -2,6 +2,44 @@ import expressAsyncHandler from "express-async-handler";
 import AdminService from "../service/adminService.js";
 
 class AdminController {
+  // @desc get all pending post perm requests
+  // @route GET /admin/permissions/pending?cursor
+  // @access Private
+  getPendingRequests = expressAsyncHandler(async (req, res) => {
+    const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const requests = await AdminService.getPendingRequests(cursor);
+    res.json(requests);
+  });
+
+  // @desc get all processed post perm requests
+  // @route GET /admin/permissions/processed?cursor
+  // @access Private
+  getProcessedRequests = expressAsyncHandler(async (req, res) => {
+    const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const requests = await AdminService.getProcessedRequests(cursor);
+    res.json(requests);
+  });
+
+  // @desc respond to a post perm request
+  // @route POST /admin/permissions/:id
+  // @access Private
+  respondToRequest = expressAsyncHandler(async (req, res) => {
+    const requestId = parseInt(req.params.id);
+    const adminId = parseInt(req.user.id);
+    const { accepted } = req.body;
+    await AdminService.respondToRequest(requestId, accepted, adminId);
+    res.json({ message: `Request with id ${requestId} processed` });
+  });
+
+  // @desc delete a request
+  // @route DELETE /admin/permissions/:id
+  // @access Private
+  deleteRequest = expressAsyncHandler(async (req, res) => {
+    const requestId = parseInt(req.params.id);
+    const delId = await AdminService.deleteRequest(requestId);
+    res.json({ message: `Request with id ${delId} deleted` });
+  });
+
   // @desc get all users
   // @route GET /admin/users?cursor
   // @access Private

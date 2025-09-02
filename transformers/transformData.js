@@ -207,3 +207,9 @@ export const transformReturnFeedData = (feedArray) => {
     feed: transformedArray,
   };
 };
+export const transformReturnPermReqData = (data) =>
+  transformReturnData({
+    data,
+    keyMap: returnKeyMaps.permReq,
+    rootKey: "requests",
+  });

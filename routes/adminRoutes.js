@@ -22,4 +22,13 @@ router.route("/reviews/:reviewId").delete(AdminController.deleteReview);
 router.route("/clubs").get(AdminController.getAllClubs);
 router.route("/clubs/:clubId").delete(AdminController.deleteClub);
 
+router.route("/permissions/pending").get(AdminController.getPendingRequests);
+router
+  .route("/permissions/processed")
+  .get(AdminController.getProcessedRequests);
+router
+  .route("/permissions/:id")
+  .post(AdminController.respondToRequest)
+  .delete(AdminController.deleteRequest);
+
 export default router;

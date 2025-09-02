@@ -6,6 +6,7 @@ import AppError from "../utils/AppError.js";
 import ClubMembersDao from "../dao/clubMembersDao.js";
 import ReviewsService from "../service/reviewsService.js";
 import FeedService from "../service/feedService.js";
+import PostPermissionRequestsService from "../service/postPermissionRequestsService.js";
 
 class MeController {
   // @desc get basic user info for req session
@@ -133,6 +134,27 @@ class MeController {
     };
     const feed = await FeedService.getUserFeed(currentUserId, cursors);
     res.json(feed);
+  });
+
+  // @desc get active permission request
+  // @route GET /me/permissions
+  // @access Private
+  getMyPermissionRequest = expressAsyncHandler(async (req, res) => {
+    const userId = parseInt(req.user.id);
+    const request =
+      await PostPermissionRequestsService.getPostPermRequestByUser(userId);
+    res.json(request);
+  });
+
+  // @desc send post permission request
+  // @route POST /me/permissions
+  // @access Private
+  sendPermissionRequest = expressAsyncHandler(async (req, res) => {
+    const userId = parseInt(req.user.id);
+    const newId = await PostPermissionRequestsService.addPostPermRequest(
+      userId
+    );
+    res.json({ message: `New request created with id ${newId}` });
   });
 }
 

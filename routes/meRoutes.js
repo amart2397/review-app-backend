@@ -22,4 +22,9 @@ router.route("/reviews").get(MeController.getMyReviews);
 
 router.route("/feed").get(MeController.getMyFeed);
 
+router
+  .route("/permissions")
+  .get(MeController.getMyPermissionRequest)
+  .post(MeController.sendPermissionRequest);
+
 export default router;

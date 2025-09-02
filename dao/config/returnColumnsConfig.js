@@ -119,3 +119,12 @@ export const clubThreadCommentsColumnsToReturn = [
   "c.thread_id",
   "u.display_name as displayName",
 ];
+
+//Perm Requests Columns
+export const postPermReqColumnsToReturn = [
+  "pr.id",
+  "pr.status",
+  "u.id as userId",
+  "u.display_name",
+  "u.role",
+];
