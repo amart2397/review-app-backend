@@ -71,16 +71,5 @@ npm run dev
 
 ### Required Environment Variables
 
-```
-PG_DATABASE=
-PG_USER=
-PG_PASSWORD=
-PG_HOST=
-PG_PORT=
-ALLOWED_ORIGINS=
-NODE_ENV=
-SESSION_SECRET=
-TMDB_ACCESS_TOKEN=
-GOOGLE_BOOKS_API_KEY=
-MAX_CLUBS_BY_USER=
-```
+This project requires a few environment variables (database, API keys, session secret, etc.).  
+Please contact the maintainer for details.
