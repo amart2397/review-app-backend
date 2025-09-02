@@ -89,7 +89,7 @@ class ClubsDao {
       .join("users as u", "c.creator_id", "u.id")
       .select(clubsColumnsToReturn)
       .where("c.id", clubId);
-    const club = transformReturnClubsData(clubRaw).clubs?.[0];
+    const club = transformReturnClubsData(clubRaw)?.clubs?.[0];
     return club;
   }
 }

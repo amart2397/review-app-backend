@@ -59,7 +59,7 @@ class MediaDao {
           `AVG(CASE WHEN r.private IS NOT TRUE THEN r.review_rating END)::numeric(4,2) as global_average_rating`
         )
       );
-    const media = transformReturnMediaData(mediaRaw).media?.[0];
+    const media = transformReturnMediaData(mediaRaw)?.media?.[0];
     return media;
   }
 

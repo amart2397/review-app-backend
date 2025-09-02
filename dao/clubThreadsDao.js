@@ -33,7 +33,7 @@ class ClubThreadsDao {
       .join("users as u", "t.created_by", "u.id")
       .where("t.id", threadId)
       .select(clubThreadColumnsToReturn);
-    const thread = transformReturnClubThreadData(threadRaw).threads?.[0];
+    const thread = transformReturnClubThreadData(threadRaw)?.threads?.[0];
     return thread;
   }
 

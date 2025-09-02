@@ -11,9 +11,6 @@ class MediaController {
   getAllMedia = expressAsyncHandler(async (req, res) => {
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
     const media = await MediaService.getAllMedia(cursor);
-    if (media.length === 0) {
-      throw AppError.badRequest("No media found");
-    }
     res.json(media);
   });
 

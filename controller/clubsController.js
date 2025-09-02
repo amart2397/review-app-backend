@@ -12,7 +12,7 @@ import ReviewsService from "../service/reviewsService.js";
 class ClubsController {
   //CLUBS
 
-  // @desc Get all public clubs
+  // @desc get all public clubs
   // @route GET /clubs?cursor
   // @access Private
   getAllPublicClubs = expressAsyncHandler(async (req, res) => {
@@ -81,7 +81,7 @@ class ClubsController {
 
   //CLUB INVITES
 
-  // @desc Get current invites for club
+  // @desc get current invites for club
   // @route GET /clubs/:clubId/invites?cursor
   // @access Private
   getClubInvites = expressAsyncHandler(async (req, res) => {
@@ -92,7 +92,7 @@ class ClubsController {
     res.json(invites);
   });
 
-  // @desc Create new invite for club
+  // @desc create new invite for club
   // @route POST /clubs/:clubId/invites
   // @access Private
   createClubInvite = expressAsyncHandler(async (req, res) => {
@@ -133,7 +133,7 @@ class ClubsController {
 
   //CLUB MEMBERS
 
-  // @desc Get current members for club
+  // @desc get current members for club
   // @route GET /clubs/:clubId/members?cursor
   // @access Private
   getClubMembers = expressAsyncHandler(async (req, res) => {
@@ -144,7 +144,7 @@ class ClubsController {
     res.json(invites);
   });
 
-  // @desc Add current user to public club
+  // @desc add current user to public club
   // @route POST /clubs/:clubId/members
   // @access Private
   addClubMember = expressAsyncHandler(async (req, res) => {
@@ -157,7 +157,7 @@ class ClubsController {
     res.json({ message: `Member ${resId} added to club` });
   });
 
-  // @desc Update member permissions for given club
+  // @desc update member permissions for given club
   // @route PATCH /clubs/:clubId/members/:memberId
   // @access Private
   updateClubMemberRole = expressAsyncHandler(async (req, res) => {

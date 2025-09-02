@@ -4,9 +4,6 @@ import UsersService from "../service/usersService.js";
 import AppError from "../utils/AppError.js";
 import ReviewsService from "../service/reviewsService.js";
 
-//NOTES:
-//This class is structured differently than the other service, dao, and validator classes.
-//Arrow functions might be useful in other classes (since I am exporting single instances of the classes), but it makes it harder to mock for testing
 class UsersController {
   // @desc get all users
   // @route GET /users?cursor
@@ -14,9 +11,6 @@ class UsersController {
   getAllUsers = expressAsyncHandler(async (req, res) => {
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
     const users = await UsersService.getAllUsers(cursor);
-    if (users.length === 0) {
-      throw AppError.badRequest("No users found");
-    }
     res.json(users);
   });
 

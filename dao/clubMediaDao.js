@@ -50,7 +50,7 @@ class ClubMediaDao {
       .where("cmd.club_id", clubId)
       .where("cmd.media_id", mediaId)
       .select(clubMediaColumnsToReturn);
-    const clubMedia = transformReturnClubMediaData(clubMediaRaw).media?.[0];
+    const clubMedia = transformReturnClubMediaData(clubMediaRaw)?.media?.[0];
     return clubMedia;
   }
 
@@ -75,7 +75,7 @@ class ClubMediaDao {
           [clubId]
         )
       );
-    const clubMedia = transformReturnClubMediaData(clubMediaRaw).media?.[0];
+    const clubMedia = transformReturnClubMediaData(clubMediaRaw)?.media?.[0];
     return clubMedia;
   }
 

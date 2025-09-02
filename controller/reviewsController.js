@@ -4,15 +4,12 @@ import AppError from "../utils/AppError.js";
 import ReviewsValidator from "../validators/reviewsValidator.js";
 
 class ReviewsController {
-  // @desc Get all reviews
+  // @desc get all reviews
   // @route GET /reviews?cursor
   // @access Public
   getPublicReviews = expressAsyncHandler(async (req, res) => {
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
     const reviews = await ReviewsService.getPublicReviews(cursor);
-    if (reviews?.length === 0) {
-      throw AppError.badRequest("No reviews found");
-    }
     res.json(reviews);
   });
 
@@ -43,7 +40,7 @@ class ReviewsController {
     });
   });
 
-  // @desc Get specific review
+  // @desc get specific review
   // @route GET /reviews/:id
   // @access Public
   getReview = expressAsyncHandler(async (req, res) => {
@@ -57,7 +54,7 @@ class ReviewsController {
     res.json(review);
   });
 
-  // @desc Update a review
+  // @desc update a review
   // @route PATCH /reviews/:id
   // @access Private
   updateReview = expressAsyncHandler(async (req, res) => {
@@ -91,7 +88,7 @@ class ReviewsController {
     });
   });
 
-  // @desc Delete a review
+  // @desc delete a review
   // @route DELETE /reviews/:id
   // @access Private
   deleteReview = expressAsyncHandler(async (req, res) => {

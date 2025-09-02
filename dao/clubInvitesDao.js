@@ -93,7 +93,7 @@ class ClubInvitesDao {
       .select(meClubInvitesColumnsToReturn)
       .where("ci.invitee_id", userId)
       .where("ci.club_id", clubId);
-    const invite = transformReturnUserInvitesData(inviteRaw).invites?.[0];
+    const invite = transformReturnUserInvitesData(inviteRaw)?.invites?.[0];
     return invite;
   }
 }

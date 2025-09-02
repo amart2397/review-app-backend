@@ -63,7 +63,7 @@ class UsersDao {
   async getUserByEmail(email) {
     const user = await db("users")
       .first(usersColumnsToReturn)
-      .where("email", email);
+      .whereILike("email", email);
     return user;
   }
 

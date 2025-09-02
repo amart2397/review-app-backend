@@ -2,7 +2,6 @@ import db from "../db/db.js";
 import {
   transformClubMemberData,
   transformReturnClubMemberData,
-  transformReturnUserClubsData,
 } from "../transformers/transformData.js";
 import { clubMembersColumnsToReturn } from "./config/returnColumnsConfig.js";
 
