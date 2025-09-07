@@ -43,7 +43,7 @@ const updateMediaSchema = z.object({
   pageCount: z.number().optional(),
 });
 
-const mediaIdSchema = z.object({
+const deleteMediaSchema = z.object({
   id: z.int(),
 });
 
@@ -53,8 +53,8 @@ class MediaValidator {
     return compareSchema(newMediaSchema, inputMediaData, true);
   }
 
-  validateMediaIdSchema(inputMediaData) {
-    return compareSchema(mediaIdSchema, inputMediaData, true);
+  validateDeleteMediaSchema(inputMediaData) {
+    return compareSchema(deleteMediaSchema, inputMediaData, true);
   }
 
   validateUpdateMediaSchema(inputMediaData) {

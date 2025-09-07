@@ -37,9 +37,7 @@ class UsersController {
   // @access Private
   getUser = expressAsyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
-    const inputData = { id };
-    const validatedId = UsersValidator.validateUserIdSchema(inputData);
-    const user = await UsersService.getUserById(validatedId);
+    const user = await UsersService.getUserById({ id });
     if (!user) {
       throw AppError.badRequest("User not found");
     }
@@ -94,7 +92,8 @@ class UsersController {
       throw AppError.badRequest("ID in request body does not match ID in URL");
     }
     const inputUserData = { id };
-    const validatedData = UsersValidator.validateUserIdSchema(inputUserData);
+    const validatedData =
+      UsersValidator.validateDeleteUserSchema(inputUserData);
     const { email } = await UsersService.deleteUser(
       validatedData,
       requestUserId

@@ -58,9 +58,7 @@ class MediaController {
   // @access Private
   getMedia = expressAsyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
-    const inputData = { id };
-    const validatedId = MediaValidator.validateMediaIdSchema(inputData);
-    const media = await MediaService.getMediaById(validatedId);
+    const media = await MediaService.getMediaById({ id });
     if (media.length === 0) {
       throw AppError.badRequest("Media not found");
     }
@@ -123,7 +121,8 @@ class MediaController {
       throw AppError.badRequest("ID in request body does not match ID in URL");
     }
     const inputMediaData = { id };
-    const validatedData = MediaValidator.validateMediaIdSchema(inputMediaData);
+    const validatedData =
+      MediaValidator.validateDeleteMediaSchema(inputMediaData);
     const { title } = await MediaService.deleteMedia(validatedData);
     res.json({
       message: `Media entry: ${title} with id ${id} was deleted`,

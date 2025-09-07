@@ -22,7 +22,7 @@ const updateUserSchema = z.object({
   role: z.enum(["user", "poster", "admin"]).optional(),
 });
 
-const userIdSchema = z.object({
+const delteUserSchema = z.object({
   id: z.int(),
 });
 
@@ -32,8 +32,8 @@ class UsersValidator {
     return compareSchema(newUserSchema, inputUserData);
   }
 
-  validateUserIdSchema(inputUserData) {
-    return compareSchema(userIdSchema, inputUserData);
+  validateDeleteUserSchema(inputUserData) {
+    return compareSchema(delteUserSchema, inputUserData);
   }
 
   validateUpdateUserSchema(inputUserData) {

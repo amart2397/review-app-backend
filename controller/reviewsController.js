@@ -45,9 +45,7 @@ class ReviewsController {
   // @access Public
   getReview = expressAsyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
-    const inputData = { id };
-    const validatedData = ReviewsValidator.validateReviewIdSchema(inputData);
-    const review = await ReviewsService.getReviewById(validatedData);
+    const review = await ReviewsService.getReviewById({ id });
     if (review?.length === 0) {
       throw AppError.badRequest("Review not found");
     }
@@ -101,7 +99,7 @@ class ReviewsController {
     }
     const inputReviewData = { id, userId: requestUserId, role };
     const validatedData =
-      ReviewsValidator.validateReviewIdSchema(inputReviewData);
+      ReviewsValidator.validateDeleteReviewSchema(inputReviewData);
     const { id: review_id, review_title } = await ReviewsService.deleteReview(
       validatedData
     );

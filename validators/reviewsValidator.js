@@ -51,7 +51,7 @@ const updateReviewSchema = z.object({
   private: z.boolean().optional(),
 });
 
-const reviewIdSchema = z.object({
+const deleteReviewSchema = z.object({
   id: z.int(),
   userId: z.int(),
   role: z.string(),
@@ -63,8 +63,8 @@ class ReviewsValidator {
     return compareSchema(newReviewSchema, inputReviewData);
   }
 
-  validateReviewIdSchema(inputReviewData) {
-    return compareSchema(reviewIdSchema, inputReviewData);
+  validateDeleteReviewSchema(inputReviewData) {
+    return compareSchema(deleteReviewSchema, inputReviewData);
   }
 
   validateUpdateReviewSchema(inputReviewData) {
