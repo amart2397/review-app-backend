@@ -162,6 +162,26 @@ class MeController {
     );
     res.json({ message: `New request created with id ${newId}` });
   });
+
+  // @desc pin review
+  // @route POST /me/reviews/:reviewId/pin
+  // @access Private
+  pinReview = expressAsyncHandler(async (req, res) => {
+    const userId = parseInt(req.user.id);
+    const reviewId = parseInt(req.params.reviewId);
+    await ReviewsService.pinReview(reviewId, userId);
+    res.json({ message: `Review with id ${reviewId} pinned` });
+  });
+
+  // @desc unpin review
+  // @route DELETE /me/reviews/:reviewId/pin
+  // @access Private
+  unpinReview = expressAsyncHandler(async (req, res) => {
+    const userId = parseInt(req.user.id);
+    const reviewId = parseInt(req.params.reviewId);
+    await ReviewsService.unpinReview(reviewId, userId);
+    res.json({ message: `Review with id ${reviewId} unpinned` });
+  });
 }
 
 export default new MeController();

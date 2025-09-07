@@ -120,6 +120,15 @@ class UsersController {
     );
     res.json(reviews);
   });
+
+  // @desc get pinned review for a given user
+  // @route GET /users/:id/reviews/pinned
+  // @access Private
+  getPinnedReview = expressAsyncHandler(async (req, res) => {
+    const userId = parseInt(req.params.id);
+    const review = await ReviewsService.getUserPinnedReview(userId);
+    res.json(review);
+  });
 }
 
 export default new UsersController();

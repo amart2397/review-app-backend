@@ -29,10 +29,10 @@ router
 
 router
   .route("/:id/reviews")
-  .get(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    UsersController.getReviewsByUser
-  );
+  .get(isAuthenticated, UsersController.getReviewsByUser);
+
+router
+  .route("/:id/reviews/pinned")
+  .get(isAuthenticated, UsersController.getPinnedReview);
 
 export default router;

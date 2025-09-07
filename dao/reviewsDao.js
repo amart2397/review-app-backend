@@ -166,6 +166,17 @@ class ReviewsDao {
     return reviews;
   }
 
+  async getUserPinnedReview(userId) {
+    const reviewRaw = await db("reviews as r")
+      .join("users as u", "r.user_id", "u.id")
+      .join("media as m", "r.media_id", "m.id")
+      .select(reviewsColumnsToReturn)
+      .where("r.user_id", userId)
+      .andWhere("r.pinned", true);
+    const review = transformReturnReviewData(reviewRaw)?.reviews?.[0];
+    return review;
+  }
+
   async createReview(inputReviewData) {
     const transformedData = transformReviewData(inputReviewData);
     const [{ id }] = await db("reviews")

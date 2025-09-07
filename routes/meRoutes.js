@@ -27,4 +27,9 @@ router
   .get(MeController.getMyPermissionRequest)
   .post(MeController.sendPermissionRequest);
 
+router
+  .route("/reviews/:reviewId/pin")
+  .post(MeController.pinReview)
+  .delete(MeController.unpinReview);
+
 export default router;

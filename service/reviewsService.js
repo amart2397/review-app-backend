@@ -209,6 +209,52 @@ class ReviewsService {
       handleError(err);
     }
   }
+
+  async getUserPinnedReview(userId) {
+    try {
+      const review = await ReviewsDao.getUserPinnedReview(userId);
+      return review;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
+
+  async pinReview(reviewId, currentUserId) {
+    try {
+      const review = await ReviewsDao.getReviewById(reviewId);
+      if (!review) {
+        throw AppError.badRequest("Invalid review id");
+      }
+      if (review.author.id !== currentUserId) {
+        throw AppError.forbidden("You are not authorized to pin this review");
+      }
+      const pinnedReview = await ReviewsDao.getUserPinnedReview(currentUserId);
+      if (pinnedReview) {
+        await ReviewsDao.updateReview({ id: pinnedReview.id, pinned: false }); //Unpin previous pinned review (allowing only one pin at a time)
+      }
+      await ReviewsDao.updateReview({ id: reviewId, pinned: true });
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
+
+  async unpinReview(reviewId, currentUserId) {
+    try {
+      const review = await ReviewsDao.getReviewById(reviewId);
+      if (!review) {
+        throw AppError.badRequest("Invalid review id");
+      }
+      if (review.author.id !== currentUserId) {
+        throw AppError.forbidden("You are not authorized to unpin this review");
+      }
+      await ReviewsDao.updateReview({ id: reviewId, pinned: false });
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      handleError(err);
+    }
+  }
 }
 
 export default new ReviewsService();

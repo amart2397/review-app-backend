@@ -32,6 +32,7 @@ export const keyMaps = {
     reviewText: "review_text",
     reviewRating: "review_rating",
     private: "private",
+    pinned: "pinned",
   },
   club: {
     id: "id",
