@@ -3,20 +3,22 @@ import AdminService from "../service/adminService.js";
 
 class AdminController {
   // @desc get all pending post perm requests
-  // @route GET /admin/permissions/pending?cursor
+  // @route GET /admin/permissions/pending?cursor=?name=?
   // @access Private
   getPendingRequests = expressAsyncHandler(async (req, res) => {
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
-    const requests = await AdminService.getPendingRequests(cursor);
+    const name = req.query.name ? req.query.name.trim() : null;
+    const requests = await AdminService.getPendingRequests(cursor, name);
     res.json(requests);
   });
 
   // @desc get all processed post perm requests
-  // @route GET /admin/permissions/processed?cursor
+  // @route GET /admin/permissions/processed?cursor=?name=?
   // @access Private
   getProcessedRequests = expressAsyncHandler(async (req, res) => {
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
-    const requests = await AdminService.getProcessedRequests(cursor);
+    const name = req.query.name ? req.query.name.trim() : null;
+    const requests = await AdminService.getProcessedRequests(cursor, name);
     res.json(requests);
   });
 
@@ -41,11 +43,12 @@ class AdminController {
   });
 
   // @desc get all users
-  // @route GET /admin/users?cursor
+  // @route GET /admin/users?cursor=?name=?
   // @access Private
   getAllUsers = expressAsyncHandler(async (req, res) => {
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
-    const users = await AdminService.getAllUsers(cursor);
+    const name = req.query.name ? req.query.name.trim() : null;
+    const users = await AdminService.getAllUsers(cursor, name);
     res.json(users);
   });
 
@@ -69,11 +72,12 @@ class AdminController {
   });
 
   // @desc get all media
-  // @route GET /admin/media?cursor
+  // @route GET /admin/media?cursor=?name=?
   // @access Private
   getAllMedia = expressAsyncHandler(async (req, res) => {
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
-    const media = await AdminService.getAllMedia(cursor);
+    const name = req.query.name ? req.query.name.trim() : null;
+    const media = await AdminService.getAllMedia(cursor, name);
     res.json(media);
   });
 
@@ -87,11 +91,12 @@ class AdminController {
   });
 
   // @desc get all reviews
-  // @route GET /admin/reviews?cursor
+  // @route GET /admin/reviews?cursor=?media=?
   // @access Private
   getAllReviews = expressAsyncHandler(async (req, res) => {
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
-    const reviews = await AdminService.getAllReviews(cursor);
+    const media = req.query.media ? req.query.media.trim() : null;
+    const reviews = await AdminService.getAllReviews(cursor, media);
     res.json(reviews);
   });
 
@@ -105,11 +110,12 @@ class AdminController {
   });
 
   // @desc get all clubs
-  // @route GET /admin/clubs?cursor
+  // @route GET /admin/clubs?cursor=?name=?
   // @access Private
   getAllClubs = expressAsyncHandler(async (req, res) => {
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
-    const clubs = await AdminService.getAllClubs(cursor);
+    const name = req.query.name ? req.query.name.trim() : null;
+    const clubs = await AdminService.getAllClubs(cursor, name);
     res.json(clubs);
   });
 

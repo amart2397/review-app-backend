@@ -7,12 +7,17 @@ import { usersColumnsToReturn } from "./config/returnColumnsConfig.js";
 
 class UsersDao {
   //Safe methods for returning data to client
-  async getAllUsers(cursor = null, limit = 20) {
+  async getAllUsers(cursor = null, name = null, limit = 20) {
     const usersRaw = await db("users")
       .select(usersColumnsToReturn)
       .modify((qb) => {
         if (cursor) {
           qb.andWhere("users.id", "<", cursor);
+        }
+      })
+      .modify((qb) => {
+        if (name) {
+          qb.andWhereILike("users.display_name", `%${name}%`);
         }
       })
       .orderBy("users.id", "desc")
@@ -21,12 +26,17 @@ class UsersDao {
     return users;
   }
 
-  async getAllUsersForAdmin(cursor = null, limit = 30) {
+  async getAllUsersForAdmin(cursor = null, name = null, limit = 30) {
     const usersRaw = await db("users")
       .select(usersColumnsToReturn)
       .modify((qb) => {
         if (cursor) {
           qb.andWhere("users.id", "<", cursor);
+        }
+      })
+      .modify((qb) => {
+        if (name) {
+          qb.andWhereILike("users.display_name", `%${name}%`);
         }
       })
       .orderBy("users.id", "desc")

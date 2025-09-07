@@ -6,7 +6,7 @@ import {
 import { reviewsColumnsToReturn } from "./config/returnColumnsConfig.js";
 
 class ReviewsDao {
-  async getPublicReviews(cursor = null, limit = 20) {
+  async getPublicReviews(cursor = null, media = null, limit = 20) {
     //Only fetch public reviews
     const reviewsRaw = await db("reviews as r")
       .join("users as u", "r.user_id", "u.id")
@@ -16,6 +16,11 @@ class ReviewsDao {
       .modify((qb) => {
         if (cursor) {
           qb.andWhere("r.id", "<", cursor);
+        }
+      })
+      .modify((qb) => {
+        if (media) {
+          qb.andWhereILike("m.title", `%${media}%`);
         }
       })
       .orderBy("r.id", "desc")
@@ -59,6 +64,7 @@ class ReviewsDao {
     userId,
     currentUserId = null,
     cursor = null,
+    media = null,
     limit = 20
   ) {
     const reviewsRaw = await db("reviews as r")
@@ -80,6 +86,11 @@ class ReviewsDao {
           qb.andWhere("r.id", "<", cursor);
         }
       })
+      .modify((qb) => {
+        if (media) {
+          qb.andWhereILike("m.title", `%${media}%`);
+        }
+      })
       .groupBy("r.id", "u.id", "m.id")
       .select([
         ...reviewsColumnsToReturn,
@@ -91,7 +102,7 @@ class ReviewsDao {
     return reviews;
   }
 
-  async getMyReviews(userId, cursor = null, limit = 20) {
+  async getMyReviews(userId, cursor = null, name = null, limit = 20) {
     const reviewsRaw = await db("reviews as r")
       .join("users as u", "r.user_id", "u.id")
       .join("media as m", "r.media_id", "m.id")
@@ -100,6 +111,11 @@ class ReviewsDao {
       .modify((qb) => {
         if (cursor) {
           qb.andWhere("r.id", "<", cursor);
+        }
+      })
+      .modify((qb) => {
+        if (name) {
+          qb.andWhereILike("m.title", `%${name}%`);
         }
       })
       .orderBy("r.id", "desc")
@@ -129,7 +145,7 @@ class ReviewsDao {
     return reviews;
   }
 
-  async getAllReviews(cursor = null, limit = 30) {
+  async getAllReviews(cursor = null, media = null, limit = 30) {
     const reviewsRaw = await db("reviews as r")
       .join("users as u", "r.user_id", "u.id")
       .join("media as m", "r.media_id", "m.id")
@@ -137,6 +153,11 @@ class ReviewsDao {
       .modify((qb) => {
         if (cursor) {
           qb.andWhere("r.id", "<", cursor);
+        }
+      })
+      .modify((qb) => {
+        if (media) {
+          qb.andWhereILike("m.title", `%${media}%`);
         }
       })
       .orderBy("r.id", "desc")

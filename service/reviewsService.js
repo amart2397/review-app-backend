@@ -11,9 +11,9 @@ import ReviewClubSharesValidator from "../validators/reviewClubSharesValidator.j
 import ReviewsValidator from "../validators/reviewsValidator.js";
 
 class ReviewsService {
-  async getPublicReviews(cursor = null) {
+  async getPublicReviews(cursor = null, media = null) {
     try {
-      const reviews = await ReviewsDao.getPublicReviews(cursor);
+      const reviews = await ReviewsDao.getPublicReviews(cursor, media);
       return reviews;
     } catch (err) {
       if (err instanceof AppError) throw err;
@@ -131,12 +131,13 @@ class ReviewsService {
     }
   }
 
-  async getReviewsByUser(currentUserId, userId, cursor = null) {
+  async getReviewsByUser(currentUserId, userId, cursor = null, media = null) {
     try {
       const reviews = await ReviewsDao.getReviewsByUser(
         userId,
         currentUserId,
-        cursor
+        cursor,
+        media
       );
       return reviews;
     } catch (err) {
@@ -145,9 +146,9 @@ class ReviewsService {
     }
   }
 
-  async getMyReviews(userId, cursor = null) {
+  async getMyReviews(userId, cursor = null, name = null) {
     try {
-      const reviews = await ReviewsDao.getMyReviews(userId, cursor);
+      const reviews = await ReviewsDao.getMyReviews(userId, cursor, name);
       return reviews;
     } catch (err) {
       if (err instanceof AppError) throw err;

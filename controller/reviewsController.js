@@ -5,11 +5,12 @@ import ReviewsValidator from "../validators/reviewsValidator.js";
 
 class ReviewsController {
   // @desc get all reviews
-  // @route GET /reviews?cursor
+  // @route GET /reviews?cursor=?name=?
   // @access Public
   getPublicReviews = expressAsyncHandler(async (req, res) => {
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
-    const reviews = await ReviewsService.getPublicReviews(cursor);
+    const media = req.query.media ? req.query.media.trim() : null;
+    const reviews = await ReviewsService.getPublicReviews(cursor, media);
     res.json(reviews);
   });
 

@@ -10,7 +10,7 @@ import {
 } from "../transformers/transformData.js";
 
 class ClubInvitesDao {
-  async getClubInvites(clubId, cursor = null, limit = 20) {
+  async getClubInvites(clubId, cursor = null, name = null, limit = 20) {
     const invitesRaw = await db("club_invites as ci")
       .join("users as u", "ci.invitee_id", "u.id")
       .join("clubs as c", "ci.club_id", "c.id")
@@ -20,6 +20,11 @@ class ClubInvitesDao {
       .modify((qb) => {
         if (cursor) {
           qb.andWhere("ci.id", "<", cursor);
+        }
+      })
+      .modify((qb) => {
+        if (name) {
+          qb.andWhereILike("u.display_name", `%${name}%`);
         }
       })
       .orderBy("ci.id", "desc")

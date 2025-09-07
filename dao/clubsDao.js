@@ -6,7 +6,7 @@ import {
 } from "../transformers/transformData.js";
 
 class ClubsDao {
-  async getPublicClubs(cursor = null, limit = 15) {
+  async getPublicClubs(cursor = null, name = null, limit = 15) {
     const clubsRaw = await db("clubs as c")
       .leftJoin("users as u", "c.creator_id", "u.id")
       .select(clubsColumnsToReturn)
@@ -16,13 +16,18 @@ class ClubsDao {
           qb.andWhere("c.id", "<", cursor);
         }
       })
+      .modify((qb) => {
+        if (name) {
+          qb.andWhereILike("c.name", `%${name}%`);
+        }
+      })
       .orderBy("c.id", "desc")
       .limit(limit);
     const clubs = transformReturnClubsData(clubsRaw);
     return clubs;
   }
 
-  async getClubsForUser(userId, cursor = null, limit = 20) {
+  async getClubsForUser(userId, cursor = null, name = null, limit = 20) {
     const clubsRaw = await db("clubs as c")
       .leftJoin("users as u", "c.creator_id", "u.id")
       .join("club_members as cm", "c.id", "cm.club_id")
@@ -33,19 +38,29 @@ class ClubsDao {
           qb.andWhere("c.id", "<", cursor);
         }
       })
+      .modify((qb) => {
+        if (name) {
+          qb.andWhereILike("c.name", `%${name}%`);
+        }
+      })
       .orderBy("c.id", "desc")
       .limit(limit);
     const clubs = transformReturnClubsData(clubsRaw);
     return clubs;
   }
 
-  async getAllClubs(cursor = null, limit = 30) {
+  async getAllClubs(cursor = null, name = null, limit = 30) {
     const clubsRaw = await db("clubs as c")
       .leftJoin("users as u", "c.creator_id", "u.id")
       .select(clubsColumnsToReturn)
       .modify((qb) => {
         if (cursor) {
           qb.andWhere("c.id", "<", cursor);
+        }
+      })
+      .modify((qb) => {
+        if (name) {
+          qb.andWhereILike("c.name", `%${name}%`);
         }
       })
       .orderBy("c.id", "desc")

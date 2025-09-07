@@ -19,9 +19,9 @@ env.config();
 
 class ClubsService {
   //Clubs
-  async getPublicClubs(cursor = null) {
+  async getPublicClubs(cursor = null, name = null) {
     try {
-      const clubs = await ClubsDao.getPublicClubs(cursor);
+      const clubs = await ClubsDao.getPublicClubs(cursor, name);
       return clubs;
     } catch (err) {
       if (err instanceof AppError) throw err;
@@ -70,9 +70,9 @@ class ClubsService {
     }
   }
 
-  async getUserClubs(userId, cursor = null) {
+  async getUserClubs(userId, cursor = null, name = null) {
     try {
-      const clubs = await ClubsDao.getClubsForUser(userId, cursor);
+      const clubs = await ClubsDao.getClubsForUser(userId, cursor, name);
       return clubs;
     } catch (err) {
       if (err instanceof AppError) throw err;
@@ -107,10 +107,10 @@ class ClubsService {
     }
   }
 
-  async getClubInvites(userId, clubId, cursor = null) {
+  async getClubInvites(userId, clubId, cursor = null, name = null) {
     try {
       await ClubMembersValidator.validateUserIsClubMember(userId, clubId);
-      const invites = await ClubInvitesDao.getClubInvites(clubId, cursor);
+      const invites = await ClubInvitesDao.getClubInvites(clubId, cursor, name);
       return invites;
     } catch (err) {
       if (err instanceof AppError) throw err;
@@ -148,10 +148,10 @@ class ClubsService {
   }
 
   //Club Members
-  async getClubMembers(userId, clubId, cursor = null) {
+  async getClubMembers(userId, clubId, cursor = null, name = null) {
     try {
       await ClubMembersValidator.validateUserIsClubMember(userId, clubId);
-      const members = await ClubMembersDao.getClubMembers(clubId, cursor);
+      const members = await ClubMembersDao.getClubMembers(clubId, cursor, name);
       return members;
     } catch (err) {
       if (err instanceof AppError) throw err;
@@ -209,10 +209,10 @@ class ClubsService {
   }
 
   //Club Media
-  async getClubMedia(userId, clubId, cursor = null) {
+  async getClubMedia(userId, clubId, cursor = null, name = null) {
     try {
       await ClubMembersValidator.validateUserIsClubMember(userId, clubId);
-      const clubMedia = await ClubMediaDao.getClubMedia(clubId, cursor);
+      const clubMedia = await ClubMediaDao.getClubMedia(clubId, cursor, name);
       return clubMedia;
     } catch (err) {
       if (err instanceof AppError) throw err;
@@ -291,13 +291,20 @@ class ClubsService {
   }
 
   //Club Threads
-  async getClubThreads(userId, clubId, clubMediaId, cursor = null) {
+  async getClubThreads(
+    userId,
+    clubId,
+    clubMediaId,
+    cursor = null,
+    name = null
+  ) {
     try {
       await ClubMediaValidator.validateClubMediaAndClub(clubMediaId, clubId);
       await ClubMembersValidator.validateUserIsClubMember(userId, clubId);
       const clubThreads = await ClubThreadsDao.getClubThreads(
         clubMediaId,
-        cursor
+        cursor,
+        name
       );
       return clubThreads;
     } catch (err) {

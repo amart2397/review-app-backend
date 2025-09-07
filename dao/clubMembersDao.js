@@ -6,7 +6,7 @@ import {
 import { clubMembersColumnsToReturn } from "./config/returnColumnsConfig.js";
 
 class ClubMembersDao {
-  async getClubMembers(clubId, cursor = null, limit = 50) {
+  async getClubMembers(clubId, cursor = null, name = null, limit = 50) {
     const membersRaw = await db("club_members as cm")
       .join("users as u", "cm.user_id", "u.id")
       .join("clubs as c", "cm.club_id", "c.id")
@@ -15,6 +15,11 @@ class ClubMembersDao {
       .modify((qb) => {
         if (cursor) {
           qb.andWhere("cm.id", "<", cursor);
+        }
+      })
+      .modify((qb) => {
+        if (name) {
+          qb.andWhereILike("u.display_name", `%${name}%`);
         }
       })
       .orderBy("cm.id", "desc")

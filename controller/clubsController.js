@@ -13,11 +13,12 @@ class ClubsController {
   //CLUBS
 
   // @desc get all public clubs
-  // @route GET /clubs?cursor
+  // @route GET /clubs?cursor=?name=?
   // @access Private
   getAllPublicClubs = expressAsyncHandler(async (req, res) => {
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
-    const clubs = await ClubsService.getPublicClubs(cursor);
+    const name = req.query.name ? req.query.name.trim() : null;
+    const clubs = await ClubsService.getPublicClubs(cursor, name);
     res.json(clubs);
   });
 
@@ -82,13 +83,19 @@ class ClubsController {
   //CLUB INVITES
 
   // @desc get current invites for club
-  // @route GET /clubs/:clubId/invites?cursor
+  // @route GET /clubs/:clubId/invites?cursor=?name=?
   // @access Private
   getClubInvites = expressAsyncHandler(async (req, res) => {
     const clubId = parseInt(req.params.clubId);
     const userId = parseInt(req.user.id);
+    const name = req.query.name ? req.query.name.trim() : null;
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
-    const invites = await ClubsService.getClubInvites(userId, clubId, cursor);
+    const invites = await ClubsService.getClubInvites(
+      userId,
+      clubId,
+      cursor,
+      name
+    );
     res.json(invites);
   });
 
@@ -134,14 +141,20 @@ class ClubsController {
   //CLUB MEMBERS
 
   // @desc get current members for club
-  // @route GET /clubs/:clubId/members?cursor
+  // @route GET /clubs/:clubId/members?cursor=?name=?
   // @access Private
   getClubMembers = expressAsyncHandler(async (req, res) => {
     const clubId = parseInt(req.params.clubId);
     const userId = parseInt(req.user.id);
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
-    const invites = await ClubsService.getClubMembers(userId, clubId, cursor);
-    res.json(invites);
+    const name = req.query.name ? req.query.name.trim() : null;
+    const members = await ClubsService.getClubMembers(
+      userId,
+      clubId,
+      cursor,
+      name
+    );
+    res.json(members);
   });
 
   // @desc add current user to public club
@@ -198,13 +211,19 @@ class ClubsController {
   //CLUB MEDIA
 
   // @desc get media for a given club
-  // @route GET /clubs/:clubId/media?cursor
+  // @route GET /clubs/:clubId/media?cursor=?name=?
   // @access Private
   getClubMedia = expressAsyncHandler(async (req, res) => {
     const clubId = parseInt(req.params.clubId);
     const userId = parseInt(req.user.id);
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
-    const clubMedia = await ClubsService.getClubMedia(userId, clubId, cursor);
+    const name = req.query.name ? req.query.name.trim() : null;
+    const clubMedia = await ClubsService.getClubMedia(
+      userId,
+      clubId,
+      cursor,
+      name
+    );
     res.json(clubMedia);
   });
 
@@ -265,18 +284,20 @@ class ClubsController {
   //CLUB THREADS
 
   // @desc get threads for a given club media
-  // @route GET /clubs/:clubId/media/:clubMediaId/threads?cursor
+  // @route GET /clubs/:clubId/media/:clubMediaId/threads?cursor=?name=?
   // @access Private
   getClubThreads = expressAsyncHandler(async (req, res) => {
     const clubId = parseInt(req.params.clubId);
     const userId = parseInt(req.user.id);
     const clubMediaId = parseInt(req.params.clubMediaId);
     const cursor = req.query.cursor || null;
+    const name = req.query.name ? req.query.name.trim() : null;
     const { threads, nextCursor, hasMore } = await ClubsService.getClubThreads(
       userId,
       clubId,
       clubMediaId,
-      cursor
+      cursor,
+      name
     );
     res.json({
       threads,

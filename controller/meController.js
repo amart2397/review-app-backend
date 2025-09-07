@@ -24,12 +24,13 @@ class MeController {
   });
 
   // @desc get user clubs for req session
-  // @route GET /me/clubs?cursor
+  // @route GET /me/clubs?cursor=?name=?
   // @access Private
   getMyClubs = expressAsyncHandler(async (req, res, next) => {
     const userId = parseInt(req.user.id);
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
-    const myClubs = await ClubsService.getUserClubs(userId, cursor);
+    const name = req.query.name ? req.query.name.trim() : null;
+    const myClubs = await ClubsService.getUserClubs(userId, cursor, name);
     res.json(myClubs);
   });
 
@@ -104,12 +105,17 @@ class MeController {
   });
 
   // @desc get current users reviews
-  // @route GET /me/reviews?cursor
+  // @route GET /me/reviews?cursor=?name=?
   // @access Private
   getMyReviews = expressAsyncHandler(async (req, res) => {
     const currentUserId = parseInt(req.user.id);
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
-    const reviews = await ReviewsService.getMyReviews(currentUserId, cursor);
+    const media = req.query.media ? req.query.media.trim() : null;
+    const reviews = await ReviewsService.getMyReviews(
+      currentUserId,
+      cursor,
+      media
+    );
     res.json(reviews);
   });
 

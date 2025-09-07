@@ -8,10 +8,11 @@ import handleError from "../utils/handleError.js";
 
 class AdminService {
   //POST PERMISSIONS REQUESTS
-  async getPendingRequests(cursor = null) {
+  async getPendingRequests(cursor = null, name = null) {
     try {
       const requests = await PostPermissionRequestsDao.getPendingRequests(
-        cursor
+        cursor,
+        name
       );
       return requests;
     } catch (err) {
@@ -20,10 +21,11 @@ class AdminService {
     }
   }
 
-  async getProcessedRequests(cursor = null) {
+  async getProcessedRequests(cursor = null, name = null) {
     try {
       const requests = await PostPermissionRequestsDao.getProcessedRequests(
-        cursor
+        cursor,
+        name
       );
       return requests;
     } catch (err) {
@@ -71,9 +73,9 @@ class AdminService {
   }
 
   //USERS
-  async getAllUsers(cursor = null) {
+  async getAllUsers(cursor = null, name = null) {
     try {
-      const users = await UsersDao.getAllUsersForAdmin(cursor);
+      const users = await UsersDao.getAllUsersForAdmin(cursor, name);
       return users;
     } catch (err) {
       if (err instanceof AppError) throw err;
@@ -111,9 +113,9 @@ class AdminService {
   }
 
   //MEDIA
-  async getAllMedia(cursor = null) {
+  async getAllMedia(cursor = null, name = null) {
     try {
-      const media = await MediaDao.getAllMedia(cursor);
+      const media = await MediaDao.getAllMedia(cursor, name);
       return media;
     } catch (err) {
       if (err instanceof AppError) throw err;
@@ -135,9 +137,9 @@ class AdminService {
   }
 
   //REVIEWS
-  async getAllReviews(cursor = null) {
+  async getAllReviews(cursor = null, media = null) {
     try {
-      const reviews = await ReviewsDao.getAllReviews(cursor);
+      const reviews = await ReviewsDao.getAllReviews(cursor, media);
       return reviews;
     } catch (err) {
       if (err instanceof AppError) throw err;
@@ -159,9 +161,9 @@ class AdminService {
   }
 
   //CLUBS
-  async getAllClubs(cursor = null) {
+  async getAllClubs(cursor = null, name = null) {
     try {
-      const clubs = await ClubsDao.getAllClubs(cursor);
+      const clubs = await ClubsDao.getAllClubs(cursor, name);
       return clubs;
     } catch (err) {
       if (err instanceof AppError) throw err;

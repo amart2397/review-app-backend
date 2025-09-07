@@ -4,9 +4,9 @@ import handleError from "../utils/handleError.js";
 import MediaValidator from "../validators/mediaValidator.js";
 
 class MediaService {
-  async getAllMedia(cursor = null) {
+  async getAllMedia(cursor = null, name = null) {
     try {
-      const media = await MediaDao.getAllMedia(cursor);
+      const media = await MediaDao.getAllMedia(cursor, name);
       return media;
     } catch (err) {
       if (err instanceof AppError) throw err;

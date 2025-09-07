@@ -6,7 +6,7 @@ import {
 } from "../transformers/transformData.js";
 
 class MediaDao {
-  async getAllMedia(cursor = null, limit = 20) {
+  async getAllMedia(cursor = null, name = null, limit = 20) {
     const mediaRaw = await db("media as m")
       .leftJoin("reviews as r", "m.id", "r.media_id")
       .groupBy(mediaColumnsToReturn)
@@ -19,6 +19,11 @@ class MediaDao {
       .modify((qb) => {
         if (cursor) {
           qb.andWhere("m.id", "<", cursor);
+        }
+      })
+      .modify((qb) => {
+        if (name) {
+          qb.andWhereILike("m.title", `%${name}%`);
         }
       })
       .orderBy("m.id", "desc")

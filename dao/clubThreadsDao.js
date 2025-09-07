@@ -6,7 +6,7 @@ import {
 import { clubThreadColumnsToReturn } from "./config/returnColumnsConfig.js";
 
 class ClubThreadsDao {
-  async getClubThreads(clubMediaId, cursor = null, limit = 10) {
+  async getClubThreads(clubMediaId, cursor = null, name = null, limit = 10) {
     let query = db("threads as t")
       .join("users as u", "t.created_by", "u.id")
       .where("t.club_media_id", clubMediaId)
@@ -17,6 +17,11 @@ class ClubThreadsDao {
     // If cursor is provided, fetch threads older than that timestamp
     if (cursor) {
       query = query.andWhere("t.created_at", "<", cursor);
+    }
+
+    //If name is provided, add thread title query parameter
+    if (name) {
+      query = query.andWhereILike("t.title", `%${name}%`);
     }
 
     const threadsRaw = await query;

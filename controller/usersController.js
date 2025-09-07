@@ -6,11 +6,12 @@ import ReviewsService from "../service/reviewsService.js";
 
 class UsersController {
   // @desc get all users
-  // @route GET /users?cursor
+  // @route GET /users?cursor=?name=?
   // @access Private
   getAllUsers = expressAsyncHandler(async (req, res) => {
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
-    const users = await UsersService.getAllUsers(cursor);
+    const name = req.query.name ? req.query.name.trim() : null;
+    const users = await UsersService.getAllUsers(cursor, name);
     res.json(users);
   });
 
@@ -110,10 +111,12 @@ class UsersController {
     const userId = parseInt(req.params.id);
     const currentUserId = parseInt(req.user.id);
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const media = req.query.media ? req.query.media.trim() : null;
     const reviews = await ReviewsService.getReviewsByUser(
       currentUserId,
       userId,
-      cursor
+      cursor,
+      media
     );
     res.json(reviews);
   });

@@ -5,9 +5,9 @@ import bcrypt from "bcrypt";
 import AppError from "../utils/AppError.js";
 
 class UsersService {
-  async getAllUsers(cursor = null) {
+  async getAllUsers(cursor = null, name = null) {
     try {
-      const users = await UsersDao.getAllUsers(cursor);
+      const users = await UsersDao.getAllUsers(cursor, name);
       return users;
     } catch (err) {
       if (err instanceof AppError) throw err;

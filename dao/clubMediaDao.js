@@ -10,7 +10,7 @@ const groupByColumns = clubMediaColumnsToReturn.map((col) =>
 ); //Clear out alias names for groupBy
 
 class ClubMediaDao {
-  async getClubMedia(clubId, cursor = null, limit = 20) {
+  async getClubMedia(clubId, cursor = null, name = null, limit = 20) {
     const clubMediaRaw = await db("club_media as cmd")
       .join("clubs as c", "cmd.club_id", "c.id")
       .join("media as m", "cmd.media_id", "m.id")
@@ -34,6 +34,11 @@ class ClubMediaDao {
       .modify((qb) => {
         if (cursor) {
           qb.andWhere("cmd.id", "<", cursor);
+        }
+      })
+      .modify((qb) => {
+        if (name) {
+          qb.andWhereILike("m.title", `%${name}%`);
         }
       })
       .orderBy("cmd.id", "desc")

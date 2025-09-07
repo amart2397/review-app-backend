@@ -3,7 +3,7 @@ import { postPermReqColumnsToReturn } from "./config/returnColumnsConfig.js";
 import { transformReturnPermReqData } from "../transformers/transformData.js";
 
 class PostPermissionRequestsDao {
-  async getPendingRequests(cursor = null, limit = 30) {
+  async getPendingRequests(cursor = null, name = null, limit = 30) {
     const requestsRaw = await db("post_permission_requests as pr")
       .join("users as u", "pr.user_id", "u.id")
       .where("pr.status", "pending")
@@ -13,13 +13,18 @@ class PostPermissionRequestsDao {
           qb.andWhere("pr.id", "<", cursor);
         }
       })
+      .modify((qb) => {
+        if (name) {
+          qb.andWhereILike("u.display_name", `%${name}%`);
+        }
+      })
       .orderBy("pr.id", "desc")
       .limit(limit);
     const requests = transformReturnPermReqData(requestsRaw);
     return requests;
   }
 
-  async getProcessedRequests(cursor = null, limit = 30) {
+  async getProcessedRequests(cursor = null, name = null, limit = 30) {
     const requestsRaw = await db("post_permission_requests as pr")
       .join("users as u", "pr.user_id", "u.id")
       .whereNot("pr.status", "pending")
@@ -27,6 +32,11 @@ class PostPermissionRequestsDao {
       .modify((qb) => {
         if (cursor) {
           qb.andWhere("pr.id", "<", cursor);
+        }
+      })
+      .modify((qb) => {
+        if (name) {
+          qb.andWhereILike("u.display_name", `%${name}%`);
         }
       })
       .orderBy("pr.id", "desc")
