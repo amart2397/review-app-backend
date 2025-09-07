@@ -55,7 +55,7 @@ class UsersController {
       firstName,
       lastName,
       password,
-      role,
+      profileColor,
     } = req.body;
     const id = parseInt(req.params.id);
     const requestUserId = req.user.id;
@@ -65,20 +65,22 @@ class UsersController {
     const inputUserData = {
       id,
       email,
-      firstName,
-      lastName,
+      ...(firstName ? { firstName } : {}),
+      ...(lastName ? { lastName } : {}),
+      ...(password ? { password } : {}),
+      ...(profileColor ? { profileColor } : {}),
     };
-    if (password) {
-      inputUserData.password = password;
-    }
-    if (role) {
-      inputUserData.role = role;
-    }
     const validatedData =
       UsersValidator.validateUpdateUserSchema(inputUserData);
     await UsersService.updateUser(validatedData, requestUserId);
+    let userResponse;
+    if (firstName && lastName) {
+      userResponse = firstName + " " + lastName;
+    } else {
+      userResponse = String(id);
+    }
     res.json({
-      message: `User ${firstName} ${lastName} updated`,
+      message: `User ${userResponse} updated`,
     });
   });
 

@@ -19,7 +19,10 @@ const updateUserSchema = z.object({
   lastName: z.string().trim().optional(),
   displayName: z.string().optional(),
   password: z.string().min(8).optional(),
-  role: z.enum(["user", "poster", "admin"]).optional(),
+  profileColor: z
+    .string()
+    .regex(/^#([0-9A-Fa-f]{6})$/, "Invalid hex color")
+    .optional(),
 });
 
 const delteUserSchema = z.object({

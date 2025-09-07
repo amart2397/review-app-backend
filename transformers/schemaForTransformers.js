@@ -8,6 +8,7 @@ export const keyMaps = {
     displayName: "display_name",
     password: "password",
     role: "role",
+    profileColor: "profile_color",
   },
   media: {
     id: "id",
