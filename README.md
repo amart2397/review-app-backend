@@ -26,10 +26,6 @@ This service handles authentication, authorization, club and review management, 
 - **Club Discussion Threads** Club discussion threads
 - **Private Reviews** with optional club sharing
 
-### Planned / In Progress
-
-- Personal user profiles
-
 ### Testing & CI/CD
 
 Centralized unit and integration test files are in development and will be integrated into a CI/CD workflow once the project is ready for deployment.
