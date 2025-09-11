@@ -7,7 +7,7 @@ import ReviewsService from "../service/reviewsService.js";
 class MediaController {
   // @desc get all media
   // @route GET /media?cursor=title#IDname=?
-  // @access Private
+  // @access Public
   getAllMedia = expressAsyncHandler(async (req, res) => {
     const cursorRaw = req.query.cursor ? parseInt(req.query.cursor) : null;
     const name = req.query.name ? req.query.name.trim() : null;
@@ -137,10 +137,10 @@ class MediaController {
 
   // @desc get reviews for a given media
   // @route GET /media/:id/reviews?cursor
-  // @access Private
+  // @access Public
   getReviewsByMedia = expressAsyncHandler(async (req, res) => {
     const mediaId = parseInt(req.params.id);
-    const currentUserId = parseInt(req.user.id);
+    const currentUserId = req.user?.id ? parseInt(req.user.id) : null;
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
     const reviews = await ReviewsService.getReviewsByMedia(
       currentUserId,

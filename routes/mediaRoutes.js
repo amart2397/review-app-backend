@@ -36,11 +36,5 @@ router
     MediaController.deleteMedia
   );
 
-router
-  .route("/:id/reviews")
-  .get(
-    isAuthenticated,
-    csrfSynchronisedProtection,
-    MediaController.getReviewsByMedia
-  );
+router.route("/:id/reviews").get(MediaController.getReviewsByMedia);
 export default router;

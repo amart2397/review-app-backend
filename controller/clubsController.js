@@ -14,7 +14,7 @@ class ClubsController {
 
   // @desc get all public clubs
   // @route GET /clubs?cursor=?name=?
-  // @access Private
+  // @access Public
   getAllPublicClubs = expressAsyncHandler(async (req, res) => {
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
     const name = req.query.name ? req.query.name.trim() : null;
