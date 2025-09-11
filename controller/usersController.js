@@ -6,11 +6,16 @@ import ReviewsService from "../service/reviewsService.js";
 
 class UsersController {
   // @desc get all users
-  // @route GET /users?cursor=?name=?
+  // @route GET /users?cursor=displayName#IDname=?
   // @access Private
   getAllUsers = expressAsyncHandler(async (req, res) => {
-    const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const cursorRaw = req.query.cursor ? parseInt(req.query.cursor) : null;
     const name = req.query.name ? req.query.name.trim() : null;
+    let cursor = null;
+    if (cursorRaw) {
+      const [displayName, id] = cursorRaw.split("#"); //cursor expected to be displayName#ID
+      cursor = { displayName, id: parseInt(id, 10) };
+    }
     const users = await UsersService.getAllUsers(cursor, name);
     res.json(users);
   });

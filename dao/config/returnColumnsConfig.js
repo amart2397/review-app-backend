@@ -1,5 +1,10 @@
 //Users Columns - I don't want to send the password to the frontend!
-export const usersColumnsToReturn = ["id", "display_name", "role"];
+export const usersColumnsToReturn = [
+  "id",
+  "display_name",
+  "role",
+  "profile_color",
+];
 
 //Media Columns
 export const mediaColumnsToReturn = [

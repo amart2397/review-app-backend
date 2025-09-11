@@ -43,11 +43,16 @@ class AdminController {
   });
 
   // @desc get all users
-  // @route GET /admin/users?cursor=?name=?
+  // @route GET /admin/users?cursor=displayName#IDname=?
   // @access Private
   getAllUsers = expressAsyncHandler(async (req, res) => {
-    const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const cursorRaw = req.query.cursor ? parseInt(req.query.cursor) : null;
     const name = req.query.name ? req.query.name.trim() : null;
+    let cursor = null;
+    if (cursorRaw) {
+      const [displayName, id] = cursorRaw.split("#"); //cursor expected to be displayName#ID
+      cursor = { displayName, id: parseInt(id, 10) };
+    }
     const users = await AdminService.getAllUsers(cursor, name);
     res.json(users);
   });
@@ -72,11 +77,16 @@ class AdminController {
   });
 
   // @desc get all media
-  // @route GET /admin/media?cursor=?name=?
+  // @route GET /admin/media?cursor=title#IDname=?
   // @access Private
   getAllMedia = expressAsyncHandler(async (req, res) => {
-    const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const cursorRaw = req.query.cursor ? parseInt(req.query.cursor) : null;
     const name = req.query.name ? req.query.name.trim() : null;
+    let cursor = null;
+    if (cursorRaw) {
+      const [title, id] = cursorRaw.split("#"); //cursor expected to be title#ID
+      cursor = { title, id: parseInt(id, 10) };
+    }
     const media = await AdminService.getAllMedia(cursor, name);
     res.json(media);
   });

@@ -6,11 +6,16 @@ import ReviewsService from "../service/reviewsService.js";
 
 class MediaController {
   // @desc get all media
-  // @route GET /media?cursor=?name=?
+  // @route GET /media?cursor=title#IDname=?
   // @access Private
   getAllMedia = expressAsyncHandler(async (req, res) => {
-    const cursor = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const cursorRaw = req.query.cursor ? parseInt(req.query.cursor) : null;
     const name = req.query.name ? req.query.name.trim() : null;
+    let cursor = null;
+    if (cursorRaw) {
+      const [title, id] = cursorRaw.split("#"); //cursor expected to be title#ID
+      cursor = { title, id: parseInt(id, 10) };
+    }
     const media = await MediaService.getAllMedia(cursor, name);
     res.json(media);
   });

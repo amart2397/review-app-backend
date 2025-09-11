@@ -12,7 +12,18 @@ class UsersDao {
       .select(usersColumnsToReturn)
       .modify((qb) => {
         if (cursor) {
-          qb.andWhere("users.id", "<", cursor);
+          const { displayName: lastDisplayName, id: lastId } = cursor;
+          qb.andWhere(function () {
+            this.where("users.display_name", ">", lastDisplayName).orWhere(
+              function () {
+                this.where("users.display_name", "=", lastDisplayName).andWhere(
+                  "users.id",
+                  ">",
+                  lastId
+                );
+              }
+            );
+          });
         }
       })
       .modify((qb) => {
@@ -20,7 +31,8 @@ class UsersDao {
           qb.andWhereILike("users.display_name", `%${name}%`);
         }
       })
-      .orderBy("users.id", "desc")
+      .orderBy("users.display_name", "asc")
+      .orderBy("users.id", "asc")
       .limit(limit);
     const users = transformReturnUserData(usersRaw);
     return users;
@@ -31,7 +43,18 @@ class UsersDao {
       .select(usersColumnsToReturn)
       .modify((qb) => {
         if (cursor) {
-          qb.andWhere("users.id", "<", cursor);
+          const { displayName: lastDisplayName, id: lastId } = cursor;
+          qb.andWhere(function () {
+            this.where("users.display_name", ">", lastDisplayName).orWhere(
+              function () {
+                this.where("users.display_name", "=", lastDisplayName).andWhere(
+                  "users.id",
+                  ">",
+                  lastId
+                );
+              }
+            );
+          });
         }
       })
       .modify((qb) => {
@@ -39,7 +62,8 @@ class UsersDao {
           qb.andWhereILike("users.display_name", `%${name}%`);
         }
       })
-      .orderBy("users.id", "desc")
+      .orderBy("users.display_name", "asc")
+      .orderBy("users.id", "asc")
       .limit(limit);
     const users = transformReturnUserData(usersRaw);
     return users;
@@ -66,7 +90,10 @@ class UsersDao {
   }
 
   async getUserById(id) {
-    const user = await db("users").first(usersColumnsToReturn).where("id", id);
+    const userRaw = await db("users")
+      .select(usersColumnsToReturn)
+      .where("id", id);
+    const user = transformReturnUserData(userRaw)?.users?.[0];
     return user;
   }
 

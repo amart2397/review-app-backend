@@ -18,7 +18,16 @@ class MediaDao {
       )
       .modify((qb) => {
         if (cursor) {
-          qb.andWhere("m.id", "<", cursor);
+          const { title: lastTitle, id: lastId } = cursor;
+          qb.andWhere(function () {
+            this.where("m.title", ">", lastTitle).orWhere(function () {
+              this.where("m.title", "=", lastTitle).andWhere(
+                "m.id",
+                ">",
+                lastId
+              );
+            });
+          });
         }
       })
       .modify((qb) => {
@@ -26,7 +35,8 @@ class MediaDao {
           qb.andWhereILike("m.title", `%${name}%`);
         }
       })
-      .orderBy("m.id", "desc")
+      .orderBy("m.title", "asc")
+      .orderBy("m.id", "asc")
       .limit(limit);
     const media = transformReturnMediaData(mediaRaw);
     return media;

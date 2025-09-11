@@ -146,18 +146,38 @@ export const transformReturnClubThreadCommentData = (data) =>
     keyMap: returnKeyMaps.clubThreadComments,
     rootKey: "comments",
   });
-export const transformReturnMediaData = (data) =>
-  transformReturnData({
+export const transformReturnMediaData = (data) => {
+  const { media } = transformReturnData({
     data,
     keyMap: returnKeyMaps.media,
     rootKey: "media",
   });
-export const transformReturnUserData = (data) =>
-  transformReturnData({
+  if (media) {
+    const nextCursor = {
+      id: data[data.length - 1].id,
+      title: data[data.length - 1].title,
+    };
+    return { nextCursor, media };
+  } else {
+    return null;
+  }
+};
+export const transformReturnUserData = (data) => {
+  const { users } = transformReturnData({
     data,
     keyMap: returnKeyMaps.users,
     rootKey: "users",
   });
+  if (users) {
+    const nextCursor = {
+      id: data[data.length - 1].id,
+      displayName: data[data.length - 1].display_name,
+    };
+    return { nextCursor, users };
+  } else {
+    return null;
+  }
+};
 export const transformReturnFeedData = (feedArray) => {
   if (!feedArray || feedArray.length === 0)
     return {
