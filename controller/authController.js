@@ -9,7 +9,7 @@ class AuthController {
   // @desc create new user
   // @route POST /auth/register
   // @access Public
-  registerUser = expressAsyncHandler(async (req, res) => {
+  registerUser = expressAsyncHandler(async (req, res, next) => {
     if (req.isAuthenticated()) {
       throw AppError.badRequest("Already logged in");
     }

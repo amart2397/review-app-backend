@@ -211,6 +211,7 @@ export const returnKeyMaps = {
     id: "id",
     displayName: "display_name",
     role: "role",
+    profileColor: "profile_color",
   },
 
   permReq: {

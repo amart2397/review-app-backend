@@ -9,12 +9,16 @@ class MediaController {
   // @route GET /media?cursor=title#IDname=?
   // @access Public
   getAllMedia = expressAsyncHandler(async (req, res) => {
-    const cursorRaw = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const cursorRaw = req.query.cursor ? String(req.query.cursor) : null;
     const name = req.query.name ? req.query.name.trim() : null;
     let cursor = null;
     if (cursorRaw) {
-      const [title, id] = cursorRaw.split("#"); //cursor expected to be title#ID
-      cursor = { title, id: parseInt(id, 10) };
+      const [title, idRaw] = cursorRaw.split("#"); // cursor expected to be title#ID
+      const id = parseInt(idRaw, 10);
+      if (!title || !Number.isFinite(id)) {
+        throw AppError.badRequest("Invalid cursor. Expected title#ID.");
+      }
+      cursor = { title, id };
     }
     const media = await MediaService.getAllMedia(cursor, name);
     res.json(media);
@@ -65,7 +69,7 @@ class MediaController {
   getMedia = expressAsyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
     const media = await MediaService.getMediaById({ id });
-    if (media.length === 0) {
+    if (!media) {
       throw AppError.badRequest("Media not found");
     }
     res.json(media);

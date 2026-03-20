@@ -9,12 +9,16 @@ class UsersController {
   // @route GET /users?cursor=displayName#IDname=?
   // @access Private
   getAllUsers = expressAsyncHandler(async (req, res) => {
-    const cursorRaw = req.query.cursor ? parseInt(req.query.cursor) : null;
+    const cursorRaw = req.query.cursor ? String(req.query.cursor) : null;
     const name = req.query.name ? req.query.name.trim() : null;
     let cursor = null;
     if (cursorRaw) {
       const [displayName, id] = cursorRaw.split("#"); //cursor expected to be displayName#ID
-      cursor = { displayName, id: parseInt(id, 10) };
+      const parsedId = parseInt(id, 10);
+      if (!displayName || !Number.isFinite(parsedId)) {
+        throw AppError.badRequest("Invalid cursor. Expected displayName#ID.");
+      }
+      cursor = { displayName, id: parsedId };
     }
     const users = await UsersService.getAllUsers(cursor, name);
     res.json(users);

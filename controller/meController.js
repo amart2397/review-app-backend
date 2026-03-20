@@ -13,13 +13,8 @@ class MeController {
   // @route GET /me
   // @access Private
   getMe = expressAsyncHandler((req, res, next) => {
-    const { id, first_name, last_name, role } = req?.user;
-    const user = {
-      id,
-      firstName: first_name,
-      lastName: last_name,
-      role,
-    };
+    const { id, displayName, role, profileColor } = req?.user || {};
+    const user = { id, displayName, role, profileColor };
     res.json(user);
   });
 
@@ -53,7 +48,7 @@ class MeController {
     const { accepted: response } = req.body;
     if (typeof response !== "boolean") {
       throw AppError.badRequest(
-        "response body must include `accepted` as a boolean"
+        "response body must include `accepted` as a boolean",
       );
     }
     const accepted = Boolean(response);
@@ -114,7 +109,7 @@ class MeController {
     const reviews = await ReviewsService.getMyReviews(
       currentUserId,
       cursor,
-      media
+      media,
     );
     res.json(reviews);
   });
@@ -157,9 +152,8 @@ class MeController {
   // @access Private
   sendPermissionRequest = expressAsyncHandler(async (req, res) => {
     const userId = parseInt(req.user.id);
-    const newId = await PostPermissionRequestsService.addPostPermRequest(
-      userId
-    );
+    const newId =
+      await PostPermissionRequestsService.addPostPermRequest(userId);
     res.json({ message: `New request created with id ${newId}` });
   });
 

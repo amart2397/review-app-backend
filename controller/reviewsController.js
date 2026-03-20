@@ -47,7 +47,7 @@ class ReviewsController {
   getReview = expressAsyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
     const review = await ReviewsService.getReviewById({ id });
-    if (review?.length === 0) {
+    if (!review) {
       throw AppError.badRequest("Review not found");
     }
     res.json(review);
