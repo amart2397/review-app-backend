@@ -15,6 +15,7 @@ router
     ClubsController.createClub
   );
 
+//testing a commit, will remove comment.
 //Auth check
 router.use(isAuthenticated, csrfSynchronisedProtection);
 
